@@ -1,0 +1,23 @@
+# depslib dependency file v1.0
+1776460593 source:c:\users\dasha\onedrive - universidad nacional de la matanza\1c 2026\algoritmos y estructuras de datos\1c 2026\tp_algortimos_2026\caravana_del_desierto\funciones.c
+	"funciones.h"
+
+1776460593 c:\users\dasha\onedrive - universidad nacional de la matanza\1c 2026\algoritmos y estructuras de datos\1c 2026\tp_algortimos_2026\caravana_del_desierto\funciones.h
+	"config.h"
+
+1776460608 c:\users\dasha\onedrive - universidad nacional de la matanza\1c 2026\algoritmos y estructuras de datos\1c 2026\tp_algortimos_2026\caravana_del_desierto\config.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1776460593 source:c:\users\dasha\onedrive - universidad nacional de la matanza\1c 2026\algoritmos y estructuras de datos\1c 2026\tp_algortimos_2026\caravana_del_desierto\main.c
+	"config.h"
+	"funciones.h"
+
+1776458109 source:c:\users\dasha\onedrive - universidad nacional de la matanza\1c 2026\algoritmos y estructuras de datos\1c 2026\tp_algortimos_2026\caravana_del_desierto\pila_din.c
+	"pila_din.h"
+
+1776458527 c:\users\dasha\onedrive - universidad nacional de la matanza\1c 2026\algoritmos y estructuras de datos\1c 2026\tp_algortimos_2026\caravana_del_desierto\pila_din.h
+	"config.h"
+

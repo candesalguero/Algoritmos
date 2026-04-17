@@ -1,0 +1,51 @@
+#ifndef CONFIG_H_INCLUDED
+#define CONFIG_H_INCLUDED
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+// CONSTANTES GENERALES //////////////////////
+#define MIN(x,y) x > y ? y : x
+#define TAM_PILA 500
+#define MAX_NOMBRE 50
+#define MAX_MOVIMIENTO 10
+
+// ARCHIVOS ////////////////////////////////
+#define ARCHIVO_CONFIG "config.txt"
+#define ARCHIVO_TABLERO "caravana.txt"
+#define ARCHIVO_JUGADORES "jugadores.dat"
+#define ARCHIVO_PARTIDAS "partidas.dat"
+#define ARCHIVO_INDICE "indice.dat"
+
+
+// ETIQUETAS DE RETURN //////////////////
+#define ERR_ARCH -1
+#define ERR_MEM -2
+#define OK 0
+
+
+// TIPOS DE CELDAS///////////////////////////
+#define TIPO_VACIO    '.'
+#define TIPO_INICIO   'I'
+#define TIPO_SALIDA   'S'
+#define TIPO_PREMIO   'P'
+#define TIPO_VIDA     'V'
+#define TIPO_OASIS    'O'
+#define TIPO_TORMENTA 'T'
+#define TIPO_BANDIDO  'B'
+
+
+// ESTRUCTURAS /////////////////////////
+typedef struct {
+    int cantidad_posiciones;
+    int vidas_inicio;
+    int maximo_bandidos;
+    int maximo_premios;
+    int maximo_vidas_extra;
+    int maximo_oasis;
+    int maximo_tormentas;
+} tConfiguracion;
+
+#endif // CONFIG_H_INCLUDED
