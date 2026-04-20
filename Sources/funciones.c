@@ -158,14 +158,16 @@ void enviarJugadorAlInicio(tListaDoble *ruta) {
         act = act->siguiente;
     } while (act != *ruta);
 }
-void jugarTurno(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial, int vidas, int puntos, int *turnos_perdidos)
+// Fase 1: Muestra mapa/estado, pide decision al jugador y encola su movimiento.
+// Devuelve 1 si el jugador movio, 0 si perdio el turno por tormenta.
+int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial, int vidas, int puntos, int *turnos_perdidos)
 {
     tMovimiento movActual;
     int posJugador = 1;
 
     mostrarMapa(ruta);
 
-    // 1. Encontrar al Jugador
+    // Encontrar posicion actual del jugador
     tNodo *act = *ruta;
     do {
         tPosicion *p = (tPosicion *)act->info;
@@ -177,58 +179,73 @@ void jugarTurno(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, tCol
     printf(" Posicion: %02d |  Vidas: %d |  Puntos: %d\n", posJugador, vidas, puntos);
     printf("================================================\n");
 
-    // 2. Turno del Jugador (Evaluar Tormenta)
+    printf("\n--- TU TURNO ---\n");
     if (*turnos_perdidos > 0) {
         printf("Estas atrapado en la Tormenta de Arena. Pierdes este turno.\n");
         printf("A la computadora (Bandidos) le corresponde jugar mientras tu no puedes!\n");
         (*turnos_perdidos)--;
-    } else {
-        printf("\n--- TU TURNO ---\n");
-        movActual.entidad = 'J';
-        movActual.pos_origen = posJugador;
-        movActual.casillas = tirarDado();
-
-        printf("Has sacado un %d en el dado.\n", movActual.casillas);
-
-            char eleccion;
-            do {
-                printf("Deseas moverte hacia (F) Adelante o (B) Atras? : ");
-                scanf(" %c", &eleccion);
-                if(eleccion >= 'a' && eleccion <= 'z') eleccion -= 32;
-            } while (eleccion != 'F' && eleccion != 'B');
-            movActual.direccion = eleccion;
-
-        poner_en_cola(colaMovimientos, &movActual, sizeof(tMovimiento));
-        poner_en_cola(colaHistorial, &movActual, sizeof(tMovimiento)); // GUARDAMOS EL MOVIMIENTO EN EL HISTORIAL
+        return 0; // El jugador no movio
     }
 
-    // 3. Turno de los Bandidos (IA de Búsqueda del camino más corto)
-    printf("\n--- TURNO DE LA COMPUTADORA (BANDIDOS) ---\n");
-    act = *ruta;
+    movActual.entidad = 'J';
+    movActual.pos_origen = posJugador;
+    movActual.casillas = tirarDado();
+    printf("Has sacado un %d en el dado.\n", movActual.casillas);
+
+    char eleccion;
+    do {
+        printf("Deseas moverte hacia (F) Adelante o (B) Atras? : ");
+        scanf(" %c", &eleccion);
+        if (eleccion >= 'a' && eleccion <= 'z') eleccion -= 32;
+    } while (eleccion != 'F' && eleccion != 'B');
+    movActual.direccion = eleccion;
+
+    poner_en_cola(colaMovimientos, &movActual, sizeof(tMovimiento));
+    poner_en_cola(colaHistorial,   &movActual, sizeof(tMovimiento));
+    return 1; // El jugador movio
+}
+
+// Auxiliar: devuelve la posicion actual del jugador en la lista
+int obtenerPosJugador(tListaDoble *ruta) {
+    tNodo *act = *ruta;
+    do {
+        tPosicion *p = (tPosicion *)act->info;
+        if (p->tiene_jugador) return p->numero_posicion;
+        act = act->siguiente;
+    } while (act != *ruta);
+    return 1;
+}
+
+// Fase 2: Encola los movimientos de todos los bandidos activos.
+// Usa la posicion actualizada del jugador (puede haber cambiado tras la Fase 1).
+void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos)
+{
+    tMovimiento movActual;
+    tNodo *act = *ruta;
     int hay_bandidos = 0;
+    int posJugador = obtenerPosJugador(ruta); // Posicion real tras resolver Fase 1
+
+    printf("\n--- TURNO DE LA COMPUTADORA (BANDIDOS) ---\n");
     do {
         tPosicion *p = (tPosicion *)act->info;
         for (int b = 0; b < p->tiene_bandido; b++) {
             hay_bandidos = 1;
-            movActual.entidad = 'B';
+            movActual.entidad   = 'B';
             movActual.pos_origen = p->numero_posicion;
-            movActual.casillas = tirarDado();
+            movActual.casillas  = tirarDado();
             movActual.direccion = obtenerDireccionBandido(p->numero_posicion, posJugador, config->cantidad_posiciones);
 
-            // UI Update for Bandits
             printf("Bandido en casillero %02d saca un %d. Decide ir hacia %s.\n",
                    p->numero_posicion, movActual.casillas,
                    (movActual.direccion == 'F') ? "Adelante (F)" : "Atras (B)");
 
             poner_en_cola(colaMovimientos, &movActual, sizeof(tMovimiento));
-
         }
         act = act->siguiente;
     } while (act != *ruta);
 
-    if (!hay_bandidos) {
+    if (!hay_bandidos)
         printf("No hay bandidos en el mapa en este momento.\n");
-    }
     printf("\n");
 }
 
@@ -391,7 +408,7 @@ void iniciarPartida(tConfig *config, tListaDoble *ruta) {
     int turnos_perdidos = 0;
     int protegido = 0;
     tCola colaMovimientos;
-    tCola colaHistorial; // NUEVO: Cola para guardar los movimientos del jugador
+    tCola colaHistorial;
 
     crear_cola(&colaMovimientos);
     crear_cola(&colaHistorial);
@@ -399,21 +416,37 @@ void iniciarPartida(tConfig *config, tListaDoble *ruta) {
     printf("\n>>> INICIANDO TRAVESIA HACIA LA CIUDAD REFUGIO <<<\n");
 
     while (jugando == 1 && vidas > 0) {
-        jugarTurno(config, ruta, &colaMovimientos, &colaHistorial, vidas, puntos, &turnos_perdidos);
 
-        printf("\nResolviendo movimientos...\n");
+        // === FASE 1: TURNO DEL JUGADOR ===
+        int jugadorMovio = turnoJugador(ruta, &colaMovimientos, &colaHistorial, vidas, puntos, &turnos_perdidos);
+
+        if (jugadorMovio) {
+            printf("\n--- Resolviendo movimiento del jugador ---\n");
+            jugando = ejecutarMovimientos(ruta, &colaMovimientos, &vidas, &puntos, &turnos_perdidos, &protegido);
+            if (jugando == 0) break; // Victoria: no hay turno de bandidos
+        }
+
+        if (vidas <= 0) break; // Derrota por emboscada en Fase 1
+
+        // === FASE 2: TURNO DE LOS BANDIDOS ===
+        // obtenerPosJugador() se llama dentro de turnoBandidos para usar
+        // la posicion actualizada (puede haber vuelto al inicio tras emboscada)
+        turnoBandidos(config, ruta, &colaMovimientos);
+
+        printf("--- Resolviendo movimiento de los bandidos ---\n");
         jugando = ejecutarMovimientos(ruta, &colaMovimientos, &vidas, &puntos, &turnos_perdidos, &protegido);
 
-        // Si no perdimos turno ni acabamos de conseguir el oasis, se limpia la protección
+        // La proteccion del Oasis se consume al final del turno completo
         if (protegido && turnos_perdidos == 0) protegido = 0;
     }
 
-    if (vidas <= 0) {
+    if (jugando == 0) {
+        printf("\n¡VICTORIA! Has llegado a la Ciudad Refugio con %d punto(s).\n", puntos);
+    } else {
         printf("\nHas perdido todas tus vidas. El desierto te ha consumido.\n");
     }
-    // Mostrar historial de decisiones del jugador al finalizar
+
     mostrarHistorial(&colaHistorial);
-    // Liberar memoria del historial
     vaciar_cola(&colaHistorial);
     vaciar_cola(&colaMovimientos);
     vaciarLista(ruta);
