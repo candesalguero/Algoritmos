@@ -30,3 +30,36 @@
 	<stdlib.h>
 	<string.h>
 
+1776539353 source:c:\users\circo studio s.r.l\downloads\caravana_del_desierto\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"Headers/funciones.h"
+	"Headers/ListaDoble.h"
+
+1776648918 c:\users\circo studio s.r.l\downloads\caravana_del_desierto\headers\funciones.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"ListaDoble.h"
+	"Cola.h"
+
+1776648918 c:\users\circo studio s.r.l\downloads\caravana_del_desierto\headers\listadoble.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1776648918 source:c:\users\circo studio s.r.l\downloads\caravana_del_desierto\sources\listadoble.c
+	"../Headers/ListaDoble.h"
+
+1776648918 source:c:\users\circo studio s.r.l\downloads\caravana_del_desierto\sources\cola.c
+	"../Headers/Cola.h"
+
+1776648918 source:c:\users\circo studio s.r.l\downloads\caravana_del_desierto\sources\funciones.c
+	"../Headers/funciones.h"
+
+1776648941 c:\users\circo studio s.r.l\downloads\caravana_del_desierto\headers\cola.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

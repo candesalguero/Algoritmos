@@ -1,6 +1,4 @@
 #include "../Headers/ListaDoble.h"
-#include <stdlib.h>
-#include <string.h>
 
 // 1. Crear Lista
 void crearLista(tListaDoble *pl) {
@@ -13,7 +11,7 @@ int vaciarLista(tListaDoble *pl) {
     tNodo *actual = *pl;
     if (actual) {
         tNodo *ultimo = actual->anterior;
-        ultimo->siguiente = NULL; 
+        ultimo->siguiente = NULL;
         while (actual) {
             tNodo *aux = actual->siguiente;
             free(actual->info);
@@ -68,7 +66,7 @@ int insertarAlFinal(tListaDoble *pl, const void *d, unsigned cantBytes) {
 // 6. Insertar al Comienzo
 int insertarAlComienzo(tListaDoble *pl, const void *d, unsigned cantBytes) {
     if (!insertarAlFinal(pl, d, cantBytes)) return 0;
-    *pl = (*pl)->anterior; 
+    *pl = (*pl)->anterior;
     return 1;
 }
 

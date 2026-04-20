@@ -1,6 +1,6 @@
 #ifndef LISTADOBLE_H
 #define LISTADOBLE_H
-
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 

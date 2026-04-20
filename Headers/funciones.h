@@ -1,7 +1,10 @@
 #ifndef FUNCIONES_H
 #define FUNCIONES_H
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "ListaDoble.h"
+#include "Cola.h"
 
 // Estructura para almacenar la configuracion del juego
 typedef struct {
@@ -22,9 +25,6 @@ typedef struct {
     int tiene_bandido;   // Contador: 0, 1, o más bandidos en esta casilla
 } tPosicion;
 
-int cargarConfiguracion(const char* ruta, tConfig* config);
-void generarEscenario(tConfig* config, tListaDoble* ruta_desierto);
-void mostrarMenu();
 // Estructura de un Movimiento
 typedef struct {
     char entidad;    // 'J' para Jugador, 'B' para Bandido
@@ -33,30 +33,17 @@ typedef struct {
     int casillas;    // Cantidad a mover (1 a 6)
 } tMovimiento;
 
-// Nodos para la Cola de Movimientos
-typedef struct sNodoCola {
-    tMovimiento info;
-    struct sNodoCola* sig;
-} tNodoCola;
-
-// Estructura de la Cola
-typedef struct {
-    tNodoCola *frente;
-    tNodoCola *fondo;
-} tCola;
-
-// Primitivas de la Cola
-void crearCola(tCola *pc);
-int acolar(tCola *pc, const tMovimiento *d);
-int desencolar(tCola *pc, tMovimiento *d);
-int colaVacia(const tCola *pc);
 
 // Funciones del Motor del Juego
-void jugarTurno(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, int vidas, int puntos, int *turnos_perdidos);
+void jugarTurno(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial, int vidas, int puntos, int *turnos_perdidos);
 int tirarDado();
 void enviarJugadorAlInicio(tListaDoble *ruta);
 char obtenerDireccionBandido(int posB, int posJ, int totalPos);
 void mostrarMapa(tListaDoble *ruta);
+void mostrarHistorial(tCola *historial);
 int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, int *vidas, int *puntos, int *turnos_perdidos, int *protegido);
 void iniciarPartida(tConfig *config, tListaDoble *ruta);
+int cargarConfiguracion(const char* ruta, tConfig* config);
+void generarEscenario(tConfig* config, tListaDoble* ruta_desierto);
+void mostrarMenu();
 #endif // FUNCIONES_H

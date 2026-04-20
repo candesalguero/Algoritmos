@@ -1,7 +1,5 @@
 #include "../Headers/funciones.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
 
 // Lee config.txt y lo vuelca en la estructura tConfig
 int cargarConfiguracion(const char* ruta, tConfig* config) {
@@ -160,7 +158,7 @@ void enviarJugadorAlInicio(tListaDoble *ruta) {
         act = act->siguiente;
     } while (act != *ruta);
 }
-void jugarTurno(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, int vidas, int puntos, int *turnos_perdidos)
+void jugarTurno(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial, int vidas, int puntos, int *turnos_perdidos)
 {
     tMovimiento movActual;
     int posJugador = 1;
@@ -200,7 +198,8 @@ void jugarTurno(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, int 
             } while (eleccion != 'F' && eleccion != 'B');
             movActual.direccion = eleccion;
 
-        acolar(colaMovimientos, &movActual);
+        poner_en_cola(colaMovimientos, &movActual, sizeof(tMovimiento));
+        poner_en_cola(colaHistorial, &movActual, sizeof(tMovimiento)); // GUARDAMOS EL MOVIMIENTO EN EL HISTORIAL
     }
 
     // 3. Turno de los Bandidos (IA de Búsqueda del camino más corto)
@@ -221,7 +220,8 @@ void jugarTurno(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, int 
                    p->numero_posicion, movActual.casillas,
                    (movActual.direccion == 'F') ? "Adelante (F)" : "Atras (B)");
 
-            acolar(colaMovimientos, &movActual);
+            poner_en_cola(colaMovimientos, &movActual, sizeof(tMovimiento));
+
         }
         act = act->siguiente;
     } while (act != *ruta);
@@ -235,7 +235,7 @@ void jugarTurno(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, int 
 int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, int *vidas, int *puntos, int *turnos_perdidos, int *protegido) {
     tMovimiento mov;
 
-    while (desencolar(colaMovimientos, &mov)) {
+    while (sacar_de_cola(colaMovimientos, &mov, sizeof(tMovimiento))) {
         tNodo *origen = *ruta;
         tPosicion *posOrigen = NULL;
 
@@ -359,6 +359,30 @@ void mostrarMapa(tListaDoble *ruta) {
     } while (act != *ruta);
     printf("\n=============================================================================\n");
 }
+// --- REGISTRO DE MOVIMIENTOS ---
+// Recorre la cola sin desencolar: itera nodo a nodo desde frente hasta fondo
+void mostrarHistorial(tCola *historial)
+{
+    printf("\n========== HISTORIAL DE MOVIMIENTOS ==========\n");
+
+    if (historial->pri == NULL) {
+        printf("  (No se registro ningun movimiento)\n");
+        printf("==============================================\n");
+        return;
+    }
+
+    tNodoCola *actual = historial->pri;
+    int turno = 1;
+    while (actual != NULL) {
+        tMovimiento *m = (tMovimiento*)actual->info;
+        printf("  Turno %2d: %c%d\n", turno, m->direccion, m->casillas);
+        actual = actual->sig;
+        turno++;
+    }
+    printf("==============================================\n");
+    printf("  Total de turnos jugados: %d\n", turno - 1);
+    printf("==============================================\n");
+}
 // --- BUCLE PRINCIPAL DEL JUEGO ---
 void iniciarPartida(tConfig *config, tListaDoble *ruta) {
     int vidas = config->vidas_inicio;
@@ -367,13 +391,15 @@ void iniciarPartida(tConfig *config, tListaDoble *ruta) {
     int turnos_perdidos = 0;
     int protegido = 0;
     tCola colaMovimientos;
+    tCola colaHistorial; // NUEVO: Cola para guardar los movimientos del jugador
 
-    crearCola(&colaMovimientos);
+    crear_cola(&colaMovimientos);
+    crear_cola(&colaHistorial);
 
     printf("\n>>> INICIANDO TRAVESIA HACIA LA CIUDAD REFUGIO <<<\n");
 
     while (jugando == 1 && vidas > 0) {
-        jugarTurno(config, ruta, &colaMovimientos, vidas, puntos, &turnos_perdidos);
+        jugarTurno(config, ruta, &colaMovimientos, &colaHistorial, vidas, puntos, &turnos_perdidos);
 
         printf("\nResolviendo movimientos...\n");
         jugando = ejecutarMovimientos(ruta, &colaMovimientos, &vidas, &puntos, &turnos_perdidos, &protegido);
@@ -385,7 +411,11 @@ void iniciarPartida(tConfig *config, tListaDoble *ruta) {
     if (vidas <= 0) {
         printf("\nHas perdido todas tus vidas. El desierto te ha consumido.\n");
     }
-
+    // Mostrar historial de decisiones del jugador al finalizar
+    mostrarHistorial(&colaHistorial);
+    // Liberar memoria del historial
+    vaciar_cola(&colaHistorial);
+    vaciar_cola(&colaMovimientos);
     vaciarLista(ruta);
 }
 

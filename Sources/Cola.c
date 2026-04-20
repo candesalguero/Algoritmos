@@ -1,44 +1,86 @@
-#include "../Headers/funciones.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "../Headers/Cola.h"
 
-// --- PRIMITIVAS DE LA COLA ---
-void crearCola(tCola *pc) {
-    pc->frente = NULL;
-    pc->fondo = NULL;
+void crear_cola(tCola * pc)
+{
+    pc->pri = pc->ult = NULL;
 }
 
-int acolar(tCola *pc, const tMovimiento *d) {
-    tNodoCola *nuevo = (tNodoCola*)malloc(sizeof(tNodoCola));
-    if(!nuevo) return 0; // Sin memoria
-
-    nuevo->info = *d;
-    nuevo->sig = NULL;
-
-    if(pc->fondo == NULL) {
-        pc->frente = nuevo;
-    } else {
-        pc->fondo->sig = nuevo;
+int poner_en_cola(tCola * pc, const void * pd, unsigned tam)
+{
+    tNodoCola * nue = (tNodoCola *) malloc(sizeof(tNodoCola));
+    if(!nue)
+    {
+        return 0; ///COLA_LLENA
     }
-    pc->fondo = nuevo;
+    nue->info = malloc(tam);
+    if(!nue->info)
+    {
+        free(nue);
+        return 0; ///COLA_LLENA
+    }
+    nue->tamInfo = tam;
+    memcpy(nue->info, pd, tam);
+    nue->sig = NULL;
+    if(pc->ult)
+    {
+        pc->ult->sig = nue;
+    }
+    else
+    {
+        pc->pri = nue;
+    }
+    pc->ult = nue;
+    return 1; ///OK
+}
+
+int sacar_de_cola(tCola * pc, void * pd, unsigned tam)
+{
+    tNodoCola * elim = pc->pri;
+    if(!elim)
+    {
+        return 0; ///COLA_VACIA
+    }
+    memcpy(pd, elim->info, MINIMO(tam, elim->tamInfo));
+    pc->pri = elim->sig;
+    if(!pc->pri)
+    {
+        pc->ult = NULL;
+    }
+    free(elim->info);
+    free(elim);
+    return 1; ///OK
+}
+
+int frente_de_cola(const tCola * pc, void * dato, unsigned tam)
+{
+    if(pc->pri == NULL)
+        return 0;
+    memcpy(dato, pc->pri->info, MINIMO((pc->pri->tamInfo), tam));
     return 1;
 }
 
-int desencolar(tCola *pc, tMovimiento *d) {
-    if(pc->frente == NULL) return 0; // Cola vacía
-
-    tNodoCola *aux = pc->frente;
-    *d = aux->info;
-
-    pc->frente = aux->sig;
-    if(pc->frente == NULL) {
-        pc->fondo = NULL;
-    }
+int cola_llena(const tCola * pc, unsigned tam)
+{
+    tNodoCola *aux= (tNodoCola *) malloc(sizeof(tNodoCola));
+    void *info= malloc(tam);
     free(aux);
-    return 1;
+    free(info);
+    return aux==NULL || info==NULL;
 }
 
-int colaVacia(const tCola *pc) {
-    return pc->frente == NULL;
+int cola_vacia(const tCola * pc)
+{
+    return !pc->pri;
+}
+
+void vaciar_cola(tCola * pc)
+{
+    while(pc->pri)
+    {
+        tNodoCola *aux=pc->pri;
+        pc->pri=aux->sig;
+        free(aux->info);
+        free(aux);
+    }
+    pc->ult=NULL;
 }
