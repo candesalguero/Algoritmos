@@ -35,15 +35,18 @@ typedef struct {
 
 
 // Funciones del Motor del Juego
-void jugarTurno(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial, int vidas, int puntos, int *turnos_perdidos);
-int tirarDado();
-void enviarJugadorAlInicio(tListaDoble *ruta);
-char obtenerDireccionBandido(int posB, int posJ, int totalPos);
-void mostrarMapa(tListaDoble *ruta);
-void mostrarHistorial(tCola *historial);
-int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, int *vidas, int *puntos, int *turnos_perdidos, int *protegido);
-void iniciarPartida(tConfig *config, tListaDoble *ruta);
 int cargarConfiguracion(const char* ruta, tConfig* config);
 void generarEscenario(tConfig* config, tListaDoble* ruta_desierto);
+int tirarDado();
+char obtenerDireccionBandido(int posB, int posJ, int totalPos);
+void enviarJugadorAlInicio(tListaDoble *ruta);
+int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial, int vidas, int puntos, int *turnos_perdidos, int protegido);
+int obtenerPosJugador(tListaDoble *ruta);
+void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos);
+int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, int *vidas, int *puntos, int *turnos_perdidos, int *protegido);
+void mostrarMapa(tListaDoble *ruta, int protegido);
+void mostrarHistorial(tCola *historial);
+void iniciarPartida(tConfig *config, tListaDoble *ruta);
 void mostrarMenu();
+
 #endif // FUNCIONES_H
