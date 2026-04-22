@@ -11,11 +11,11 @@ Caravana_del_Desierto/
 ├── Sources/
 │   ├── main.c          <- punto de entrada, inicialización y menú
 │   ├── funciones.c     <- desarrollo de funciones generales 
-│   └── pila_din.c      <- pila dinámica para historial de movimientos (futuro)
+│   └── cola.c          <- desarrollo de primitivas TDA Cola
 ├── Headers/
 │   ├── config.h        <- structs, constantes y defines compartidos
 │   ├── funciones.h     <- prototipos de funciones generales
-│   └── pila_din.h      <- prototipos de la pila dinámica
+│   └── colan.h         <- prototipos del TDA Cola
 └── config.txt          <- parámetros de configuración del juego
 ```
 
