@@ -4,14 +4,14 @@
 typedef struct sNodo
 {
     void *info;
-    unsigned *tamInfo;
+    unsigned tamInfo;
     struct sNodo *sig;
 }tNodo;
 
 typedef struct
 {
     tNodo *pri;
-          *ult;
+    tNodo *ult;
 }tCola;
 
 void crearCola(tCola *p);

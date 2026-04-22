@@ -1,6 +1,6 @@
 #include "config.h"
 #include "funciones.h"
-#include "cola dinamica.h"
+#include "cola_dinamica.h"
 #include <stdio.h>
 #include<stdlib.h>
 #include<string.h>

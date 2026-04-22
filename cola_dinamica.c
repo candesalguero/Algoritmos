@@ -1,4 +1,4 @@
-#include "cola dinamica.h"
+#include "cola_dinamica.h"
 #include <stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -12,7 +12,7 @@ void crearCola(tCola *p)
 
 int colaLlena(const tCola *p, unsigned cantBytes)
 {
-    tNodo *aux = (tNodo *)malloc(sizeof(tNOdo));
+    tNodo *aux = (tNodo *)malloc(sizeof(tNodo));
     void *info = malloc(cantBytes);
     free(aux);
     free(info);
