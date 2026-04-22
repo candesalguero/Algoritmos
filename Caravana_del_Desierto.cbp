@@ -31,6 +31,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="cola dinamica.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="cola dinamica.h" />
 		<Unit filename="config.h" />
 		<Unit filename="funciones.c">
 			<Option compilerVar="CC" />
@@ -39,10 +43,6 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="pila_din.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="pila_din.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
