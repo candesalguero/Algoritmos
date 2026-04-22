@@ -15,7 +15,7 @@ Caravana_del_Desierto/
 ├── Headers/
 │   ├── config.h        <- structs, constantes y defines compartidos
 │   ├── funciones.h     <- prototipos de funciones generales
-│   └── colan.h         <- prototipos del TDA Cola
+│   └── cola.h         <- prototipos del TDA Cola
 └── config.txt          <- parámetros de configuración del juego
 ```
 
