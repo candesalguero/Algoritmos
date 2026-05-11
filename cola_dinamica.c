@@ -1,8 +1,4 @@
 #include "cola_dinamica.h"
-#include <stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#define minimo( X , Y)  ((X) <= (Y) ? (X) : (Y))
 
 void crearCola(tCola *p)
 {
@@ -12,42 +8,39 @@ void crearCola(tCola *p)
 
 int colaLlena(const tCola *p, unsigned cantBytes)
 {
-    tNodo *aux = (tNodo *)malloc(sizeof(tNodo));
-    void *info = malloc(cantBytes);
-    free(aux);
-    free(info);
-    return aux == NULL || info == NULL;
+    return DISPONIBLE;
 }
 
-int ponerEnCola(tCola *p, const void *d, unsigned cantBytes)
+int ponerEnCola(tCola *p, const void *elem, unsigned cantBytes)
 {
     tNodo *nue = (tNodo *) malloc(sizeof(tNodo));
 
     if(nue == NULL || (nue->info = malloc(cantBytes)) == NULL)
     {
         free(nue);
-        return 0; ///HAY QUE CAMBIARLOS POR MENSAJES
+        return SIN_MEM;
     }
 
-    memcpy(nue->info, d, cantBytes);
-    nue->tamInfo = cantBytes;
+    memcpy(nue->info, elem, cantBytes);
+    nue->tamElem = cantBytes;
     nue->sig = NULL;
+
     if(p->ult)
         p->ult->sig = nue;
     else
         p->pri = nue;
     p->ult = nue;
 
-    return 1;
+    return TODO_OK;
 }
 
-int verPrimeroCola(const tCola *p, void *d, unsigned cantBytes)
+int verPrimeroCola(const tCola *p, void *elem, unsigned cantBytes)
 {
     if(p->pri == NULL)
-        return 0;
+        return COLA_VACIA;
 
-    memcpy(d, p->pri->info, minimo(cantBytes, p->pri->tamInfo));
-    return 1;
+    memcpy(elem, p->pri->info, MIN(cantBytes, p->pri->tamElem));
+    return TODO_OK;
 }
 
 int colaVacia(const tCola *p)
@@ -55,18 +48,21 @@ int colaVacia(const tCola *p)
     return p->pri == NULL;
 }
 
-int sacarDeCola(tCola *p, void *d, unsigned cantBytes)
+int sacarDeCola(tCola *p, void *elem, unsigned cantBytes)
 {
     tNodo *aux = p->pri;
     if(aux == NULL)
-        return 0;
+        return COLA_VACIA;
+
     p->pri = aux->sig;
-    memcpy(d, aux->info, minimo(aux->tamInfo, cantBytes));
+    memcpy(elem, aux->info, MIN(aux->tamElem, cantBytes));
     free(aux->info);
     free(aux);
+
     if(p->pri == NULL)
         p->ult = NULL;
-    return 1;
+
+    return TODO_OK;
 }
 
 void vaciarCola(tCola *p)

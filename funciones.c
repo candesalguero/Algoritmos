@@ -1,7 +1,4 @@
 #include "funciones.h"
-#include <stdio.h>
-#include<stdlib.h>
-#include<string.h>
 
 int leerConfig(tConfiguracion* config)
 {
@@ -26,7 +23,7 @@ int leerConfig(tConfiguracion* config)
         else if (strcmp(clave, "maximo_tormentas")    == 0) config->maximo_tormentas    = valor;
     }
     fclose(pf);
-    return 1;
+    return TODO_OK;
 }
 
 void Menu()
