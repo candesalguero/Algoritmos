@@ -1,7 +1,7 @@
 #ifndef LISTA_HEADER_H_INCLUDED
 #define LISTA_HEADER_H_INCLUDED
 
-#include "config.h"
+#include "../../configEstructuras.h"
 
 void CrearLista(tLista *lista);
 int InsertarAlPrincipio(tLista *lista, const void*elem, size_t tamElem);

@@ -1,7 +1,8 @@
 #ifndef COLA_DINAMICA_H_INCLUDED
 #define COLA_DINAMICA_H_INCLUDED
 
-#include "config.h"
+
+#include "../../configEstructuras.h"
 
 void crearCola(tCola *p);
 int colaLlena(const tCola *p, unsigned cantBytes);

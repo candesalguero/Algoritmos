@@ -24,11 +24,7 @@
 #define TODO_OK 1
 #define DISPONIBLE 0
 #define ERR_ARCH -1
-#define SIN_MEM -2
-#define LISTA_VACIA -3
-#define NOT_FOUND_ELEM -4
-#define COLA_LLENA -5
-#define COLA_VACIA -6
+
 
 // TIPOS DE CELDAS///////////////////////////
 #define TIPO_VACIO    '.'
@@ -52,20 +48,15 @@ typedef struct {
     int maximo_tormentas;
 } tConfiguracion;
 
-typedef struct sNodo
-{
-    void *info;
-    size_t tamElem;
-    struct sNodo *sig;
-}tNodo;
-
 typedef struct
 {
-    tNodo *pri;
-    tNodo *ult;
-}tCola;
+    int id_jugador;
+    char nombre[10];
+    int puntos;
+    int mov;
+}tRankig;
 
-typedef tNodo *tLista;
+
 
 typedef int(*tCmp)(const void*, const void*);//funcion de comparacion
 typedef void(*tAccion)(void*, const void*);

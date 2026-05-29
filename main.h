@@ -3,8 +3,8 @@
 
 #include "config.h"
 #include "funciones.h"
-#include "cola_dinamica.h"
-#include "Lista_Header.h"
+#include "EstructurasDatos/TDA_Cola/cola_dinamica.h"
+#include "EstructurasDatos/TDA_Lista/Lista_Header.h"
 
 
 #endif // MAIN_H_INCLUDED

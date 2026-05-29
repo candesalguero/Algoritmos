@@ -31,15 +31,16 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="Lista_Header.h" />
-		<Unit filename="Lista_funciones.c">
+		<Unit filename="EstructurasDatos/TDA_Cola/cola_dinamica.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="cola_dinamica.c">
+		<Unit filename="EstructurasDatos/TDA_Cola/cola_dinamica.h" />
+		<Unit filename="EstructurasDatos/TDA_Lista/Lista_Header.h" />
+		<Unit filename="EstructurasDatos/TDA_Lista/Lista_funciones.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="cola_dinamica.h" />
 		<Unit filename="config.h" />
+		<Unit filename="configEstructuras.h" />
 		<Unit filename="funciones.c">
 			<Option compilerVar="CC" />
 		</Unit>

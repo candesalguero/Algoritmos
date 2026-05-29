@@ -95,7 +95,6 @@ int MostrarLista(tLista *lista, void Mostrar(const void*))
     if(!*lista)
         return LISTA_VACIA;
 
-    //memcpy(elem,(*lista)->elem,MIN(tamElem, (*lista)->tamElem));
     while(*lista)
     {
         Mostrar( (*lista)->info);
