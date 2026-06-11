@@ -77,7 +77,7 @@ int InsertarOrdenado(tLista *lista, const void *elem, size_t tamElem,tCmp cmp, i
 
     if(!conDup && *lista && cmp(aux->info,(*lista)->info) == 0)
     {
-        accion((*lista)->info, elem);
+        accion((*lista)->info, elem, NULL);
         free(aux->info);
         free(aux);
     }

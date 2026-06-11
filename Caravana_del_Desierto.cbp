@@ -31,6 +31,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="EstructurasDatos/TDA_Arbol/Arbol_Funciones.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="EstructurasDatos/TDA_Arbol/Arbol_Header.h" />
 		<Unit filename="EstructurasDatos/TDA_Cola/cola_dinamica.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -40,7 +44,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="config.h" />
-		<Unit filename="configEstructuras.h" />
 		<Unit filename="funciones.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -1,8 +1,23 @@
 #ifndef COLA_DINAMICA_H_INCLUDED
 #define COLA_DINAMICA_H_INCLUDED
 
+#define COLA_LLENA -5
+#define COLA_VACIA -6
 
-#include "../../configEstructuras.h"
+#include "../../config.h"
+
+typedef struct sNodoC
+{
+    void *info;
+    size_t tamElem;
+    struct sNodoC *sig, *ant;
+}tNodoC;
+
+typedef struct
+{
+    tNodoC *pri;
+    tNodoC *ult;
+}tCola;
 
 void crearCola(tCola *p);
 int colaLlena(const tCola *p, unsigned cantBytes);

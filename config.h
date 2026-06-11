@@ -6,9 +6,13 @@
 #include <string.h>
 #include <time.h>
 
+#include "EstructurasDatos/TDA_Arbol/Arbol_Header.h"
+#include "EstructurasDatos/TDA_Cola/cola_dinamica.h"
+#include "EstructurasDatos/TDA_Lista/Lista_Header.h"
+
 // CONSTANTES GENERALES //////////////////////
 #define MIN(x,y) x > y ? y : x
-#define TAM_PILA 500
+#define MAX(x,y) x < y ? y : x
 #define MAX_NOMBRE 50
 #define MAX_MOVIMIENTO 10
 
@@ -24,6 +28,9 @@
 #define TODO_OK 1
 #define DISPONIBLE 0
 #define ERR_ARCH -1
+#define SIN_MEM -2
+#define NOT_FOUND_ELEM -3
+#define ELEM_REPETIDO -4
 
 
 // TIPOS DE CELDAS///////////////////////////
@@ -50,17 +57,34 @@ typedef struct {
 
 typedef struct
 {
-    int id_jugador;
-    char nombre[10];
-    int puntos;
-    int mov;
+    char nickname[20];
+    unsigned puntos_totales;
+    unsigned mov_totales;
 }tRankig;
 
+typedef struct
+{
+    unsigned nro_partida;
+    char nickname[20];
+    unsigned puntos;
+    unsigned cant_movimientos;
+}tPartida;
 
+typedef struct
+{
+    char nickname[20];
+    unsigned partidas_jugadas;
+}tJugador;
+
+typedef struct
+{
+    size_t registro;
+    char nickname[20];
+}tJugadorIdx;
 
 typedef int(*tCmp)(const void*, const void*);//funcion de comparacion
-typedef void(*tAccion)(void*, const void*);
-typedef void(tMostrar)(const void*);
+typedef void(*tAccion)(void*, const void*, const void*);
+typedef void(*tMostrar)(const void*);
 
 
 
