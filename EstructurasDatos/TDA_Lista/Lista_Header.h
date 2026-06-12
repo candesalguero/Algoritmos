@@ -1,7 +1,21 @@
 #ifndef LISTA_HEADER_H_INCLUDED
 #define LISTA_HEADER_H_INCLUDED
 
-#include "config.h"
+#include "../../config.h"
+#define LISTA_VACIA -13
+
+typedef struct sNodo
+{
+    void *info;
+    size_t tamElem;
+    struct sNodo *sig;
+}tNodo;
+
+typedef tNodo *tLista;
+
+typedef int(*tCmp)(const void*, const void*);//funcion de comparacion
+typedef void(*tAccion)(void*, const void*, const void*);
+typedef void(*tMostrar)(const void*);
 
 void CrearLista(tLista *lista);
 int InsertarAlPrincipio(tLista *lista, const void*elem, size_t tamElem);

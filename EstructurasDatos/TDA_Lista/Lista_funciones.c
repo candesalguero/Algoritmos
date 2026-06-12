@@ -77,7 +77,7 @@ int InsertarOrdenado(tLista *lista, const void *elem, size_t tamElem,tCmp cmp, i
 
     if(!conDup && *lista && cmp(aux->info,(*lista)->info) == 0)
     {
-        accion((*lista)->info, elem);
+        accion((*lista)->info, elem, NULL);
         free(aux->info);
         free(aux);
     }
@@ -95,7 +95,6 @@ int MostrarLista(tLista *lista, void Mostrar(const void*))
     if(!*lista)
         return LISTA_VACIA;
 
-    //memcpy(elem,(*lista)->elem,MIN(tamElem, (*lista)->tamElem));
     while(*lista)
     {
         Mostrar( (*lista)->info);
