@@ -5,7 +5,7 @@ void mostrarPartida(const tPartida partidas[]);
 
 int main()
 {
-    /*int cantJug = 0, cantPart = 0;
+    int cantJug = 0, cantPart = 0;
 
     tJugador jugadores[] =
     {
@@ -55,7 +55,7 @@ int main()
            "Nro", "Nickname", "Puntos", "Movimientos");
 
     if(!recorrerArchivoPartidas(ARCHIVO_PARTIDAS, mostrarPartida))
-        puts("\nNo se pudo abrir el archivo partidas.dat\n");*/ ///Creacion de lote de pruebas
+        puts("\nNo se pudo abrir el archivo partidas.dat\n"); ///Creacion de lote de pruebas
 
     tConfiguracion config;
 
@@ -70,7 +70,7 @@ int main()
     return 0;
 }
 
-/*void mostrarJugador(const tJugador *jugador)
+void mostrarJugador(const tJugador *jugador)
 {
     printf("%-20s %-12s %-10d\n",
            jugador->nickname,
@@ -85,4 +85,4 @@ void mostrarPartida(const tPartida *partida)
            partida->nickname,
            partida->puntos,
            partida->cantMovimientos);
-}*/
+}

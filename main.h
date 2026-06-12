@@ -6,6 +6,7 @@
 #include "cola_dinamica.h"
 #include "Lista_Header.h"
 #include "lotes_de_prueba.h"
+#include "ranking.h"
 
 #include <stdio.h>
 

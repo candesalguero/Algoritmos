@@ -52,6 +52,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="main.h" />
+		<Unit filename="ranking.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ranking.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

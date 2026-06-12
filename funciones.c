@@ -1,4 +1,5 @@
 #include "funciones.h"
+#include "ranking.h"
 
 int leerConfig(tConfiguracion* config)
 {
@@ -47,7 +48,7 @@ void Menu()
             jugarPartida();
             break;
         case 2:
-            //mostrarRanking();
+            mostrarRanking();
             break;
         case 3:
             printf("\nSaliendo...\n\n");
