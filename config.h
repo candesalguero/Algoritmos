@@ -20,6 +20,7 @@
 #define ARCHIVO_INDICE "indice.dat"
 
 
+
 // ETIQUETAS DE RETURN //////////////////
 #define TODO_OK 1
 #define DISPONIBLE 0
