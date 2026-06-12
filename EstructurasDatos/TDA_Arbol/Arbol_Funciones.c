@@ -7,7 +7,7 @@ void Arbol_Crear(tArbol *arbol)
 int Arbol_Insertar(tArbol *arbol, const void* elem, size_t tamElem, tCmp cmp)
 {
     int resultado = 0;
-    while(*arbol)//recorremos hasta el final del arbol
+    while(*arbol)/*/recorremos hasta el final del arbol*/
     {
         resultado = cmp(elem, (*arbol)->info);
         if(resultado < 0  )
@@ -16,10 +16,10 @@ int Arbol_Insertar(tArbol *arbol, const void* elem, size_t tamElem, tCmp cmp)
         else if(resultado > 0  )
             arbol = &(*arbol)->der;
 
-        else//si es 0, significa que está repetido
+        else/*/si es 0, significa que está repetido*/
             return ELEM_REPETIDO;
     }
-    //*arbol ya es nulo, si falla el malloc, no se pierde info
+    /* arbol ya es nulo, si falla el malloc, no se pierde info*/
     (*arbol) = malloc(sizeof(tNodoArbol));
     if(!(*arbol))
         return SIN_MEM;
@@ -37,12 +37,32 @@ int Arbol_Insertar(tArbol *arbol, const void* elem, size_t tamElem, tCmp cmp)
     return TODO_OK;
 }
 
+int Arbol_BusquedaBinaria(const tArbol *arbol, const void *aBuscar, void *encontrado, size_t tamEncontrado, tCmp cmp)
+{
+    int res;
+    while(*arbol)
+    {
+        res = cmp(aBuscar, (*arbol)->info);
+        if(res < 0)
+            arbol = &(*arbol)->izq;
+        else if(res > 0)
+            arbol = &(*arbol)->der;
+        else
+        {
+            memcpy(encontrado, (*arbol)->info, MIN(tamEncontrado, (*arbol)->tamElem));
+            return TODO_OK;
+        }
+    }
+    return NOT_FOUND_ELEM;
+}
+
 int Arbol_ObtenerAltura(tArbol *arbol)
 {
+    int AlturaIzq, AlturaDer;
     if(!*arbol)
         return 0;
-    int AlturaIzq = Arbol_ObtenerAltura(&(*arbol)->izq);
-    int AlturaDer = Arbol_ObtenerAltura(&(*arbol)->der);
+    AlturaIzq = Arbol_ObtenerAltura(&(*arbol)->izq);
+    AlturaDer = Arbol_ObtenerAltura(&(*arbol)->der);
 
     return MAX(AlturaIzq, AlturaDer) +1;
 }
@@ -72,7 +92,7 @@ void Arbol_Destruir(tArbol *arbol)
 
     Arbol_Destruir(&(*arbol)->izq);
     Arbol_Destruir(&(*arbol)->der);
-    if(! (*arbol)->izq && !(*arbol)->der )//si es una hoja, la corto
+    if(! (*arbol)->izq && !(*arbol)->der )/*/si es una hoja, la corto*/
     {
         free((*arbol)->info);
         free(*arbol);
@@ -119,71 +139,88 @@ void _Arbol_GuardarArchPreOrden(const tArbol *arbol, FILE *pf)
 
 int Arbol_GenerarIndiceBalanceado(tArbol *arbolIdx, const char *arch, size_t tamElemOr, size_t tamElemIdx ,tAccion accion )
 {
-    FILE *pf = fopen(arch, "r+b");
+    FILE *pf ;
+    void *elemArch ;
+    int cantReg, resu;
+    int tope, base = 0;
+
+    pf = fopen(arch, "r+b");
+    elemArch = malloc (tamElemOr);
+
     if(!pf)
         return ERR_ARCH;
-    fseek(pf, 0,SEEK_END);
 
-    void * elemArch = malloc (tamElemOr);
     if(!elemArch)
     {
         fclose(pf);
         return SIN_MEM;
     }
-    int cantReg = (ftell(pf)/tamElemOr) - 1;//menos 1 para manejarnos con [0-regTot]
-    int tope = cantReg, base = 0;
-    //usamos envoltorio para la recursividad
-    _Arbol_InsertarBalanceado(arbolIdx,elemArch, tamElemOr,tamElemIdx,base,tope,pf,accion);
+    fseek(pf, 0,SEEK_END);
+    cantReg = (ftell(pf)/tamElemOr) - 1;/*/menos 1 para manejarnos con [0-regTot]*/
+    tope = cantReg;
+    /*/usamos envoltorio para la recursividad*/
+    resu = _Arbol_InsertarBalanceado(arbolIdx,elemArch, tamElemOr,tamElemIdx,base,tope,pf,accion);
 
     fclose(pf);
     free(elemArch);
-    return TODO_OK;
+
+    return resu;
 
 }
 
-void _Arbol_InsertarBalanceado(tArbol *arbol, void *elemArch ,size_t tamElemOr, size_t tamElemIdx ,int base, int tope, FILE *pf, tAccion CopiarIndice )
+int _Arbol_InsertarBalanceado(tArbol *arbol, void *elemArch ,size_t tamElemOr, size_t tamElemIdx ,int base, int tope, FILE *pf, tAccion CopiarIndice )
 {
-    if(base > tope)///condicion de fin
-        return;
-    int medio = (base + tope) / 2; //el medio es derivado
+    int medio, resu;
+    if(base > tope)/*//condicion de fin*/
+        return TODO_OK;
 
-    fseek(pf,tamElemOr * medio,SEEK_SET);///SEEK_SET porque es desde el principio
+    medio = (base + tope) / 2; /*/el medio es derivado*/
+    fseek(pf,tamElemOr * medio,SEEK_SET);/*SEEK_SET porque es desde el principio*/
     fread( elemArch, tamElemOr,1,pf );
     if(!*arbol)
     {
         *arbol = malloc(sizeof(tNodoArbol));
         if(!*arbol)
-            return ;
+            return SIN_MEM;
         (*arbol)->info = malloc(tamElemIdx);
         if(!(*arbol)->info)
         {
             free(*arbol);
-            return ;///falta el sinMem para manejo de errores
+            return SIN_MEM;
         }
         (*arbol)->tamElem = tamElemIdx;
         (*arbol)->izq = NULL;
         (*arbol)->der = NULL;
-        CopiarIndice((*arbol)->info, elemArch, &medio);//medio es el n° de registro
+        CopiarIndice((*arbol)->info, elemArch, &medio);/*medio es el n° de registro*/
     }
-    ///para anidar el SIN_MEM, tendría que poner return Inser... ???
-    _Arbol_InsertarBalanceado( &(*arbol)->izq, elemArch, tamElemOr, tamElemIdx, base, medio-1, pf, CopiarIndice);
 
-    _Arbol_InsertarBalanceado( &(*arbol)->der, elemArch, tamElemOr, tamElemIdx, medio+1, tope, pf, CopiarIndice);
+    resu = _Arbol_InsertarBalanceado( &(*arbol)->izq, elemArch, tamElemOr, tamElemIdx, base, medio-1, pf, CopiarIndice);
+    if (resu != TODO_OK)
+        return resu;
+    resu = _Arbol_InsertarBalanceado( &(*arbol)->der, elemArch, tamElemOr, tamElemIdx, medio+1, tope, pf, CopiarIndice);
+
+    if(resu != TODO_OK)
+        return resu;
+
+    return TODO_OK;
 }
 
 int Arbol_CargarDesdeArchivo(tArbol *arbol, const char *arch, size_t tamElem ,tCmp cmp)
 {
-    FILE *pf = fopen(arch,"rb");
+    FILE *pf;
+    void *elemArch;
+    int resu;
+
+    pf  = fopen(arch,"rb");
+    elemArch = malloc(tamElem);
     if(!pf)
         return ERR_ARCH;
-    void *elemArch = malloc(tamElem);
     if(!elemArch)
     {
         fclose(pf);
         return SIN_MEM;
     }
 
-    int resu;
     while(fread(elemArch,tamElem,1,pf))
     {
         resu = Arbol_Insertar(arbol,elemArch,tamElem,cmp);
@@ -210,18 +247,18 @@ int Arbol_EliminarNodo(tArbol *arbol, const void *aElim, void *elem, size_t tamE
             arbol = &(*arbol)->izq;
         else
         {
-            //nos tenemos que fijar si es raiz o hoja
-            if( !(*arbol)->izq && !(*arbol)->der )//SI ES HOJA
+            /*/nos tenemos que fijar si es raiz o hoja*/
+            if( !(*arbol)->izq && !(*arbol)->der )/*/SI ES HOJA*/
             {
                 memcpy(elem, (*arbol)->info, MIN(tamElem, (*arbol)->tamElem));
                 _Arbol_EliminarHoja(arbol);
                 return TODO_OK;
             }
 
-            else //es RAIZ
+            else /*/es RAIZ*/
             {
                 memcpy(elem, (*arbol)->info, MIN(tamElem, (*arbol)->tamElem));
-                _Arbol_EliminarRaiz(arbol);//aca busco el mayor de los menores
+                _Arbol_EliminarRaiz(arbol);/*/aca busco el mayor de los menores*/
                 return TODO_OK;
             }
         }
@@ -233,7 +270,7 @@ void _Arbol_EliminarHoja(tArbol *arbol)
 {
     free((*arbol)->info);
     free(*arbol);
-    *arbol = NULL;///SIEMPRE QUE BORRO, LO PONGO EN NULL
+    *arbol = NULL;/*//SIEMPRE QUE BORRO, LO PONGO EN NULL*/
 }
 
 void _Arbol_EliminarRaiz(tArbol *arbol)
@@ -247,13 +284,13 @@ void _Arbol_EliminarRaiz(tArbol *arbol)
 
     if(AlturaIzq >= AlturaDer)
     {
-        aRemplazar = _Arbol_BuscarMayorClave(&(*arbol)->izq);//ya tenemos al MA ME
+        aRemplazar = _Arbol_BuscarMayorClave(&(*arbol)->izq);/*/ya tenemos al MA ME*/
         elim = *aRemplazar;
         *aRemplazar = elim->izq;
     }
     else
     {
-        aRemplazar =_Arbol_BuscarMenorClave(&(*arbol)->der);//ya tenemos al MENOR MAYOR
+        aRemplazar =_Arbol_BuscarMenorClave(&(*arbol)->der);/*/ya tenemos al MENOR MAYOR*/
         elim = *aRemplazar;
         *aRemplazar = elim->der;
     }

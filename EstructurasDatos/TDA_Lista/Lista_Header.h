@@ -13,10 +13,6 @@ typedef struct sNodo
 
 typedef tNodo *tLista;
 
-typedef int(*tCmp)(const void*, const void*);//funcion de comparacion
-typedef void(*tAccion)(void*, const void*, const void*);
-typedef void(*tMostrar)(const void*);
-
 void CrearLista(tLista *lista);
 int InsertarAlPrincipio(tLista *lista, const void*elem, size_t tamElem);
 int InsertarAlFinal(tLista *lista, const void *elem, size_t tamElem);
@@ -25,4 +21,4 @@ int MostrarLista(tLista *lista, tMostrar mostrar);
 int EliminarPorClaveOrdenada(tLista *lista, const void* clave, void* elem, size_t tamElem ,tCmp cmp);
 int VaciarLista(tLista *lista);
 void OrdenarLista(tLista *lista, tCmp cmp);
-#endif // LISTA_HEADER_H_INCLUDED
+#endif /* LISTA_HEADER_H_INCLUDED*/

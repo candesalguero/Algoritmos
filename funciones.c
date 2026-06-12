@@ -9,7 +9,7 @@ int leerConfig(tConfiguracion* config, const char *arch)
     if(!pf)
         return ERR_ARCH;
 
-    while(fscanf(pf, "%49[^=]=%d\n", clave, &valor) == 2) //49 es el maximo de caracteres a leer si no encontro el '='
+    while(fscanf(pf, "%49[^=]=%d\n", clave, &valor) == 2) /*/49 es el maximo de caracteres a leer si no encontro el '='*/
     {
         if(strcmp(clave, "cantidad_posiciones")       == 0)
             config->cantidad_posiciones = valor;

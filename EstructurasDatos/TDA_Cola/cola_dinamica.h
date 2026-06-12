@@ -27,4 +27,4 @@ int colaVacia(const tCola *p);
 int sacarDeCola(tCola *p, void *elem, unsigned cantBytes);
 void vaciarCola(tCola *p);
 
-#endif // COLA_DINAMICA_H_INCLUDED
+#endif /*/ COLA_DINAMICA_H_INCLUDED*/

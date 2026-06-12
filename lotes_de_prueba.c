@@ -13,10 +13,14 @@ int GuardarArchivo(const char *arch, const void *vec, size_t tamElem,size_t cant
 
 int MostrarArchivo(const char *arch, size_t tamElem, tMostrar mostrar)
 {
-    FILE *pf = fopen(arch, "rb");
+    FILE *pf ;
+    void *elem ;
+
+    pf = fopen(arch, "rb");
+    elem = malloc(tamElem);
+
     if(!pf)
         return ERR_ARCH;
-    void *elem = malloc(tamElem);
     if(!elem)
     {
         fclose(pf);

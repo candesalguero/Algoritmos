@@ -43,12 +43,12 @@ int InsertarAlFinal(tLista *lista, const void *elem, size_t tamElem)
     nue->sig = NULL;
     if(*lista)
     {
-        while( (*lista)->sig )//si sig es NULL, entonces estoy en el ultimo
+        while( (*lista)->sig )/*/si sig es NULL, entonces estoy en el ultimo*/
             lista = &(*lista)->sig;
 
-        (*lista)->sig = nue;//le digo al ult que lo sigue alguien
-        lista = &(*lista)->sig;//me muevo a la DIRECCION DE MEMORIA del nuevo que voy a poner
-        *lista = nue;//lo pongo
+        (*lista)->sig = nue;/*/le digo al ult que lo sigue alguien*/
+        lista = &(*lista)->sig;/*/me muevo a la DIRECCION DE MEMORIA del nuevo que voy a poner*/
+        *lista = nue;/*/lo pongo*/
     }
     else
         *lista = nue;
@@ -115,7 +115,7 @@ int EliminarPorClaveOrdenada(tLista *lista, const void *clave, void* elem, size_
     }
 
     if(!*lista)
-        return NOT_FOUND_ELEM;//no lo encontro
+        return NOT_FOUND_ELEM;/*/no lo encontro*/
     else
     {
         elim = *lista;

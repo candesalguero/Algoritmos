@@ -11,4 +11,4 @@ int MostrarArchivo(const char *arch, size_t tamElem, tMostrar mostrar);
 int guardarJugadoresArchivo(const char *nombreArchivo, const tJugador jugadores[], int cant);
 int guardarPartidasArchivo(const char *nombreArchivo, const tPartida partidas[], int cant);
 void mostrarPartida(const void *part);
-#endif // MAIN_H_INCLUDED
+#endif /*/ MAIN_H_INCLUDED*/

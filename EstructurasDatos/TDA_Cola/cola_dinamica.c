@@ -5,12 +5,13 @@ void crearCola(tCola *p)
     p->pri = NULL;
     p->ult = NULL;
 }
-
+/*
 int colaLlena(const tCola *p, unsigned cantBytes)
 {
+
     return DISPONIBLE;
 }
-
+*/
 int ponerEnCola(tCola *p, const void *elem, unsigned cantBytes)
 {
     tNodoC *nue = (tNodoC *) malloc(sizeof(tNodoC));

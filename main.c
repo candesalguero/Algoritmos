@@ -39,7 +39,7 @@ int main()
         {14, "MaxPower", 3, 17},
         {15, "LilaPlay", 2, 20}
     };
-       ///Creacion de lote de pruebas
+       /**Creacion de lote de pruebas*/
 
     tConfiguracion config;
     tArbol idxJugador;
@@ -53,15 +53,16 @@ int main()
 
     MostrarArchivo(ARCHIVO_JUGADORES, sizeof(tJugador),mostrarJugador);
     MostrarArchivo(ARCHIVO_PARTIDAS, sizeof(tPartida), mostrarPartida);
+
     Arbol_Crear(&idxJugador);
 
 
-    srand(time(NULL)); //srand le pasa la hora actual como punto de arranque para que el resultado del dado (rand) no siga siempre la misma secuencia
+    srand(time(NULL)); /*/srand le pasa la hora actual como punto de arranque para que el resultado del dado (rand) no siga siempre la misma secuencia*/
     errores = leerConfig(&config,ARCHIVO_CONFIG);
     if (errores != TODO_OK)
     {
         ManejoErrores(errores,ARCHIVO_CONFIG);
-        return errores; // Terminamos si no hay archivo de configuración
+        return errores; /*/ Terminamos si no hay archivo de configuración*/
     }
 
     do
@@ -80,7 +81,7 @@ int main()
                 break;
             case 2:
                 {
-                    //mostrarRanking();
+                    /*/mostrarRanking();*/
                 }
                 break;
             case 3:

@@ -6,17 +6,14 @@
 #include <string.h>
 #include <time.h>
 
-#include "EstructurasDatos/TDA_Arbol/Arbol_Header.h"
-#include "EstructurasDatos/TDA_Cola/cola_dinamica.h"
-#include "EstructurasDatos/TDA_Lista/Lista_Header.h"
 
-// CONSTANTES GENERALES //////////////////////
+/*/ CONSTANTES GENERALES /////////////////////*/
 #define MIN(x,y) x > y ? y : x
 #define MAX(x,y) x < y ? y : x
 #define MAX_NOMBRE 50
 #define MAX_MOVIMIENTO 10
 
-// ARCHIVOS ////////////////////////////////
+/*/ ARCHIVOS ///////////////////////////////*/
 #define ARCHIVO_CONFIG "config.txt"
 #define ARCHIVO_TABLERO "caravana.txt"
 #define ARCHIVO_JUGADORES "jugadores.dat"
@@ -25,7 +22,7 @@
 
 
 
-// ETIQUETAS DE RETURN //////////////////
+/*/ ETIQUETAS DE RETURN /////////////////*/
 #define TODO_OK 1
 #define DISPONIBLE 0
 #define ERR_ARCH -1
@@ -34,7 +31,7 @@
 #define ELEM_REPETIDO -4
 
 
-// TIPOS DE CELDAS///////////////////////////
+/*/ TIPOS DE CELDAS//////////////////////////*/
 #define TIPO_VACIO    '.'
 #define TIPO_INICIO   'I'
 #define TIPO_SALIDA   'S'
@@ -45,7 +42,16 @@
 #define TIPO_BANDIDO  'B'
 
 
-// ESTRUCTURAS /////////////////////////
+typedef int(*tCmp)(const void*, const void*);
+typedef void(*tAccion)(void*, const void*, const void*);
+typedef void(*tMostrar)(const void*);
+
+/** se colocan acá para que cuando el compilador entre a los headers, conozca las funciones de tCmp, etc.*/
+#include "EstructurasDatos/TDA_Arbol/Arbol_Header.h"
+#include "EstructurasDatos/TDA_Cola/cola_dinamica.h"
+#include "EstructurasDatos/TDA_Lista/Lista_Header.h"
+
+/*/ ESTRUCTURAS ////////////////////////*/
 typedef struct {
     int cantidad_posiciones;
     int vidas_inicio;
@@ -84,10 +90,7 @@ typedef struct
     char nickname[20];
 }tJugadorIdx;
 
-typedef int(*tCmp)(const void*, const void*);//funcion de comparacion
-typedef void(*tAccion)(void*, const void*, const void*);
-typedef void(*tMostrar)(const void*);
 
 
 
-#endif // CONFIG_H_INCLUDED
+#endif /*/ CONFIG_H_INCLUDED*/

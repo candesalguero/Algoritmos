@@ -128,13 +128,13 @@
 	"lotes_de_prueba.h"
 	<stdio.h>
 
-1781300403 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_funciones.c
+1781305736 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_funciones.c
 	"Arbol_Header.h"
 
-1781300403 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_header.h
+1781306370 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_header.h
 	"../../config.h"
 
-1781300403 c:\users\user\downloads\tpalgoritmos\algoritmos\config.h
+1781306370 c:\users\user\downloads\tpalgoritmos\algoritmos\config.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -143,37 +143,37 @@
 	"EstructurasDatos/TDA_Cola/cola_dinamica.h"
 	"EstructurasDatos/TDA_Lista/Lista_Header.h"
 
-1781300403 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_cola\cola_dinamica.h
+1781305660 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_cola\cola_dinamica.h
 	"../../config.h"
 
-1781300403 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_lista\lista_header.h
+1781306377 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_lista\lista_header.h
 	"../../config.h"
 
-1781300403 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_cola\cola_dinamica.c
+1781306655 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_cola\cola_dinamica.c
 	"cola_dinamica.h"
 
-1781300403 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_lista\lista_funciones.c
+1781305590 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_lista\lista_funciones.c
 	"Lista_Header.h"
 
-1781300403 source:c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.c
+1781305598 source:c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.c
 	"funciones.h"
 
-1781300403 c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.h
+1781305907 c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.h
 	"config.h"
 
-1781301212 source:c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.c
+1781306441 source:c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.c
 	"lotes_de_prueba.h"
 
-1781301079 c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.h
+1781306402 c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.h
 	"config.h"
 	"main.h"
 
-1781300403 c:\users\user\downloads\tpalgoritmos\algoritmos\main.h
+1781306390 c:\users\user\downloads\tpalgoritmos\algoritmos\main.h
 	"config.h"
 	"funciones.h"
 	"EstructurasDatos/TDA_Cola/cola_dinamica.h"
 	"EstructurasDatos/TDA_Lista/Lista_Header.h"
 
-1781301410 source:c:\users\user\downloads\tpalgoritmos\algoritmos\main.c
+1781307110 source:c:\users\user\downloads\tpalgoritmos\algoritmos\main.c
 	"main.h"
 

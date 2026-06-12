@@ -8,4 +8,4 @@ int leerConfig(tConfiguracion* config, const char* arch);
 int tirarDado();
 void jugarPartida();
 void ManejoErrores(int codError, const char *arch);
-#endif // FUNCIONES_H_INCLUDED
+#endif /*/ FUNCIONES_H_INCLUDED*/

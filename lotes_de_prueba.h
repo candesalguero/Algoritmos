@@ -13,4 +13,4 @@ typedef void (*tMostrarPartida)(const tPartida *);
 int recorrerArchivoJugadores(const char *nombreArchivo, tMostrarJugador mostrar);
 int recorrerArchivoPartidas(const char *nombreArchivo, tMostrarPartida mostrar);
 
-#endif // LOTES_DE_PRUEBA_H_INCLUDED
+#endif /*/ LOTES_DE_PRUEBA_H_INCLUDED*/
