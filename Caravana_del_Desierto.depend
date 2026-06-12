@@ -52,7 +52,7 @@
 1781208465 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\funciones.h
 	"config.h"
 
-1781208249 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\config.h
+1781283764 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\config.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -61,7 +61,7 @@
 	"EstructurasDatos/TDA_Cola/cola_dinamica.h"
 	"EstructurasDatos/TDA_Lista/Lista_Header.h"
 
-1781208609 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\main.c
+1781284850 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\main.c
 	"main.h"
 
 1778456581 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\cola_dinamica.h
@@ -76,7 +76,7 @@
 1778456581 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\lista_header.h
 	"config.h"
 
-1779979970 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\main.h
+1781284946 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\main.h
 	"config.h"
 	"funciones.h"
 	"EstructurasDatos/TDA_Cola/cola_dinamica.h"
@@ -97,9 +97,12 @@
 1781208360 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\estructurasdatos\tda_lista\lista_header.h
 	"../../config.h"
 
-1781208333 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_funciones.c
+1781282802 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_funciones.c
 	"Arbol_Header.h"
 
-1781205621 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_header.h
+1781282751 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_header.h
 	"../../config.h"
+
+1781284828 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\lotes_de_prueba.c
+	"main.h"
 

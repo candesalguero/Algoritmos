@@ -24,27 +24,29 @@ typedef int(*tCmp)(const void*, const void*);//funcion de comparacion
 typedef void(*tAccion)(void*, const void*, const void*);
 typedef void(*tMostrar)(const void*);
 
-void CrearArbol(tArbol *);
-void TalarArbol(tArbol *arbol);
-int AlturaArbol(tArbol *arbol);
-int InsertarOrdenadoEnArbol(tArbol *arbol, const void* elem, size_t tamElem, tCmp cmp);
-void RecorrerInOrden(const tArbol *arbol, tMostrar mostrar);
-void RecorrerPreOrden(const tArbol *arbol, tMostrar mostrar);
+void Arbol_Crear(tArbol *);
+int Arbol_Insertar(tArbol *arbol, const void* elem, size_t tamElem, tCmp cmp);
+int Arbol_ObtenerAltura(tArbol *arbol);
+void Arbol_RecorrerInOrden(const tArbol *arbol, tMostrar mostrar);
+void Arbol_RecorrerPreOrden(const tArbol *arbol, tMostrar mostrar);
+void Arbol_Destruir(tArbol *arbol);
 
-int EliminarNodo(tArbol *arbol, const void *aElim, void *elem, size_t tamElem, tCmp cmp);
-void CortarHoja(tArbol *arbol);
-void EliminarRaiz(tArbol *arbol);
-tNodoArbol **_BuscarMayorClave(tArbol *arbol);
-tNodoArbol **_BuscarMenorClave(tArbol *arbol);
+
+
+int Arbol_EliminarNodo(tArbol *arbol, const void *aElim, void *elem, size_t tamElem, tCmp cmp);
+void _Arbol_EliminarHoja(tArbol *arbol);
+void _Arbol_EliminarRaiz(tArbol *arbol);
+tNodoArbol **_Arbol_BuscarMayorClave(tArbol *arbol);
+tNodoArbol **_Arbol_BuscarMenorClave(tArbol *arbol);
 
 ///FUNCIONES ARBOL CON ARCHIVOS
-int CargarArchivo_fromArbol(const tArbol *arbol, const char *arch, int metodo);
-void _CargarArchInOrden(const tArbol *arbol, FILE *pf);
-void _CargarArchPreOrden(const tArbol *arbol, FILE *pf);
+int Arbol_GuardarEnArchivo(const tArbol *arbol, const char *arch, int metodo);
+void _Arbol_GuardarArchInOrden(const tArbol *arbol, FILE *pf);
+void _Arbol_GuardarArchPreOrden(const tArbol *arbol, FILE *pf);
 
-int ArbolBalanceado_fromArchOrdenado(tArbol *arbol,const char *arch, size_t tamElemOr, size_t tamElemIdx ,tAccion accion );
-void _InsersionBalanceada(tArbol *arbol, void *elemArch ,size_t tamElemOr, size_t tamElemIdx ,int base, int tope, FILE *pf, tAccion accion );
-int BajarArchivoArbol(tArbol *arbol, const char *arch,size_t tamElem ,tCmp cmp);
+int Arbol_GenerarIndiceBalanceado(tArbol *arbol,const char *arch, size_t tamElemOr, size_t tamElemIdx ,tAccion accion );
+void _Arbol_InsertarBalanceado(tArbol *arbol, void *elemArch ,size_t tamElemOr, size_t tamElemIdx ,int base, int tope, FILE *pf, tAccion accion );
+int Arbol_CargarDesdeArchivo(tArbol *arbol, const char *arch,size_t tamElem ,tCmp cmp);
 
 
 

@@ -1,10 +1,10 @@
 #include "Arbol_Header.h"
 
-void CrearArbol(tArbol *arbol)
+void Arbol_Crear(tArbol *arbol)
 {
     *arbol = NULL;
 }
-int InsertarOrdenadoEnArbol(tArbol *arbol, const void* elem, size_t tamElem, tCmp cmp)
+int Arbol_Insertar(tArbol *arbol, const void* elem, size_t tamElem, tCmp cmp)
 {
     int resultado = 0;
     while(*arbol)//recorremos hasta el final del arbol
@@ -37,41 +37,41 @@ int InsertarOrdenadoEnArbol(tArbol *arbol, const void* elem, size_t tamElem, tCm
     return TODO_OK;
 }
 
-int AlturaArbol(tArbol *arbol)
+int Arbol_ObtenerAltura(tArbol *arbol)
 {
     if(!*arbol)
         return 0;
-    int AlturaIzq = AlturaArbol(&(*arbol)->izq);
-    int AlturaDer = AlturaArbol(&(*arbol)->der);
+    int AlturaIzq = Arbol_ObtenerAltura(&(*arbol)->izq);
+    int AlturaDer = Arbol_ObtenerAltura(&(*arbol)->der);
 
     return MAX(AlturaIzq, AlturaDer) +1;
 }
 
-void RecorrerInOrden(const tArbol *arbol, tMostrar mostrar)
+void Arbol_RecorrerInOrden(const tArbol *arbol, tMostrar mostrar)
 {
     if(!*arbol)
         return;
-    RecorrerInOrden(&(*arbol)->izq, mostrar);
+    Arbol_RecorrerInOrden(&(*arbol)->izq, mostrar);
     mostrar((*arbol)->info);
-    RecorrerInOrden(&(*arbol)->der, mostrar);
+    Arbol_RecorrerInOrden(&(*arbol)->der, mostrar);
 }
-void RecorrerPreOrden(const tArbol *arbol, tMostrar mostrar)
+void Arbol_RecorrerPreOrden(const tArbol *arbol, tMostrar mostrar)
 {
     if(!*arbol)
         return;
     mostrar( (*arbol)->info);
-    RecorrerPreOrden(&(*arbol)->izq, mostrar);
-    RecorrerPreOrden(&(*arbol)->der, mostrar);
+    Arbol_RecorrerPreOrden(&(*arbol)->izq, mostrar);
+    Arbol_RecorrerPreOrden(&(*arbol)->der, mostrar);
 
 }
 
-void TalarArbol(tArbol *arbol)
+void Arbol_Destruir(tArbol *arbol)
 {
     if(!*arbol)
         return;
 
-    TalarArbol(&(*arbol)->izq);
-    TalarArbol(&(*arbol)->der);
+    Arbol_Destruir(&(*arbol)->izq);
+    Arbol_Destruir(&(*arbol)->der);
     if(! (*arbol)->izq && !(*arbol)->der )//si es una hoja, la corto
     {
         free((*arbol)->info);
@@ -81,43 +81,43 @@ void TalarArbol(tArbol *arbol)
 }
 
 
-int CargarArchivo_fromArbol(const tArbol *arbol, const char *arch, int metodo)
+int Arbol_GuardarEnArchivo(const tArbol *arbol, const char *arch, int metodo)
 {
     FILE *pf = fopen(arch,"wb");
     if(!pf)
         return ERR_ARCH;
 
     if(metodo == IN_ORDEN)
-        _CargarArchInOrden(arbol, pf);
+        _Arbol_GuardarArchInOrden(arbol, pf);
     else if(metodo == PRE_ORDEN)
-        _CargarArchPreOrden(arbol, pf);
+        _Arbol_GuardarArchPreOrden(arbol, pf);
 
     fclose(pf);
     return TODO_OK;
 }
 
-void _CargarArchInOrden(const tArbol *arbol, FILE *pf)
+void _Arbol_GuardarArchInOrden(const tArbol *arbol, FILE *pf)
 {
     if(!*arbol)
         return;
-    _CargarArchInOrden(&(*arbol)->izq, pf);
+    _Arbol_GuardarArchInOrden(&(*arbol)->izq, pf);
     fwrite( (*arbol)->info, (*arbol)->tamElem, 1, pf );
-    _CargarArchInOrden(&(*arbol)->der,pf);
+    _Arbol_GuardarArchInOrden(&(*arbol)->der,pf);
 }
 
-void _CargarArchPreOrden(const tArbol *arbol, FILE *pf)
+void _Arbol_GuardarArchPreOrden(const tArbol *arbol, FILE *pf)
 {
     if(!*arbol)
         return;
 
     fwrite((*arbol)->info, (*arbol)->tamElem, 1, pf);
-    _CargarArchPreOrden(&(*arbol)->izq, pf);
-    _CargarArchPreOrden(&(*arbol)->der, pf);
+    _Arbol_GuardarArchPreOrden(&(*arbol)->izq, pf);
+    _Arbol_GuardarArchPreOrden(&(*arbol)->der, pf);
 
 }
 
 
-int ArbolBalanceado_fromArchOrdenado(tArbol *arbolIdx, const char *arch, size_t tamElemOr, size_t tamElemIdx ,tAccion accion )
+int Arbol_GenerarIndiceBalanceado(tArbol *arbolIdx, const char *arch, size_t tamElemOr, size_t tamElemIdx ,tAccion accion )
 {
     FILE *pf = fopen(arch, "r+b");
     if(!pf)
@@ -133,7 +133,7 @@ int ArbolBalanceado_fromArchOrdenado(tArbol *arbolIdx, const char *arch, size_t 
     int cantReg = (ftell(pf)/tamElemOr) - 1;//menos 1 para manejarnos con [0-regTot]
     int tope = cantReg, base = 0;
     //usamos envoltorio para la recursividad
-    _InsersionBalanceada(arbolIdx,elemArch, tamElemOr,tamElemIdx,base,tope,pf,accion);
+    _Arbol_InsertarBalanceado(arbolIdx,elemArch, tamElemOr,tamElemIdx,base,tope,pf,accion);
 
     fclose(pf);
     free(elemArch);
@@ -141,7 +141,7 @@ int ArbolBalanceado_fromArchOrdenado(tArbol *arbolIdx, const char *arch, size_t 
 
 }
 
-void _InsersionBalanceada(tArbol *arbol, void *elemArch ,size_t tamElemOr, size_t tamElemIdx ,int base, int tope, FILE *pf, tAccion CopiarIndice )
+void _Arbol_InsertarBalanceado(tArbol *arbol, void *elemArch ,size_t tamElemOr, size_t tamElemIdx ,int base, int tope, FILE *pf, tAccion CopiarIndice )
 {
     if(base > tope)///condicion de fin
         return;
@@ -166,12 +166,12 @@ void _InsersionBalanceada(tArbol *arbol, void *elemArch ,size_t tamElemOr, size_
         CopiarIndice((*arbol)->info, elemArch, &medio);//medio es el n° de registro
     }
     ///para anidar el SIN_MEM, tendría que poner return Inser... ???
-    _InsersionBalanceada( &(*arbol)->izq, elemArch, tamElemOr, tamElemIdx, base, medio-1, pf, CopiarIndice);
+    _Arbol_InsertarBalanceado( &(*arbol)->izq, elemArch, tamElemOr, tamElemIdx, base, medio-1, pf, CopiarIndice);
 
-    _InsersionBalanceada( &(*arbol)->der, elemArch, tamElemOr, tamElemIdx, medio+1, tope, pf, CopiarIndice);
+    _Arbol_InsertarBalanceado( &(*arbol)->der, elemArch, tamElemOr, tamElemIdx, medio+1, tope, pf, CopiarIndice);
 }
 
-int BajarArchivoArbol(tArbol *arbol, const char *arch, size_t tamElem ,tCmp cmp)
+int Arbol_CargarDesdeArchivo(tArbol *arbol, const char *arch, size_t tamElem ,tCmp cmp)
 {
     FILE *pf = fopen(arch,"rb");
     if(!pf)
@@ -186,7 +186,7 @@ int BajarArchivoArbol(tArbol *arbol, const char *arch, size_t tamElem ,tCmp cmp)
     int resu;
     while(fread(elemArch,tamElem,1,pf))
     {
-        resu = InsertarOrdenadoEnArbol(arbol,elemArch,tamElem,cmp);
+        resu = Arbol_Insertar(arbol,elemArch,tamElem,cmp);
         if(resu != TODO_OK)
         {
             fclose(pf);
@@ -200,7 +200,7 @@ int BajarArchivoArbol(tArbol *arbol, const char *arch, size_t tamElem ,tCmp cmp)
 }
 
 
-int EliminarNodo(tArbol *arbol, const void *aElim, void *elem, size_t tamElem, tCmp cmp)
+int Arbol_EliminarNodo(tArbol *arbol, const void *aElim, void *elem, size_t tamElem, tCmp cmp)
 {
     while(*arbol)
     {
@@ -214,14 +214,14 @@ int EliminarNodo(tArbol *arbol, const void *aElim, void *elem, size_t tamElem, t
             if( !(*arbol)->izq && !(*arbol)->der )//SI ES HOJA
             {
                 memcpy(elem, (*arbol)->info, MIN(tamElem, (*arbol)->tamElem));
-                CortarHoja(arbol);
+                _Arbol_EliminarHoja(arbol);
                 return TODO_OK;
             }
 
             else //es RAIZ
             {
                 memcpy(elem, (*arbol)->info, MIN(tamElem, (*arbol)->tamElem));
-                EliminarRaiz(arbol);//aca busco el mayor de los menores
+                _Arbol_EliminarRaiz(arbol);//aca busco el mayor de los menores
                 return TODO_OK;
             }
         }
@@ -229,31 +229,31 @@ int EliminarNodo(tArbol *arbol, const void *aElim, void *elem, size_t tamElem, t
     return NOT_FOUND_ELEM;
 }
 
-void CortarHoja(tArbol *arbol)
+void _Arbol_EliminarHoja(tArbol *arbol)
 {
     free((*arbol)->info);
     free(*arbol);
     *arbol = NULL;///SIEMPRE QUE BORRO, LO PONGO EN NULL
 }
 
-void EliminarRaiz(tArbol *arbol)
+void _Arbol_EliminarRaiz(tArbol *arbol)
 {
     int AlturaIzq, AlturaDer;
     tNodoArbol **aRemplazar, *elim;
 
-    AlturaIzq = AlturaArbol(&(*arbol)->izq);
-    AlturaDer = AlturaArbol(&(*arbol)->der);
+    AlturaIzq = Arbol_ObtenerAltura(&(*arbol)->izq);
+    AlturaDer = Arbol_ObtenerAltura(&(*arbol)->der);
 
 
     if(AlturaIzq >= AlturaDer)
     {
-        aRemplazar = _BuscarMayorClave(&(*arbol)->izq);//ya tenemos al MA ME
+        aRemplazar = _Arbol_BuscarMayorClave(&(*arbol)->izq);//ya tenemos al MA ME
         elim = *aRemplazar;
         *aRemplazar = elim->izq;
     }
     else
     {
-        aRemplazar =_BuscarMenorClave(&(*arbol)->der);//ya tenemos al MENOR MAYOR
+        aRemplazar =_Arbol_BuscarMenorClave(&(*arbol)->der);//ya tenemos al MENOR MAYOR
         elim = *aRemplazar;
         *aRemplazar = elim->der;
     }
@@ -264,16 +264,16 @@ void EliminarRaiz(tArbol *arbol)
     free(elim);
 }
 
-tNodoArbol **_BuscarMayorClave(tArbol *arbol)
+tNodoArbol **_Arbol_BuscarMayorClave(tArbol *arbol)
 {
     if(!(*arbol)->der)
         return arbol;
-    return _BuscarMayorClave(&(*arbol)->der);
+    return _Arbol_BuscarMayorClave(&(*arbol)->der);
 }
-tNodoArbol **_BuscarMenorClave(tArbol *arbol)
+tNodoArbol **_Arbol_BuscarMenorClave(tArbol *arbol)
 {
     if(!(*arbol)->izq)
         return arbol;
-    return _BuscarMenorClave(&(*arbol)->izq);
+    return _Arbol_BuscarMenorClave(&(*arbol)->izq);
 }
 

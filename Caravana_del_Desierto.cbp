@@ -48,6 +48,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="funciones.h" />
+		<Unit filename="lotes_de_prueba.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

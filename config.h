@@ -73,6 +73,7 @@ typedef struct
 typedef struct
 {
     char nickname[20];
+    char fechaIngreso[11];
     unsigned partidas_jugadas;
 }tJugador;
 
