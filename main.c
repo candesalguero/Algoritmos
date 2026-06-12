@@ -1,13 +1,12 @@
 #include "main.h"
 
 void mostrarJugador(const void *jugadores);
-void mostrarJugador(const tJugador jugadores[]);
-void mostrarPartida(const tPartida partidas[]);
+void mostrarPartida(const void *partida);
 
 int main()
 {
-    /*int cantJug = 0, cantPart = 0;
-
+    int cantJug = 0, cantPart = 0;
+    int opcion, errores;
     tJugador jugadores[] =
     {
         {"LunaGamer", "12/05/2026", 3},
@@ -40,47 +39,20 @@ int main()
         {14, "MaxPower", 3, 17},
         {15, "LilaPlay", 2, 20}
     };
+       ///Creacion de lote de pruebas
+
+    tConfiguracion config;
+    tArbol idxJugador;
 
     cantJug = sizeof(jugadores)/sizeof(tJugador);
     cantPart = sizeof(partidas)/sizeof(tPartida);
 
-    guardarJugadoresArchivo(ARCHIVO_JUGADORES, jugadores, cantJug);
-    guardarPartidasArchivo(ARCHIVO_PARTIDAS, partidas, cantPart);
 
-    printf("\n%-20s %-12s %-10s\n", "Nickname", "Fecha", "Partidas");
+    GuardarArchivo(ARCHIVO_JUGADORES,jugadores,sizeof(tJugador),cantJug);
+    GuardarArchivo(ARCHIVO_PARTIDAS,partidas,sizeof(tPartida),cantPart);
 
-    if(!recorrerArchivoJugadores(ARCHIVO_JUGADORES, mostrarJugador))
-        puts("\nNo se pudo abrir el archivo jugadores.dat\n");
-
-    printf("\n%-10s %-20s %-10s %-15s\n",
-           "Nro", "Nickname", "Puntos", "Movimientos");
-
-    if(!recorrerArchivoPartidas(ARCHIVO_PARTIDAS, mostrarPartida))
-        puts("\nNo se pudo abrir el archivo partidas.dat\n");*/ ///Creacion de lote de pruebas
-
-    tConfiguracion config;
-    tArbol idxJugador;
-    int opcion, errores, cantJug;
-
-    tJugador jugador;
-    tJugador vecJugador[]={
-        {"LunaGamer", "12/05/2026", 3},
-        {"MaxPower", "15/05/2026", 2},
-        {"NicoPro", "18/05/2026", 1},
-        {"LilaPlay", "20/05/2026", 4},
-        {"SofiWin", "22/05/2026", 2},
-        {"LeoCrack", "25/05/2026", 1},
-        {"MatiZ", "28/05/2026", 3},
-        {"ValeX", "30/05/2026", 1},
-        {"Tomi99", "01/06/2026", 2},
-        {"FlorGame", "03/06/2026", 1}
-    };
-    cantJug = sizeof(vecJugador)/sizeof(tJugador);
-
-
-
-    GuardarArchivo(ARCHIVO_JUGADORES,vecJugador,sizeof(tJugador),cantJug);
     MostrarArchivo(ARCHIVO_JUGADORES, sizeof(tJugador),mostrarJugador);
+    MostrarArchivo(ARCHIVO_PARTIDAS, sizeof(tPartida), mostrarPartida);
     Arbol_Crear(&idxJugador);
 
 
@@ -149,19 +121,3 @@ void mostrarPartida(const void *part)
            partida->puntos,
            partida->cant_movimientos);
 }
-/*void mostrarJugador(const tJugador *jugador)
-{
-    printf("%-20s %-12s %-10d\n",
-           jugador->nickname,
-           jugador->fecha,
-           jugador->cantPartidasJugadas);
-}
-
-void mostrarPartida(const tPartida *partida)
-{
-    printf("%-10d %-20s %-10d %-15d\n",
-           partida->nroPartida,
-           partida->nickname,
-           partida->puntos,
-           partida->cantMovimientos);
-}*/
