@@ -21,28 +21,20 @@
 1776458527 c:\users\dasha\onedrive - universidad nacional de la matanza\1c 2026\algoritmos y estructuras de datos\1c 2026\tp_algortimos_2026\caravana_del_desierto\pila_din.h
 	"config.h"
 
-1776875082 source:c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\funciones.c
+1781267712 source:c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\funciones.c
 	"funciones.h"
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
 
 1776874126 c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\funciones.h
 	"config.h"
 
-1776874126 c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\config.h
+1781268873 c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\config.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<time.h>
 
-1776875090 source:c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\main.c
-	"config.h"
-	"funciones.h"
-	"cola dinamica.h"
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
+1781270751 source:c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\main.c
+	"main.h"
 
 1776882545 c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\cola dinamica.h
 
@@ -105,4 +97,33 @@
 
 1781284828 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\lotes_de_prueba.c
 	"main.h"
+1781267712 source:c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\cola_dinamica.c
+	"cola_dinamica.h"
+
+1781267712 c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\cola_dinamica.h
+	"config.h"
+
+1781267712 source:c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\lista_funciones.c
+	"Lista_Header.h"
+
+1781267712 c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\lista_header.h
+	"config.h"
+
+1781270682 source:c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\lotes_de_prueba.c
+	"lotes_de_prueba.h"
+
+1781270683 c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\lotes_de_prueba.h
+	<stdio.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"config.h"
+
+1781268873 c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\main.h
+	"config.h"
+	"funciones.h"
+	"cola_dinamica.h"
+	"Lista_Header.h"
+	"lotes_de_prueba.h"
+	<stdio.h>
 
