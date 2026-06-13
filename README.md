@@ -9,35 +9,38 @@ Universidad Nacional de La Matanza — Comisiones 02-3300 y 03-3600
 Juego en C donde una caravana (el jugador) recorre una ruta desértica desde el
 Campamento Inicial (`I`) hasta la Ciudad Refugio (`S`), evitando bandidos y
 aprovechando los recursos (premios, vidas extra, oasis) mientras esquiva las
-tormentas. La ruta se modela como una **lista circular doblemente enlazada**.
+tormentas. La ruta se modela como una **lista circular doblemente enlazada** y
+los jugadores se administran con una capa de datos indexada por un **árbol de
+búsqueda binaria**.
 
 ---
 
 ## Estructura del proyecto
 
-Todos los archivos están en la raíz del proyecto (build con Code::Blocks).
+Build con Code::Blocks. Los TDA están organizados en carpetas dentro de
+`EstructurasDatos/`.
 
 ```
-dev-Dasha/
-├── main.c / main.h                 <- punto de entrada e inicialización
-├── funciones.c / funciones.h       <- menú, lectura de config, dado, partida
-├── config.h                        <- structs, constantes y defines compartidos
-├── config.txt                      <- parámetros de configuración del juego
+TP_Caravana/
+├── main.c / main.h              <- entrada, inicialización y bucle del menú
+├── funciones.c / funciones.h    <- config, dado, partida, índice, errores, ranking (decl.)
+├── ranking.c                    <- cálculo y muestra del ranking
+├── lotes_de_prueba.c / .h       <- carga y persistencia genérica de archivos
+├── config.h                     <- structs, constantes y defines compartidos
+├── config.txt                   <- parámetros de configuración del juego
 │
-├── TDA / estructuras genéricas
-│   ├── cola_dinamica.c / .h        <- TDA Cola dinámica (genérica)
-│   └── Lista_funciones.c / Lista_Header.h   <- TDA Lista enlazada (genérica)
+├── EstructurasDatos/
+│   ├── TDA_Cola/   cola_dinamica.c / cola_dinamica.h   <- TDA Cola dinámica (genérica)
+│   ├── TDA_Lista/  Lista_funciones.c / Lista_Header.h  <- TDA Lista (genérica)
+│   └── TDA_Arbol/  Arbol_Funciones.c / Arbol_Header.h  <- TDA Árbol (ABB, índice)
 │
-├── Capa de datos
-│   ├── lotes_de_prueba.c / .h      <- structs tJugador/tPartida y persistencia
-│   ├── ranking.c / ranking.h       <- cálculo y muestra del ranking
-│   ├── jugadores.dat               <- archivo binario de jugadores
-│   └── partidas.dat                <- archivo binario de partidas
-│
-└── Caravana_del_Desierto.cbp       <- proyecto Code::Blocks
+├── jugadores.dat                <- archivo binario de jugadores
+├── partidas.dat                 <- archivo binario de partidas
+├── indiceJugadores.idx          <- índice ABB persistido (binario)
+└── Caravana_del_Desierto.cbp    <- proyecto Code::Blocks
 ```
 
-> Las carpetas `bin/` y `obj/` son generadas al compilar y **no** se entregan.
+> Las carpetas `bin/` y `obj/` se generan al compilar y **no** se entregan.
 
 ---
 
@@ -61,46 +64,73 @@ Parámetros del tablero, uno por línea con formato `clave=valor`:
 
 **Desde Code::Blocks:** abrir `Caravana_del_Desierto.cbp` y `Build > Build and Run` (F9).
 
-**Desde consola (MinGW):**
+**Desde consola (MinGW), parado en la raíz del proyecto:**
 ```bash
-gcc -Wall -Wextra -o caravana main.c funciones.c cola_dinamica.c Lista_funciones.c lotes_de_prueba.c ranking.c
+gcc -Wall -o caravana main.c funciones.c lotes_de_prueba.c ranking.c \
+    EstructurasDatos/TDA_Cola/cola_dinamica.c \
+    EstructurasDatos/TDA_Lista/Lista_funciones.c \
+    EstructurasDatos/TDA_Arbol/Arbol_Funciones.c
 ```
 
 > Requisito de la cátedra: debe compilar con **0 errores y 0 warnings**.
 
 ---
 
+## Estado de implementación
+
+| Componente | Estado |
+|---|---|
+| Lectura de `config.txt` | ✅ Hecho |
+| TDA Cola dinámica (genérica) | ✅ Hecho |
+| TDA Lista (genérica) | ✅ Hecho |
+| TDA Árbol de búsqueda binaria (índice) | ✅ Hecho |
+| Capa de datos: jugadores/partidas + índice ABB persistido | ✅ Hecho |
+| Ranking de jugadores | ✅ Hecho |
+| Menú principal | ✅ Hecho |
+| Ruta como lista circular doblemente enlazada | ⏳ Pendiente |
+| Generación del tablero (`caravana.txt`) | ⏳ Pendiente |
+| Lógica de la partida (movimientos, efectos, vidas) | ⏳ Pendiente |
+| IA de bandidos | ⏳ Pendiente |
+| Encolado de movimientos y registro `FX`/`BX` | ⏳ Pendiente |
+
+---
+
 ## Decisiones de diseño
 
-> En esta sección documentamos las decisiones que tomamos como equipo y que la
-> consigna deja a criterio del grupo (ítem j). Cada decisión debe quedar clara,
-> uniforme y justificada.
+> Decisiones tomadas por el equipo que la consigna deja a criterio del grupo
+> (ítem j). Cada una debe quedar clara, uniforme y justificada.
 
 ### Ranking
 
 - **Criterio de orden:** los jugadores se ordenan por **puntos totales acumulados
   a lo largo de todas sus partidas** (de mayor a menor), tal como pide la consigna
-  (ítem h). El total se calcula sumando los puntos de cada partida del jugador
-  (los puntos viven en cada partida, no en el jugador).
-- **Criterio de desempate:** si dos jugadores tienen los **mismos puntos**, queda
-  primero el que hizo **menos movimientos en total** (más eficiente). Se eligió
-  este criterio porque el dato de movimientos ya está registrado en cada partida
-  y premia la eficiencia del jugador.
-- **Implementación:** módulo `ranking.c` / `ranking.h`. Se reutiliza la lista
-  genérica (`Lista_funciones.c`): se inserta ordenado por nombre con acumulación
-  de duplicados (suma puntos y movimientos), y luego se reordena por puntos para
-  mostrar la tabla.
+  (ítem h). Los puntos viven en cada partida, así que el total se obtiene sumando
+  todas las partidas de cada jugador.
+- **Criterio de desempate:** a igualdad de puntos, va primero el jugador con
+  **menos movimientos en total** (premia la eficiencia, y el dato ya está
+  registrado en cada partida).
+- **Implementación:** módulo `ranking.c` (su única función pública,
+  `mostrarRanking`, se declara en `funciones.h`). Lee `partidas.dat` y reutiliza
+  el TDA Lista genérico: inserta ordenado por nombre acumulando los duplicados
+  (suma puntos y movimientos) y luego reordena por puntos para mostrar la tabla,
+  que incluye una columna con los movimientos totales.
 
-### Otras decisiones
+### Capa de datos e índice ABB
 
-> _Pendientes de documentar por el equipo a medida que se implementen:_
+- El archivo de jugadores se accede a través de un **índice implementado sobre un
+  árbol de búsqueda binaria** (consigna ítem g).
+- El índice se **persiste en `indiceJugadores.idx`** (binario) y se reconstruye
+  **balanceado** a partir del archivo, de modo que las búsquedas se mantengan
+  eficientes.
+
+### Pendientes de documentar
+
+> A completar por el equipo a medida que se implementen:
 >
-> - **Ruta del desierto (lista circular doble):** _(a definir)_
-> - **Generación del tablero / `caravana.txt`:** convención de casilleros
->   compuestos (`[J]`, `[O J]`, etc.) _(a definir)_
-> - **Movimiento de bandidos (IA):** criterio de avance/retroceso _(a definir)_
-> - **Registro de movimientos (FX/BX):** estructura usada _(a definir)_
-> - **Capa de datos / índice ABB:** _(a definir)_
+> - **Ruta del desierto (lista circular doble)** y convención de casilleros
+>   compuestos en `caravana.txt` (`[J]`, `[O J]`, etc.).
+> - **Movimiento de bandidos (IA):** criterio de avance/retroceso.
+> - **Registro de movimientos (`FX`/`BX`)** y uso de la cola para los turnos.
 
 ---
 
@@ -117,4 +147,6 @@ Cada integrante trabaja en su propia rama y hace Pull Request a `main`:
 ```
 git checkout -b nombre/modulo
 ```
-El desarrollo colaborativo se refleja a través de los commits de cada integrante.
+Antes de cada PR conviene traer `main` a la rama propia (`git merge main`) para
+resolver conflictos ahí y que la integración entre limpia. El desarrollo
+colaborativo se refleja en los commits de cada integrante.
