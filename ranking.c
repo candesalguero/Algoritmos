@@ -1,6 +1,7 @@
-#include "ranking.h"
+#include "config.h"
+#include "funciones.h"
 
-/* Compara por NOMBRE: la usa InsertarOrdenado para detectar duplicados */
+
 int compararPorNombre(const void *a, const void *b)
 {
     const tRankig *ja = (const tRankig *)a;
@@ -9,21 +10,16 @@ int compararPorNombre(const void *a, const void *b)
     return strcmp(ja->nickname, jb->nickname);
 }
 
-/* Accion al encontrar un jugador repetido: acumula puntos y movimientos.
-   tAccion lleva 3 parametros; el tercero (extra) no se usa aca.        */
+
 void acumularPuntosMovimientos(void *viejo, const void *nuevo, const void *extra)
 {
     tRankig *jViejo = (tRankig *)viejo;
     const tRankig *jNuevo = (const tRankig *)nuevo;
 
-    (void)extra; /* lo ignoramos a proposito (evita warning de no usado) */
-
     jViejo->puntos_totales += jNuevo->puntos_totales;
-    jViejo->mov_totales    += jNuevo->mov_totales;
+    jViejo->mov_totales += jNuevo->mov_totales;
 }
 
-/* Compara por PUNTOS (mayor a menor), desempate por menos movimientos.
-   Los campos son unsigned, asi que NO se puede restar: se compara con if. */
 int compararPorPuntosDesc(const void *a, const void *b)
 {
     const tRankig *ja = (const tRankig *)a;
@@ -55,10 +51,9 @@ int cargarRanking(tLista *ranking)
     {
         strcpy(item.nickname, partida.nickname);
         item.puntos_totales = partida.puntos;
-        item.mov_totales    = partida.cant_movimientos;
+        item.mov_totales = partida.cant_movimientos;
 
-        InsertarOrdenado(ranking, &item, sizeof(tRankig),
-                         compararPorNombre, 0, acumularPuntosMovimientos);
+        InsertarOrdenado(ranking, &item, sizeof(tRankig), compararPorNombre, 0, acumularPuntosMovimientos);
     }
 
     fclose(pf);
@@ -80,8 +75,7 @@ void imprimirRanking(tLista *ranking)
     while(actual != NULL)
     {
         item = (tRankig *)actual->info;
-        printf("%-8d %-20s %-8u %-8u\n", puesto, item->nickname,
-               item->puntos_totales, item->mov_totales);
+        printf("%-8d %-20s %-8u %-8u\n", puesto, item->nickname,item->puntos_totales, item->mov_totales);
 
         actual = actual->sig;
         puesto++;
