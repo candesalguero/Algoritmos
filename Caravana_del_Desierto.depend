@@ -38,19 +38,22 @@
 
 1776882545 c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\cola dinamica.h
 
-1778456395 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\funciones.c
+1781208316 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\funciones.c
 	"funciones.h"
 
-1776883908 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\funciones.h
+1781208465 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\funciones.h
 	"config.h"
 
-1778456431 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\config.h
+1781283764 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\config.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<time.h>
+	"EstructurasDatos/TDA_Arbol/Arbol_Header.h"
+	"EstructurasDatos/TDA_Cola/cola_dinamica.h"
+	"EstructurasDatos/TDA_Lista/Lista_Header.h"
 
-1778453801 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\main.c
+1781284850 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\main.c
 	"main.h"
 
 1778456581 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\cola_dinamica.h
@@ -65,11 +68,35 @@
 1778456581 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\lista_header.h
 	"config.h"
 
-1778456076 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\main.h
+1781284946 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\main.h
 	"config.h"
 	"funciones.h"
+	"EstructurasDatos/TDA_Cola/cola_dinamica.h"
+	"EstructurasDatos/TDA_Lista/Lista_Header.h"
+
+1781204259 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\estructurasdatos\tda_cola\cola_dinamica.c
 	"cola_dinamica.h"
+
+1781204162 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\estructurasdatos\tda_cola\cola_dinamica.h
+	"../../config.h"
+
+1781183870 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\configestructuras.h
+	"config.h"
+
+1781203970 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\estructurasdatos\tda_lista\lista_funciones.c
 	"Lista_Header.h"
+
+1781208360 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\estructurasdatos\tda_lista\lista_header.h
+	"../../config.h"
+
+1781282802 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_funciones.c
+	"Arbol_Header.h"
+
+1781282751 c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_header.h
+	"../../config.h"
+
+1781284828 source:c:\users\user\onedrive\desktop\algoritmos\tp_algoritmos\algoritmos\lotes_de_prueba.c
+	"main.h"
 
 1781267712 source:c:\users\candelasalguero\documents\facultad\en curso\algoritmos y estructura de datos\tp\cola_dinamica.c
 	"cola_dinamica.h"
@@ -100,4 +127,51 @@
 	"Lista_Header.h"
 	"lotes_de_prueba.h"
 	<stdio.h>
+
+1781321683 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_funciones.c
+	"Arbol_Header.h"
+
+1781321675 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_header.h
+	"../../config.h"
+
+1781318427 c:\users\user\downloads\tpalgoritmos\algoritmos\config.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"EstructurasDatos/TDA_Arbol/Arbol_Header.h"
+	"EstructurasDatos/TDA_Cola/cola_dinamica.h"
+	"EstructurasDatos/TDA_Lista/Lista_Header.h"
+
+1781305660 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_cola\cola_dinamica.h
+	"../../config.h"
+
+1781306377 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_lista\lista_header.h
+	"../../config.h"
+
+1781306655 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_cola\cola_dinamica.c
+	"cola_dinamica.h"
+
+1781305590 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_lista\lista_funciones.c
+	"Lista_Header.h"
+
+1781321705 source:c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.c
+	"funciones.h"
+
+1781314191 c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.h
+	"config.h"
+
+1781306441 source:c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.c
+	"lotes_de_prueba.h"
+
+1781306402 c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.h
+	"config.h"
+	"main.h"
+
+1781307467 c:\users\user\downloads\tpalgoritmos\algoritmos\main.h
+	"config.h"
+	"funciones.h"
+
+1781321740 source:c:\users\user\downloads\tpalgoritmos\algoritmos\main.c
+	"main.h"
 

@@ -1,12 +1,13 @@
 #include "main.h"
 
-void mostrarJugador(const tJugador jugadores[]);
-void mostrarPartida(const tPartida partidas[]);
+void mostrarJugador(const void *jugadores);
+void mostrarPartida(const void *partida);
+void mostrarIdx(const void *jug);
+int cmpJugadoresIdx(const void *jugador1, const void *jugador2);
+void CopiarIndice(void *dest, const void *orig, const void *reg);
 
 int main()
 {
-    int cantJug = 0, cantPart = 0;
-
     tJugador jugadores[] =
     {
         {"LunaGamer", "12/05/2026", 3},
@@ -39,50 +40,118 @@ int main()
         {14, "MaxPower", 3, 17},
         {15, "LilaPlay", 2, 20}
     };
+       /**Creacion de lote de pruebas*/
 
+    int cantJug = 0, cantPart = 0;
+    int opcion, errores;
+    /** DECLARACION DE VARIABLES DE ESTRUCTURAS*/
+    tConfiguracion config;
+    tArbol idxJugador;
+
+    srand(time(NULL)); /*/srand le pasa la hora actual como punto de arranque para que el resultado del dado (rand) no siga siempre la misma secuencia*/
     cantJug = sizeof(jugadores)/sizeof(tJugador);
     cantPart = sizeof(partidas)/sizeof(tPartida);
 
-    guardarJugadoresArchivo(ARCHIVO_JUGADORES, jugadores, cantJug);
-    guardarPartidasArchivo(ARCHIVO_PARTIDAS, partidas, cantPart);
 
-    printf("\n%-20s %-12s %-10s\n", "Nickname", "Fecha", "Partidas");
+        GuardarArchivo(ARCHIVO_JUGADORES,jugadores,sizeof(tJugador),cantJug);
+        GuardarArchivo(ARCHIVO_PARTIDAS,partidas,sizeof(tPartida),cantPart);
 
-    if(!recorrerArchivoJugadores(ARCHIVO_JUGADORES, mostrarJugador))
-        puts("\nNo se pudo abrir el archivo jugadores.dat\n");
+        MostrarArchivo(ARCHIVO_JUGADORES, sizeof(tJugador),mostrarJugador);
+        MostrarArchivo(ARCHIVO_PARTIDAS, sizeof(tPartida), mostrarPartida);
 
-    printf("\n%-10s %-20s %-10s %-15s\n",
-           "Nro", "Nickname", "Puntos", "Movimientos");
+    Arbol_Crear(&idxJugador);
+    GenerarIndiceJugadores(&idxJugador, ARCHIVO_JUGADORES, ARCHIVO_INDICE, cmpJugadoresIdx, CopiarIndice);
 
-    if(!recorrerArchivoPartidas(ARCHIVO_PARTIDAS, mostrarPartida))
-        puts("\nNo se pudo abrir el archivo partidas.dat\n"); ///Creacion de lote de pruebas
+    /*
+    Arbol_RecorrerInOrden(&idxJugador, mostrarIdx);
+    MostrarArchivo(ARCHIVO_INDICE, sizeof(tJugadorIdx),mostrarIdx);*/
 
-    tConfiguracion config;
-
-    if (!leerConfig(&config))
+    errores = leerConfig(&config,ARCHIVO_CONFIG);
+    if (errores != TODO_OK)
     {
-        return ERR_ARCH; // Terminamos si no hay archivo de configuración
+        ManejoErrores(errores,ARCHIVO_CONFIG);
+        return errores; /*/ Terminamos si no hay archivo de configuraciÃ³n*/
     }
 
-    srand((unsigned int)time(NULL)); //srand le pasa la hora actual como punto de arranque para que el resultado del dado (rand) no siga siempre la misma secuencia
-    Menu();
+
+
+    do
+    {
+        Menu();
+        printf("Opcion: ");
+        scanf("%d", &opcion);
+        fflush(stdin);
+        switch (opcion)
+        {
+            case 1:
+                {
+                    system("cls");
+                    jugarPartida();
+                }
+                break;
+            case 2:
+                {
+                    mostrarRanking();
+                }
+                break;
+            case 3:
+                {
+                    printf("\nSaliendo...\n\n");
+                }
+                break;
+            default:
+                {
+                    printf("\nOpcion invalida. Intente nuevamente.\n");
+                    system("pause");
+                    system("cls");
+                }
+                break;
+        }
+    }while(opcion != 3);
 
     return 0;
 }
 
-void mostrarJugador(const tJugador *jugador)
+int cmpJugadoresIdx(const void *jugador1, const void *jugador2)
 {
-    printf("%-20s %-12s %-10d\n",
-           jugador->nickname,
-           jugador->fecha,
-           jugador->cantPartidasJugadas);
+    tJugadorIdx *jug1 = (tJugadorIdx*) jugador1;
+    tJugadorIdx *jug2 = (tJugadorIdx*) jugador2;
+
+    return strcmpi(jug1->nickname,jug2->nickname);
 }
 
-void mostrarPartida(const tPartida *partida)
+void CopiarIndice(void *dest, const void *orig, const void *reg)
 {
+    tJugadorIdx *idx = (tJugadorIdx*)dest;
+    tJugador *jug = (tJugador*)orig;
+    unsigned *registro = (unsigned*)reg;
+
+    strcpy(idx->nickname, jug->nickname);
+    idx->registro = *registro;
+}
+
+void mostrarJugador(const void *jug)
+{
+    tJugador * jugador = (tJugador*)jug;
+    printf("%-20s %-12s %-10d\n",
+           jugador->nickname,
+           jugador->fechaIngreso,
+           jugador->partidas_jugadas);
+}
+
+void mostrarPartida(const void *part)
+{
+    tPartida *partida = (tPartida*)part;
+
     printf("%-10d %-20s %-10d %-15d\n",
-           partida->nroPartida,
+           partida->nro_partida,
            partida->nickname,
            partida->puntos,
-           partida->cantMovimientos);
+           partida->cant_movimientos);
+}
+
+void mostrarIdx(const void *jug)
+{
+    tJugadorIdx *idx = (tJugadorIdx*)jug;
+    printf("[%u]%s\n",idx->registro,idx->nickname);
 }

@@ -3,12 +3,8 @@
 
 #include "config.h"
 #include "funciones.h"
-#include "cola_dinamica.h"
-#include "Lista_Header.h"
-#include "lotes_de_prueba.h"
-#include "ranking.h"
 
-#include <stdio.h>
+int GuardarArchivo(const char *arch, const void *vec, size_t tamElem,size_t cant );
+int MostrarArchivo(const char *arch, size_t tamElem, tMostrar mostrar);
 
-
-#endif // MAIN_H_INCLUDED
+#endif /*/ MAIN_H_INCLUDED*/

@@ -1,37 +1,95 @@
 #include "ranking.h"
-#include "Lista_Header.h"
-#include "lotes_de_prueba.h"
 
+/* Compara por NOMBRE: la usa InsertarOrdenado para detectar duplicados */
 int compararPorNombre(const void *a, const void *b)
 {
-    const tRankingItem *ja = (const tRankingItem *)a;
-    const tRankingItem *jb = (const tRankingItem *)b;
+    const tRankig *ja = (const tRankig *)a;
+    const tRankig *jb = (const tRankig *)b;
 
     return strcmp(ja->nickname, jb->nickname);
 }
 
-void acumularPuntosMovimientos(void *viejo, const void *nuevo)
+/* Accion al encontrar un jugador repetido: acumula puntos y movimientos.
+   tAccion lleva 3 parametros; el tercero (extra) no se usa aca.        */
+void acumularPuntosMovimientos(void *viejo, const void *nuevo, const void *extra)
 {
-    tRankingItem *jViejo = (tRankingItem *)viejo;
-    const tRankingItem *jNuevo = (const tRankingItem *)nuevo;
+    tRankig *jViejo = (tRankig *)viejo;
+    const tRankig *jNuevo = (const tRankig *)nuevo;
 
-    jViejo->puntosTotal += jNuevo->puntosTotal;
-    jViejo->movimientosTotal += jNuevo->movimientosTotal;
+    (void)extra; /* lo ignoramos a proposito (evita warning de no usado) */
+
+    jViejo->puntos_totales += jNuevo->puntos_totales;
+    jViejo->mov_totales    += jNuevo->mov_totales;
 }
 
+/* Compara por PUNTOS (mayor a menor), desempate por menos movimientos.
+   Los campos son unsigned, asi que NO se puede restar: se compara con if. */
 int compararPorPuntosDesc(const void *a, const void *b)
 {
-    const tRankingItem *ja = (const tRankingItem *)a;
-    const tRankingItem *jb = (const tRankingItem *)b;
+    const tRankig *ja = (const tRankig *)a;
+    const tRankig *jb = (const tRankig *)b;
 
-    // Caso normal, el que tiene más puntos va primero (descendente)
-    if(jb->puntosTotal != ja->puntosTotal)
-        return jb->puntosTotal - ja->puntosTotal;
+    /* Mas puntos primero (descendente) */
+    if(ja->puntos_totales != jb->puntos_totales)
+        return (jb->puntos_totales > ja->puntos_totales) ? 1 : -1;
 
-    // Caso empate, gana el que hizo MENOS movimientos (ascendente)
-    return ja->movimientosTotal - jb->movimientosTotal;
+    /* Empate: menos movimientos primero (ascendente) */
+    if(ja->mov_totales != jb->mov_totales)
+        return (ja->mov_totales > jb->mov_totales) ? 1 : -1;
+
+    return 0;
 }
 
+/* Lee partidas.dat y arma la lista acumulando puntos/movimientos por jugador */
+int cargarRanking(tLista *ranking)
+{
+    FILE *pf;
+    tPartida partida;
+    tRankig item;
+
+    pf = fopen(ARCHIVO_PARTIDAS, "rb");
+    if(pf == NULL)
+        return ERR_ARCH;
+
+    while(fread(&partida, sizeof(tPartida), 1, pf) == 1)
+    {
+        strcpy(item.nickname, partida.nickname);
+        item.puntos_totales = partida.puntos;
+        item.mov_totales    = partida.cant_movimientos;
+
+        InsertarOrdenado(ranking, &item, sizeof(tRankig),
+                         compararPorNombre, 0, acumularPuntosMovimientos);
+    }
+
+    fclose(pf);
+    return TODO_OK;
+}
+
+/* Recorre la lista (ya ordenada) y muestra la tabla con los puestos */
+void imprimirRanking(tLista *ranking)
+{
+    tNodo *actual;
+    tRankig *item;
+    int puesto;
+
+    printf("\n================= RANKING =================\n");
+    printf("%-8s %-20s %-8s %-8s\n", "Puesto", "Jugador", "Puntos", "Movim.");
+
+    actual = *ranking;
+    puesto = 1;
+    while(actual != NULL)
+    {
+        item = (tRankig *)actual->info;
+        printf("%-8d %-20s %-8u %-8u\n", puesto, item->nickname,
+               item->puntos_totales, item->mov_totales);
+
+        actual = actual->sig;
+        puesto++;
+    }
+    printf("==========================================\n");
+}
+
+/* Funcion principal: crea, carga, ordena, muestra y libera */
 void mostrarRanking(void)
 {
     tLista ranking;
@@ -47,51 +105,4 @@ void mostrarRanking(void)
     OrdenarLista(&ranking, compararPorPuntosDesc);
     imprimirRanking(&ranking);
     VaciarLista(&ranking);
-
-}
-
-int cargarRanking(tLista *ranking)
-{
-    FILE *pf;
-    tPartida partida;
-    tRankingItem item;
-
-    pf = fopen(ARCHIVO_PARTIDAS, "rb");
-    if(pf == NULL)
-        return ERR_ARCH;
-
-    while(fread(&partida, sizeof(tPartida), 1, pf) == 1)
-    {
-        strcpy(item.nickname, partida.nickname);
-        item.puntosTotal = partida.puntos;
-        item.movimientosTotal = partida.cantMovimientos;
-
-        InsertarOrdenado(ranking, &item, sizeof(tRankingItem),compararPorNombre, 0, acumularPuntosMovimientos);
-    }
-
-    fclose(pf);
-    return TODO_OK;
-}
-
-void imprimirRanking(tLista *ranking)
-{
-    tNodo *actual;
-    tRankingItem *item;
-    int puesto;
-
-    printf("\n============= RANKING =============\n");
-    printf("%-8s %-20s %-8s\n", "Puesto", "Jugador", "Puntos");
-
-    actual = *ranking;
-    puesto = 1;
-
-    while(actual != NULL)
-    {
-        item = (tRankingItem *)actual->info;
-        printf("%-8d %-20s %-8d\n", puesto, item->nickname, item->puntosTotal);
-
-        actual = actual->sig;
-        puesto++;
-    }
-    printf("===================================\n");
 }
