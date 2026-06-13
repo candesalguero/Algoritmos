@@ -46,7 +46,11 @@ void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos);
 int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, int *vidas, int *puntos, int *turnos_perdidos, int *protegido);
 void mostrarMapa(tListaDoble *ruta, int protegido);
 void mostrarHistorial(tCola *historial);
+void Pausar();
+void LimpiarPantalla();
 void iniciarPartida(tConfig *config, tListaDoble *ruta);
+
+void limpiarBuffer();
 void mostrarMenu();
 
 #endif // FUNCIONES_H
