@@ -2,11 +2,12 @@
 
 void mostrarJugador(const void *jugadores);
 void mostrarPartida(const void *partida);
+void mostrarIdx(const void *jug);
+int cmpJugadoresIdx(const void *jugador1, const void *jugador2);
+void CopiarIndice(void *dest, const void *orig, const void *reg);
 
 int main()
 {
-    int cantJug = 0, cantPart = 0;
-    int opcion, errores;
     tJugador jugadores[] =
     {
         {"LunaGamer", "12/05/2026", 3},
@@ -41,29 +42,38 @@ int main()
     };
        /**Creacion de lote de pruebas*/
 
+    int cantJug = 0, cantPart = 0;
+    int opcion, errores;
+    /** DECLARACION DE VARIABLES DE ESTRUCTURAS*/
     tConfiguracion config;
     tArbol idxJugador;
 
+    srand(time(NULL)); /*/srand le pasa la hora actual como punto de arranque para que el resultado del dado (rand) no siga siempre la misma secuencia*/
     cantJug = sizeof(jugadores)/sizeof(tJugador);
     cantPart = sizeof(partidas)/sizeof(tPartida);
 
 
-    GuardarArchivo(ARCHIVO_JUGADORES,jugadores,sizeof(tJugador),cantJug);
-    GuardarArchivo(ARCHIVO_PARTIDAS,partidas,sizeof(tPartida),cantPart);
+        GuardarArchivo(ARCHIVO_JUGADORES,jugadores,sizeof(tJugador),cantJug);
+        GuardarArchivo(ARCHIVO_PARTIDAS,partidas,sizeof(tPartida),cantPart);
 
-    MostrarArchivo(ARCHIVO_JUGADORES, sizeof(tJugador),mostrarJugador);
-    MostrarArchivo(ARCHIVO_PARTIDAS, sizeof(tPartida), mostrarPartida);
+        MostrarArchivo(ARCHIVO_JUGADORES, sizeof(tJugador),mostrarJugador);
+        MostrarArchivo(ARCHIVO_PARTIDAS, sizeof(tPartida), mostrarPartida);
 
     Arbol_Crear(&idxJugador);
+    GenerarIndiceJugadores(&idxJugador, ARCHIVO_JUGADORES, ARCHIVO_INDICE, cmpJugadoresIdx, CopiarIndice);
 
+    /*
+    Arbol_RecorrerInOrden(&idxJugador, mostrarIdx);
+    MostrarArchivo(ARCHIVO_INDICE, sizeof(tJugadorIdx),mostrarIdx);*/
 
-    srand(time(NULL)); /*/srand le pasa la hora actual como punto de arranque para que el resultado del dado (rand) no siga siempre la misma secuencia*/
     errores = leerConfig(&config,ARCHIVO_CONFIG);
     if (errores != TODO_OK)
     {
         ManejoErrores(errores,ARCHIVO_CONFIG);
         return errores; /*/ Terminamos si no hay archivo de configuración*/
     }
+
+
 
     do
     {
@@ -102,6 +112,23 @@ int main()
     return 0;
 }
 
+int cmpJugadoresIdx(const void *jugador1, const void *jugador2)
+{
+    tJugadorIdx *jug1 = (tJugadorIdx*) jugador1;
+    tJugadorIdx *jug2 = (tJugadorIdx*) jugador2;
+
+    return strcmpi(jug1->nickname,jug2->nickname);
+}
+
+void CopiarIndice(void *dest, const void *orig, const void *reg)
+{
+    tJugadorIdx *idx = (tJugadorIdx*)dest;
+    tJugador *jug = (tJugador*)orig;
+    unsigned *registro = (unsigned*)reg;
+
+    strcpy(idx->nickname, jug->nickname);
+    idx->registro = *registro;
+}
 
 void mostrarJugador(const void *jug)
 {
@@ -121,4 +148,10 @@ void mostrarPartida(const void *part)
            partida->nickname,
            partida->puntos,
            partida->cant_movimientos);
+}
+
+void mostrarIdx(const void *jug)
+{
+    tJugadorIdx *idx = (tJugadorIdx*)jug;
+    printf("[%u]%s\n",idx->registro,idx->nickname);
 }

@@ -19,11 +19,6 @@ typedef struct sNodoArbol
 
 typedef tNodoArbol *tArbol;
 
-/*
-typedef int(*tCmp)(const void*, const void*);
-typedef void(*tAccion)(void*, const void*, const void*);
-typedef void(*tMostrar)(const void*);
-*/
 void Arbol_Crear(tArbol *);
 int Arbol_Insertar(tArbol *arbol, const void* elem, size_t tamElem, tCmp cmp);
 int Arbol_ObtenerAltura(tArbol *arbol);
@@ -44,9 +39,9 @@ int Arbol_GuardarEnArchivo(const tArbol *arbol, const char *arch, int metodo);
 void _Arbol_GuardarArchInOrden(const tArbol *arbol, FILE *pf);
 void _Arbol_GuardarArchPreOrden(const tArbol *arbol, FILE *pf);
 
-int Arbol_GenerarIndiceBalanceado(tArbol *arbol,const char *arch, size_t tamElemOr, size_t tamElemIdx ,tAccion accion );
-int _Arbol_InsertarBalanceado(tArbol *arbol, void *elemArch ,size_t tamElemOr, size_t tamElemIdx ,int base, int tope, FILE *pf, tAccion accion );
-int Arbol_CargarDesdeArchivo(tArbol *arbol, const char *arch,size_t tamElem ,tCmp cmp);
+int Arbol_CargarIndiceDesdeArchivo(tArbol *arbolIdx, const char *arch, size_t tamElemArch, size_t tamElemIdx,tCmp cmp, tAccion Copiar);
+int Arbol_GenerarIndiceBalanceado(tArbol *arbol,const char *archIdx, size_t tamElemIdx);
+int _Arbol_InsertarBalanceado(tArbol *arbol, void *elemArch, size_t tamElemIdx ,int base, int tope, FILE *pf);
 
 
 

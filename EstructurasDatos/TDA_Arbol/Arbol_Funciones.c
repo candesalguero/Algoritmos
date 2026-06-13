@@ -137,15 +137,15 @@ void _Arbol_GuardarArchPreOrden(const tArbol *arbol, FILE *pf)
 }
 
 
-int Arbol_GenerarIndiceBalanceado(tArbol *arbolIdx, const char *arch, size_t tamElemOr, size_t tamElemIdx ,tAccion accion )
+int Arbol_GenerarIndiceBalanceado(tArbol *arbolIdx, const char *archIdx, size_t tamElemIdx)
 {
     FILE *pf ;
     void *elemArch ;
     int cantReg, resu;
     int tope, base = 0;
 
-    pf = fopen(arch, "r+b");
-    elemArch = malloc (tamElemOr);
+    pf = fopen(archIdx, "r+b");
+    elemArch = malloc (tamElemIdx);
 
     if(!pf)
         return ERR_ARCH;
@@ -156,10 +156,10 @@ int Arbol_GenerarIndiceBalanceado(tArbol *arbolIdx, const char *arch, size_t tam
         return SIN_MEM;
     }
     fseek(pf, 0,SEEK_END);
-    cantReg = (ftell(pf)/tamElemOr) - 1;/*/menos 1 para manejarnos con [0-regTot]*/
+    cantReg = (ftell(pf)/tamElemIdx) - 1;/*/menos 1 para manejarnos con [0-regTot]*/
     tope = cantReg;
     /*/usamos envoltorio para la recursividad*/
-    resu = _Arbol_InsertarBalanceado(arbolIdx,elemArch, tamElemOr,tamElemIdx,base,tope,pf,accion);
+    resu = _Arbol_InsertarBalanceado(arbolIdx,elemArch,tamElemIdx,base,tope,pf);
 
     fclose(pf);
     free(elemArch);
@@ -168,15 +168,15 @@ int Arbol_GenerarIndiceBalanceado(tArbol *arbolIdx, const char *arch, size_t tam
 
 }
 
-int _Arbol_InsertarBalanceado(tArbol *arbol, void *elemArch ,size_t tamElemOr, size_t tamElemIdx ,int base, int tope, FILE *pf, tAccion CopiarIndice )
+int _Arbol_InsertarBalanceado(tArbol *arbol, void *elemArch, size_t tamElemIdx ,int base, int tope, FILE *pf)
 {
     int medio, resu;
     if(base > tope)/*//condicion de fin*/
         return TODO_OK;
 
     medio = (base + tope) / 2; /*/el medio es derivado*/
-    fseek(pf,tamElemOr * medio,SEEK_SET);/*SEEK_SET porque es desde el principio*/
-    fread( elemArch, tamElemOr,1,pf );
+    fseek(pf,tamElemIdx * medio,SEEK_SET);/*SEEK_SET porque es desde el principio*/
+    fread( elemArch, tamElemIdx,1,pf );
     if(!*arbol)
     {
         *arbol = malloc(sizeof(tNodoArbol));
@@ -191,13 +191,13 @@ int _Arbol_InsertarBalanceado(tArbol *arbol, void *elemArch ,size_t tamElemOr, s
         (*arbol)->tamElem = tamElemIdx;
         (*arbol)->izq = NULL;
         (*arbol)->der = NULL;
-        CopiarIndice((*arbol)->info, elemArch, &medio);/*medio es el n° de registro*/
+        memcpy((*arbol)->info, elemArch, tamElemIdx);
     }
 
-    resu = _Arbol_InsertarBalanceado( &(*arbol)->izq, elemArch, tamElemOr, tamElemIdx, base, medio-1, pf, CopiarIndice);
+    resu = _Arbol_InsertarBalanceado( &(*arbol)->izq, elemArch,tamElemIdx, base, medio-1, pf);
     if (resu != TODO_OK)
         return resu;
-    resu = _Arbol_InsertarBalanceado( &(*arbol)->der, elemArch, tamElemOr, tamElemIdx, medio+1, tope, pf, CopiarIndice);
+    resu = _Arbol_InsertarBalanceado( &(*arbol)->der, elemArch, tamElemIdx, medio+1, tope, pf);
 
     if(resu != TODO_OK)
         return resu;
@@ -205,14 +205,15 @@ int _Arbol_InsertarBalanceado(tArbol *arbol, void *elemArch ,size_t tamElemOr, s
     return TODO_OK;
 }
 
-int Arbol_CargarDesdeArchivo(tArbol *arbol, const char *arch, size_t tamElem ,tCmp cmp)
+int Arbol_CargarIndiceDesdeArchivo(tArbol *arbolIdx, const char *arch, size_t tamElemArch, size_t tamElemIdx,tCmp cmp, tAccion Copiar)
 {
     FILE *pf;
-    void *elemArch;
+    void *elemArch, *elemIdx;
     int resu;
-
+    unsigned reg=0;
     pf  = fopen(arch,"rb");
-    elemArch = malloc(tamElem);
+    elemArch = malloc(tamElemArch);
+    elemIdx = malloc(tamElemIdx);
     if(!pf)
         return ERR_ARCH;
     if(!elemArch)
@@ -221,18 +222,22 @@ int Arbol_CargarDesdeArchivo(tArbol *arbol, const char *arch, size_t tamElem ,tC
         return SIN_MEM;
     }
 
-    while(fread(elemArch,tamElem,1,pf))
+    while(fread(elemArch,tamElemArch,1,pf))
     {
-        resu = Arbol_Insertar(arbol,elemArch,tamElem,cmp);
+        Copiar(elemIdx, elemArch, &reg);
+        resu = Arbol_Insertar(arbolIdx,elemIdx,tamElemIdx,cmp);
         if(resu != TODO_OK)
         {
             fclose(pf);
             free(elemArch);
+            free(elemIdx);
             return resu;
         }
+        reg++;
     }
     fclose(pf);
     free(elemArch);
+    free(elemIdx);
     return TODO_OK;
 }
 

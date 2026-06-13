@@ -30,6 +30,46 @@ int leerConfig(tConfiguracion* config, const char *arch)
     return TODO_OK;
 }
 
+int GenerarIndiceJugadores(tArbol *arbolIdx,const char *archJugadores, const char *archIdx, tCmp cmp, tAccion Copiar)
+{
+    int resu;
+
+    resu = Arbol_CargarIndiceDesdeArchivo(arbolIdx, archJugadores,sizeof(tJugador),sizeof(tJugadorIdx),cmp,Copiar);
+    if(resu != TODO_OK)
+    {
+        Arbol_Destruir(arbolIdx);
+        return resu;
+    }
+
+    resu = Arbol_GuardarEnArchivo(arbolIdx, archIdx, IN_ORDEN);
+    if(resu != TODO_OK)
+    {
+        Arbol_Destruir(arbolIdx);
+        return resu;
+    }
+
+    Arbol_Destruir(arbolIdx);/**Una vez cargado el indice ordenado
+    Destruimos el arbol para volver a cargarlo        */
+
+    resu = Arbol_GenerarIndiceBalanceado(arbolIdx,archIdx,sizeof(tJugadorIdx));
+    if(resu != TODO_OK)
+    {
+        Arbol_Destruir(arbolIdx);
+        return resu;
+    }
+    resu = Arbol_GuardarEnArchivo(arbolIdx, archIdx, PRE_ORDEN);
+    if(resu != TODO_OK)
+    {
+        Arbol_Destruir(arbolIdx);
+        return resu;
+    }
+
+    return TODO_OK;
+}
+
+
+
+
 void ManejoErrores(int codError, const char *arch)
 {
     switch(codError)
@@ -46,18 +86,7 @@ void ManejoErrores(int codError, const char *arch)
         {
             puts("\nLa lista se encuentra vacia");
         }break;
-    case NOT_FOUND_ELEM:
-        {
-            puts("El elemento buscado no se ha encontrado");
-        }break;
-    case ELEM_REPETIDO:
-        {
-            puts("El elemento ingresado ya está en la estructura");
-        }break;
-    case COLA_LLENA:
-        {
-            puts("La cola esta llena");
-        }break;
+
     case COLA_VACIA:
         {
             puts("La cola esta vacia");

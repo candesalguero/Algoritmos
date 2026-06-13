@@ -18,7 +18,7 @@
 #define ARCHIVO_TABLERO "caravana.txt"
 #define ARCHIVO_JUGADORES "jugadores.dat"
 #define ARCHIVO_PARTIDAS "partidas.dat"
-#define ARCHIVO_INDICE "indice.dat"
+#define ARCHIVO_INDICE "indiceJugadores.idx"
 
 
 
@@ -45,7 +45,7 @@
 typedef int(*tCmp)(const void*, const void*);
 typedef void(*tAccion)(void*, const void*, const void*);
 typedef void(*tMostrar)(const void*);
-
+typedef void(*tCopiar)(void*, const void*);
 /** se colocan acá para que cuando el compilador entre a los headers, conozca las funciones de tCmp, etc.*/
 #include "EstructurasDatos/TDA_Arbol/Arbol_Header.h"
 #include "EstructurasDatos/TDA_Cola/cola_dinamica.h"
@@ -86,7 +86,7 @@ typedef struct
 
 typedef struct
 {
-    size_t registro;
+    unsigned registro;
     char nickname[20];
 }tJugadorIdx;
 
