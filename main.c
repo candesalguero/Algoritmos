@@ -68,7 +68,7 @@ int main()
                 break;
             case 2:
                 {
-                    /*/mostrarRanking();*/
+                    mostrarRanking();
                 }
                 break;
             case 3:
