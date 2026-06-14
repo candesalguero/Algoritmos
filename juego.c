@@ -66,7 +66,7 @@ void generarEscenario(tConfig* config, tListaDoble* ruta_desierto)
     }
 
     mapa[0] = 'I';
-    mapa[config->cantidad_posiciones - 1] = 'S'; //La 'S' ahora se ubica en la última posición del mapa
+    mapa[config->cantidad_posiciones - 1] = 'S'; /*/La 'S' ahora se ubica en la última posición del mapa*/
 
 
     for (tipo = 0; tipo < 5; tipo++)

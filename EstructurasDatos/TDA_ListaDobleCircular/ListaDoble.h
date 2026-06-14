@@ -1,21 +1,16 @@
 #ifndef LISTADOBLE_H
 #define LISTADOBLE_H
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#define MINIMO(x,y) ((x)<(y)?(x):(y))
-#define TODO_BIEN 1
-#define SIN_MEM 0
+#include "../../config.h"
 #define CLA_DUP -1
 
-typedef struct sNodo {
+typedef struct sNodoDoble {
     void *info;
     unsigned tamInfo;
-    struct sNodo *siguiente, *anterior;
-} tNodo;
+    struct sNodoDoble *siguiente, *anterior;
+} tNodoDoble;
 
-typedef tNodo *tListaDoble;
+typedef tNodoDoble *tListaDoble;
 
 void crearLista(tListaDoble *pl);
 int vaciarLista(tListaDoble *pl);
@@ -33,4 +28,4 @@ int sacarDelFinal(tListaDoble *p, void *d, unsigned cantBytes);
 int buscarYVer(const tListaDoble *p, void *d, unsigned cantBytes, int (*comparar)(const void *, const void *));
 int buscarYSacar(tListaDoble *p, void *d, unsigned cantBytes, int (*comparar)(const void *, const void *));
 
-#endif // LISTADOBLE_H
+#endif

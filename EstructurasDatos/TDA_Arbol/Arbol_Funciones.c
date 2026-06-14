@@ -323,5 +323,5 @@ int Arbol_DetectarBalanceado(tArbol *arbol)
 {
     if(!*arbol)
         return 0;
-
+    return TODO_OK;
 }

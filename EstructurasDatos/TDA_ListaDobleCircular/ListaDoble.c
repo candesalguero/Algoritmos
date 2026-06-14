@@ -1,19 +1,21 @@
-#include "../Headers/ListaDoble.h"
+#include "ListaDoble.h"
 
-// 1. Crear Lista
+
 void crearLista(tListaDoble *pl) {
     *pl = NULL;
 }
 
-// 2. Vaciar Lista
+
 int vaciarLista(tListaDoble *pl) {
     int cant = 0;
-    tNodo *actual = *pl;
+    tNodoDoble *actual = *pl;
+    tNodoDoble *ultimo;
+    tNodoDoble *aux;
     if (actual) {
-        tNodo *ultimo = actual->anterior;
+        ultimo = actual->anterior;
         ultimo->siguiente = NULL;
         while (actual) {
-            tNodo *aux = actual->siguiente;
+            aux = actual->siguiente;
             free(actual->info);
             free(actual);
             actual = aux;
@@ -24,12 +26,12 @@ int vaciarLista(tListaDoble *pl) {
     return cant;
 }
 
-// 3. Lista Vacía
+
 int listaVacia(const tListaDoble *pl) {
     return *pl == NULL;
 }
 
-// 4. Lista Llena
+
 int listallena(const tListaDoble pl, unsigned cantBytes) {
     tNodo *nuevo = (tNodo *)malloc(sizeof(tNodo));
     void *aux = malloc(cantBytes);
@@ -38,13 +40,16 @@ int listallena(const tListaDoble pl, unsigned cantBytes) {
     return aux == NULL || nuevo == NULL;
 }
 
-// 5. Insertar al Final
+
 int insertarAlFinal(tListaDoble *pl, const void *d, unsigned cantBytes) {
-    tNodo *nuevo;
+    tNodoDoble *nuevo;
+    tNodoDoble *primero;
+    tNodoDoble *ultimo;
+
     if ((nuevo = (tNodo *)malloc(sizeof(tNodo))) == NULL ||
         (nuevo->info = malloc(cantBytes)) == NULL) {
         free(nuevo);
-        return 0;
+        return SIN_MEM;
     }
     memcpy(nuevo->info, d, cantBytes);
     nuevo->tamInfo = cantBytes;
@@ -53,21 +58,43 @@ int insertarAlFinal(tListaDoble *pl, const void *d, unsigned cantBytes) {
         nuevo->anterior = nuevo;
         *pl = nuevo;
     } else {
-        tNodo *primero = *pl;
-        tNodo *ultimo = primero->anterior;
+        primero = *pl;
+        ultimo = primero->anterior;
         nuevo->siguiente = primero;
         nuevo->anterior = ultimo;
         ultimo->siguiente = nuevo;
         primero->anterior = nuevo;
     }
-    return 1;
+    return TODO_OK;
 }
 
-// 6. Insertar al Comienzo
+
 int insertarAlComienzo(tListaDoble *pl, const void *d, unsigned cantBytes) {
-    if (!insertarAlFinal(pl, d, cantBytes)) return 0;
+    if (!insertarAlFinal(pl, d, cantBytes))
+        return SIN_MEM;
     *pl = (*pl)->anterior;
-    return 1;
+    return TODO_OK;
 }
 
-// Nota: Las demas primitivas se agregan en el codigo real siguiendo el archivo entregado.
+int BuscarElementoListaDC(const tListaDoble *lista, const void *aBuscar, void *elem, size_t tamElem, tCmp cmp)
+{
+    tNodo *act;
+    act = *lista;
+
+    if(!act)
+        return LISTA_VACIA;
+    do
+    {
+        if(cmp(act->info, aBuscar)==0)
+        {
+            memcpy(elem,act->info,MIN(tamElem, act->tamElem));
+            return TODO_OK;
+        }
+        act = act->sig;
+    }while(act != *lista);
+
+    return NOT_FOUND_ELEM;
+}
+
+
+
