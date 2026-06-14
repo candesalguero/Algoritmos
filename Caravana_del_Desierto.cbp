@@ -39,6 +39,13 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="EstructurasDatos/TDA_Cola/cola_dinamica.h" />
+<<<<<<< HEAD
+		<Unit filename="EstructurasDatos/TDA_ListaDobleCircular/ListaDoble.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="EstructurasDatos/TDA_ListaDobleCircular/ListaDoble.h" />
+=======
+>>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
 		<Unit filename="EstructurasDatos/TDA_Lista/Lista_Header.h" />
 		<Unit filename="EstructurasDatos/TDA_Lista/Lista_funciones.c">
 			<Option compilerVar="CC" />
@@ -48,6 +55,13 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="funciones.h" />
+<<<<<<< HEAD
+		<Unit filename="juego.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="juego.h" />
+=======
+>>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
 		<Unit filename="lotes_de_prueba.c">
 			<Option compilerVar="CC" />
 		</Unit>

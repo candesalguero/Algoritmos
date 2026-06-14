@@ -50,6 +50,10 @@ typedef void(*tCopiar)(void*, const void*);
 #include "EstructurasDatos/TDA_Arbol/Arbol_Header.h"
 #include "EstructurasDatos/TDA_Cola/cola_dinamica.h"
 #include "EstructurasDatos/TDA_Lista/Lista_Header.h"
+<<<<<<< HEAD
+#include "EstructurasDatos/TDA_ListaDobleCircular/ListaDoble.h"
+=======
+>>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
 
 /*/ ESTRUCTURAS ////////////////////////*/
 typedef struct {
