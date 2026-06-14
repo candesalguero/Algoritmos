@@ -67,6 +67,30 @@ int GenerarIndiceJugadores(tArbol *arbolIdx,const char *archJugadores, const cha
     return TODO_OK;
 }
 
+int InicializarIndice(tArbol *arbolIdx,const char *archJugadores, const char *archIdx, tCmp cmp, tAccion Copiar)
+{
+    FILE *idx, *jug;
+    tJugadorIdx jugIdx;
+    idx = fopen(archIdx, "rb");
+    if(idx)/*el indice existe, lo bajamos a el arbol*/
+    {
+        while(fread(&jugIdx, sizeof(tJugadorIdx),1,idx))
+            Arbol_Insertar(arbolIdx, &jugIdx, sizeof(tJugadorIdx), cmp);
+        fclose(idx);
+        return TODO_OK;
+    }
+    /* Si el indice no existe hay que revisar si existe el de jugadores*/
+    jug = fopen(archJugadores, "rb");
+    if(!jug)/*si no existe ninguno es la PRIMERA VEZ que se inicia el juego*/
+        return TODO_OK;
+    /* si el de jugadores existe, significa que se corrompió el de idx, lo volvemos a generar */
+    fclose(jug);
+    fclose(idx);
+    GenerarIndiceJugadores(arbolIdx, archJugadores, archIdx, cmp, Copiar);
+    return TODO_OK;
+
+}
+
 int AltaJugadores(tJugador *jugador, tJugadorIdx *nuevoJugador, const char *archJugadores)
 {
     FILE *pf;
@@ -100,7 +124,8 @@ int BuscarDatosJugadores(tJugador *jugador, tJugadorIdx *nuevoJugador, const cha
     pf = fopen(archJugadores,"r+b");
     if(!pf)
         return ERR_ARCH;
-    fread(jugador, sizeof(tJugador), nuevoJugador->registro, pf);
+    fseek(pf,sizeof(tJugador) * nuevoJugador->registro,SEEK_SET);
+    fread(jugador, sizeof(tJugador), 1 , pf);
     fclose(pf);
     return TODO_OK;
 }

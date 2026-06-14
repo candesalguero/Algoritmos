@@ -15,7 +15,7 @@ void acumularPuntosMovimientos(void *viejo, const void *nuevo, const void *extra
 {
     tRankig *jViejo = (tRankig *)viejo;
     const tRankig *jNuevo = (const tRankig *)nuevo;
-
+    (void)extra; /* para solucionar el warning de la firma */
     jViejo->puntos_totales += jNuevo->puntos_totales;
     jViejo->mov_totales += jNuevo->mov_totales;
 }

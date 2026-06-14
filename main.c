@@ -17,8 +17,11 @@ int main()
 
     srand(time(NULL)); /*/srand le pasa la hora actual como punto de arranque para que el resultado del dado (rand) no siga siempre la misma secuencia*/
 
+    /*
     GenerarLotePrueba(mostrarJugador,mostrarPartida);
+    */
     Arbol_Crear(&idxJugador);
+    InicializarIndice(&idxJugador, ARCHIVO_JUGADORES, ARCHIVO_INDICE, cmpJugadoresIdx, CopiarIndice);
     GenerarIndiceJugadores(&idxJugador, ARCHIVO_JUGADORES, ARCHIVO_INDICE, cmpJugadoresIdx, CopiarIndice);
 
     /*
@@ -59,11 +62,12 @@ int main()
                     }
                     else /*si el jugador está, me traigo del archivo sus datos */
                     {
-                        BuscarDatosJugador(&jugador, &nuevoJugador, ARCHIVO_JUGADORES);
+                        BuscarDatosJugadores(&jugador, &nuevoJugador, ARCHIVO_JUGADORES);
                     }
 
 
                     jugarPartida();
+
                 }
                 break;
             case 2:
@@ -85,6 +89,11 @@ int main()
                 break;
         }
     }while(opcion != 3);
+
+    Arbol_GuardarEnArchivo(&idxJugador, ARCHIVO_INDICE, PRE_ORDEN);
+    MostrarArchivo(ARCHIVO_JUGADORES, sizeof(tJugador), mostrarJugador);
+    MostrarArchivo(ARCHIVO_INDICE, sizeof(tJugadorIdx), mostrarIdx);
+    Arbol_Destruir(&idxJugador);
 
     return 0;
 }

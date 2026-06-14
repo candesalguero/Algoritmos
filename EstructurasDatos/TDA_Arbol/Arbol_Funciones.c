@@ -319,3 +319,9 @@ tNodoArbol **_Arbol_BuscarMenorClave(tArbol *arbol)
     return _Arbol_BuscarMenorClave(&(*arbol)->izq);
 }
 
+int Arbol_DetectarBalanceado(tArbol *arbol)
+{
+    if(!*arbol)
+        return 0;
+
+}
