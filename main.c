@@ -12,6 +12,13 @@ int main()
     tConfig config;
     tListaDoble ruta_desierto;
     int opcion, errores, resultado;
+    /** --- VARIABLES  --- */
+    int opcion, errores, resultado;
+    int puntos_obtenidos;
+    tPartida nuevaPartida;
+    /** Variables de tu juego */
+    tConfig config;
+    tListaDoble ruta_desierto;
     /** DECLARACION DE VARIABLES DE ESTRUCTURAS*/
     tConfiguracion config;
     tArbol idxJugador;
@@ -86,7 +93,16 @@ int main()
 
                     /* --- ACÁ ARRANCA TU JUEGO REAL --- */
                     generarEscenario(&config, &ruta_desierto);
-                    iniciarPartida(&config, &ruta_desierto);
+                    puntos_obtenidos = iniciarPartida(&config, &ruta_desierto, &nuevaPartida);
+
+                    /** --- GUARDADO DE DATOS (Si no abandonó) --- */
+                    if(puntos_obtenidos != -1)
+                    {
+                        strcpy(nuevaPartida.nickname, jugador.nickname);
+
+                        ActualizarJugadorGuardado(&jugador, &nuevoJugador, ARCHIVO_JUGADORES);
+                        GuardarNuevaPartida(&nuevaPartida, ARCHIVO_PARTIDAS);
+                    }
 
                     /* TODO PARA EL PASO 2: Necesitamos que iniciarPartida nos devuelva
                        los puntos para guardarlos en el archivo del jugador. */

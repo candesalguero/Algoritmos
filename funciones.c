@@ -160,26 +160,5 @@ void ManejoErrores(int codError, const char *arch)
     printf("\ncodError:%d",codError);
 }
 
-void Menu()
-{
-    printf("\n-----------------------------\n");
-    printf("    CARAVANA DEL DESIERTO    \n");
-    printf("-------------------------------\n");
-    printf("[1] Jugar nueva partida\n");
-    printf("[2] Ver ranking\n");
-    printf("[3] Salir\n");
-    printf("-------------------------------\n");
-}
 
-
-int tirarDado()
-{
-    return rand() % 6 + 1;
-}
-
-void jugarPartida()
-{
-    int valor = tirarDado();
-    printf("Sacaste: %d\n", valor);
-}
 
