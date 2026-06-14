@@ -3,7 +3,10 @@
 
 #include "config.h"
 #include "funciones.h"
+<<<<<<< HEAD
 #include "juego.h"
+=======
+>>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
 #include "lotes_de_prueba.h"
 
 int GuardarArchivo(const char *arch, const void *vec, size_t tamElem,size_t cant );
