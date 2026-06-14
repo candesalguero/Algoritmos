@@ -25,7 +25,9 @@ int main()
 
     /** --- 1. INICIALIZACIÓN DEL EQUIPO (ÁRBOL) --- */
     GenerarLotePrueba(mostrarJugador,mostrarPartida);
+    */
     Arbol_Crear(&idxJugador);
+    InicializarIndice(&idxJugador, ARCHIVO_JUGADORES, ARCHIVO_INDICE, cmpJugadoresIdx, CopiarIndice);
     GenerarIndiceJugadores(&idxJugador, ARCHIVO_JUGADORES, ARCHIVO_INDICE, cmpJugadoresIdx, CopiarIndice);
 
     /*
@@ -70,7 +72,7 @@ int main()
                     }
                     else /*si el jugador está, me traigo del archivo sus datos */
                     {
-                        BuscarDatosJugador(&jugador, &nuevoJugador, ARCHIVO_JUGADORES);
+                        BuscarDatosJugadores(&jugador, &nuevoJugador, ARCHIVO_JUGADORES);
                     }
 
 
@@ -113,6 +115,11 @@ int main()
                 break;
         }
     }while(opcion != 3);
+
+    Arbol_GuardarEnArchivo(&idxJugador, ARCHIVO_INDICE, PRE_ORDEN);
+    MostrarArchivo(ARCHIVO_JUGADORES, sizeof(tJugador), mostrarJugador);
+    MostrarArchivo(ARCHIVO_INDICE, sizeof(tJugadorIdx), mostrarIdx);
+    Arbol_Destruir(&idxJugador);
 
     return 0;
 }
