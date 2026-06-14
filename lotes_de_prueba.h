@@ -12,5 +12,5 @@ typedef void (*tMostrarPartida)(const tPartida *);
 
 int recorrerArchivoJugadores(const char *nombreArchivo, tMostrarJugador mostrar);
 int recorrerArchivoPartidas(const char *nombreArchivo, tMostrarPartida mostrar);
-
+int GenerarLotePrueba(tMostrar mostrarJugador, tMostrar mostrarPartida);
 #endif /*/ LOTES_DE_PRUEBA_H_INCLUDED*/

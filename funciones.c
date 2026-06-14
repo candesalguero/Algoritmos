@@ -67,7 +67,43 @@ int GenerarIndiceJugadores(tArbol *arbolIdx,const char *archJugadores, const cha
     return TODO_OK;
 }
 
+int AltaJugadores(tJugador *jugador, tJugadorIdx *nuevoJugador, const char *archJugadores)
+{
+    FILE *pf;
+    unsigned reg;
+    pf = fopen(archJugadores,"ab");
+    if(!pf)
+        return ERR_ARCH;
 
+    strcpy(jugador->nickname, nuevoJugador->nickname);
+    jugador->partidas_jugadas = 0;
+    ObtenerFechaActual(jugador->fechaIngreso);
+    fwrite(jugador, sizeof(tJugador),1,pf);
+    reg = ftell(pf)/sizeof(tJugador) - 1;/*Despues de escribir está en EOF  */
+    nuevoJugador->registro = reg;
+
+    fclose(pf);
+    return TODO_OK;
+}
+
+void ObtenerFechaActual(char *fechaDest)
+{
+    time_t tiempoActual = time(NULL);
+    struct tm *tiempo_local = localtime(&tiempoActual);
+    strftime(fechaDest, 11, "%d/%m/%Y",tiempo_local);
+}
+
+int BuscarDatosJugadores(tJugador *jugador, tJugadorIdx *nuevoJugador, const char *archJugadores)
+{
+    FILE *pf;
+
+    pf = fopen(archJugadores,"r+b");
+    if(!pf)
+        return ERR_ARCH;
+    fread(jugador, sizeof(tJugador), nuevoJugador->registro, pf);
+    fclose(pf);
+    return TODO_OK;
+}
 
 
 void ManejoErrores(int codError, const char *arch)

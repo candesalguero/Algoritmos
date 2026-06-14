@@ -155,23 +155,24 @@
 1781305590 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_lista\lista_funciones.c
 	"Lista_Header.h"
 
-1781321705 source:c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.c
+1781373466 source:c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.c
 	"funciones.h"
 
-1781314191 c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.h
+1781372993 c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.h
 	"config.h"
 
-1781306441 source:c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.c
+1781372904 source:c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.c
 	"lotes_de_prueba.h"
 
-1781306402 c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.h
+1781372904 c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.h
 	"config.h"
 	"main.h"
 
-1781307467 c:\users\user\downloads\tpalgoritmos\algoritmos\main.h
+1781372875 c:\users\user\downloads\tpalgoritmos\algoritmos\main.h
 	"config.h"
 	"funciones.h"
+	"lotes_de_prueba.h"
 
-1781321740 source:c:\users\user\downloads\tpalgoritmos\algoritmos\main.c
+1781373504 source:c:\users\user\downloads\tpalgoritmos\algoritmos\main.c
 	"main.h"
 
