@@ -8,15 +8,13 @@ void CopiarIndice(void *dest, const void *orig, const void *reg);
 
 int main()
 {
-<<<<<<< HEAD
     /** --- VARIABLES  --- */
     int opcion, errores, resultado;
+    int puntos_obtenidos;
+    tPartida nuevaPartida;
     /** Variables de tu juego */
     tConfig config;
     tListaDoble ruta_desierto;
-=======
-    int opcion, errores, resultado;
->>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
     /** DECLARACION DE VARIABLES DE ESTRUCTURAS*/
     tConfiguracion config;
     tArbol idxJugador;
@@ -25,10 +23,7 @@ int main()
 
     srand(time(NULL)); /*/srand le pasa la hora actual como punto de arranque para que el resultado del dado (rand) no siga siempre la misma secuencia*/
 
-<<<<<<< HEAD
     /** --- 1. INICIALIZACIÓN DEL EQUIPO (ÁRBOL) --- */
-=======
->>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
     GenerarLotePrueba(mostrarJugador,mostrarPartida);
     Arbol_Crear(&idxJugador);
     GenerarIndiceJugadores(&idxJugador, ARCHIVO_JUGADORES, ARCHIVO_INDICE, cmpJugadoresIdx, CopiarIndice);
@@ -37,11 +32,7 @@ int main()
     Arbol_RecorrerInOrden(&idxJugador, mostrarIdx);
     MostrarArchivo(ARCHIVO_INDICE, sizeof(tJugadorIdx),mostrarIdx);
     */
-<<<<<<< HEAD
     /* --- 2. INICIALIZACIÓN DE TU JUEGO --- */
-=======
-
->>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
     errores = leerConfig(&config,ARCHIVO_CONFIG);
     if (errores != TODO_OK)
     {
@@ -53,7 +44,6 @@ int main()
 
     do
     {
-<<<<<<< HEAD
         mostrarMenu();
         // Verificamos si scanf logró leer exactamente 1 elemento
         if (scanf("%d", &opcion) != 1) {
@@ -62,27 +52,14 @@ int main()
 
         limpiarBuffer(); // Limpiamos la basura o el 'Enter' sobrante
 
-=======
-        Menu();
-        printf("Opcion: ");
-        scanf("%d", &opcion);
-        fflush(stdin);
->>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
         switch (opcion)
         {
             case 1:
                 {
-<<<<<<< HEAD
                     LimpiarPantalla();
                     puts("Ingrese su nickname para comenzar a jugar!");
                     scanf("%s",nuevoJugador.nickname);
                     limpiarBuffer();
-=======
-                    system("cls");
-                    puts("Ingrese su nickname para comenzar a jugar!");
-                    fflush(stdin);
-                    scanf("%s",nuevoJugador.nickname);
->>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
                     resultado = Arbol_BusquedaBinaria(&idxJugador, &nuevoJugador, &nuevoJugador, sizeof(tJugadorIdx),cmpJugadoresIdx);
                     if(resultado == NOT_FOUND_ELEM)
                     {
@@ -97,29 +74,29 @@ int main()
                     }
 
 
-<<<<<<< HEAD
                     Pausar();
                     LimpiarPantalla();
 
                     /* --- ACÁ ARRANCA TU JUEGO REAL --- */
                     generarEscenario(&config, &ruta_desierto);
-                    iniciarPartida(&config, &ruta_desierto);
+                    puntos_obtenidos = iniciarPartida(&config, &ruta_desierto, &nuevaPartida);
 
-                    /* TODO PARA EL PASO 2: Necesitamos que iniciarPartida nos devuelva
-                       los puntos para guardarlos en el archivo del jugador. */
-=======
-                    jugarPartida();
->>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
+                    /** --- GUARDADO DE DATOS (Si no abandonó) --- */
+                    if(puntos_obtenidos != -1)
+                    {
+                        strcpy(nuevaPartida.nickname, jugador.nickname);
+
+                        ActualizarJugadorGuardado(&jugador, &nuevoJugador, ARCHIVO_JUGADORES);
+                        GuardarNuevaPartida(&nuevaPartida, ARCHIVO_PARTIDAS);
+                    }
+
                 }
                 break;
             case 2:
                 {
                     mostrarRanking();
-<<<<<<< HEAD
                     Pausar();
                     LimpiarPantalla();
-=======
->>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
                 }
                 break;
             case 3:
@@ -130,13 +107,8 @@ int main()
             default:
                 {
                     printf("\nOpcion invalida. Intente nuevamente.\n");
-<<<<<<< HEAD
                     Pausar();
                     LimpiarPantalla();
-=======
-                    system("pause");
-                    system("cls");
->>>>>>> cf5b3fa8bdcd7d8eb64e20fb2ce1e05001892efd
                 }
                 break;
         }

@@ -1,16 +1,15 @@
 #include "juego.h"
 
-int cargarConfiguracion(const char* ruta, tConfig* config)
+int leerConfig(tConfiguracion* config, const char *arch)
 {
     char linea[150];
     char clave[50];
     int valor;
 
-    FILE *archivo = fopen(ruta, "r");
-    if (!archivo) {
-        printf("Error: No se pudo abrir %s\n", ruta);
-        return 0;
-    }
+    FILE *pf=fopen(arch, "rt");
+
+    if(!pf)
+        return ERR_ARCH;
 
 
     config->cantidad_posiciones = 0;
@@ -33,13 +32,15 @@ int cargarConfiguracion(const char* ruta, tConfig* config)
         }
     }
 
-    fclose(archivo);
+    fclose(pf);
+
+
     if (config->cantidad_posiciones <= 0 || config->vidas_inicio <= 0) {
         printf("Error: Archivo de configuracion corrupto o incompleto.\n");
         return 0;
     }
 
-    return 1;
+    return TODO_OK;
 }
 
 void generarEscenario(tConfig* config, tListaDoble* ruta_desierto)
@@ -491,7 +492,7 @@ void mostrarMapa(tListaDoble *ruta, int protegido)
     printf("\n=============================================================================\n");
 }
 
-void mostrarHistorial(tCola *historial) /** MUESTRO Y DESENCOLAR*/
+int mostrarHistorial(tCola *historial) /** MUESTRO Y DESENCOLAR*/
 {
     tNodoCola *actual;
     int turno = 1;
@@ -502,7 +503,7 @@ void mostrarHistorial(tCola *historial) /** MUESTRO Y DESENCOLAR*/
     if (historial->pri == NULL) {
         printf("  (No se registro ningun movimiento)\n");
         printf("==============================================\n");
-        return;
+        return 0; /* Retorna 0 movimientos */
     }
 
     actual = historial->pri;
@@ -517,6 +518,7 @@ void mostrarHistorial(tCola *historial) /** MUESTRO Y DESENCOLAR*/
     printf("  Total de turnos jugados: %d\n", turno - 1);
     printf("==============================================\n");
     /** USAR UN PUNTERO ACUMULADOR O QUE RETORNE LA CANTIDAD DE MOVIMIENTOS*/
+    return turno - 1; /* <-- Retorna la cantidad de movimientos */
 }
 void Pausar()
 {
@@ -527,7 +529,7 @@ void LimpiarPantalla()
 {
     system("cls");
 }
-void iniciarPartida(tConfig *config, tListaDoble *ruta)
+int iniciarPartida(tConfig *config, tListaDoble *ruta, tPartida *partidaActual)
 {
     int vidas = config->vidas_inicio;
     int puntos = 0;
@@ -538,6 +540,7 @@ void iniciarPartida(tConfig *config, tListaDoble *ruta)
     tCola colaMovimientos;
     tCola colaHistorial;
     int jugadorMovio;
+    int puntos_finales = -1;
 
     crear_cola(&colaMovimientos);
     crear_cola(&colaHistorial);
@@ -587,22 +590,29 @@ void iniciarPartida(tConfig *config, tListaDoble *ruta)
 
     if (jugando == 0) {
         printf("\nVICTORIA! Has llegado a la Ciudad Refugio con %d punto(s).\n", puntos);
+        puntos_finales = puntos;//Si jugo hasta el final se queda con los puntos que obtuvo
     } else if (jugando == 1) {
         printf("\nHas perdido todas tus vidas. El desierto te ha consumido.\n");
+        puntos_finales = puntos; //Si jugo hasta el final se queda con los puntos que obtuvo
     } else if (jugando == -1) {
         printf("\nRegresando al menu principal. Partida abandonada.\n");
+        puntos_finales = -1;
     }
 
     Pausar();
     LimpiarPantalla();
 
-    mostrarHistorial(&colaHistorial);
+    /* --- CARGAMOS LA ESTRUCTURA --- */
+    partidaActual->puntos = puntos; /* Asignamos los puntos conseguidos */
+    partidaActual->cant_movimientos = mostrarHistorial(&colaHistorial); /* Extraemos movimientos */
+
     Pausar();
     LimpiarPantalla();
     // --- LIBERACIÓN DE MEMORIA ---
     vaciar_cola(&colaHistorial); //ESTO LO PUEDO SACAR Y PONER EN MOSTRARHISTORIAL SACAR DE COLA Y YA ME QUEDA VACIA
     vaciar_cola(&colaMovimientos);
     vaciarLista(ruta);
+    return puntos_finales;
 }
 void limpiarBuffer() {
     int c;
