@@ -43,7 +43,7 @@ int leerConfig(tConfiguracion* config, const char *arch)
     return TODO_OK;
 }
 
-void generarEscenario(tConfig* config, tListaDoble* ruta_desierto)
+/*void generarEscenario(tConfig* config, tListaDoble* ruta_desierto)
 {
     int i, pos_aleatoria, tipo, colocados, intentos, maxIntentos;
     FILE *archivo;
@@ -52,10 +52,10 @@ void generarEscenario(tConfig* config, tListaDoble* ruta_desierto)
     int cantidades[] = {config->maximo_bandidos, config->maximo_premios,
         config->maximo_vidas_extra, config->maximo_oasis,
         config->maximo_tormentas};
-        
+
     char simbolos[5] = {'B', 'P', 'V', 'O', 'T'};
     tPosicion pos;
-        
+
 
     crearLista(ruta_desierto);
 
@@ -74,7 +74,7 @@ void generarEscenario(tConfig* config, tListaDoble* ruta_desierto)
     }
 
     *mapa = 'I';
-    mapa[config->cantidad_posiciones - 1] = 'S'; /*/La 'S' ahora se ubica en la �ltima posici�n del mapa*/
+    mapa[config->cantidad_posiciones - 1] = 'S';
 
 
     for (tipo = 0; tipo < 5; tipo++)
@@ -107,7 +107,7 @@ void generarEscenario(tConfig* config, tListaDoble* ruta_desierto)
         free(mapa); free(mapa_bandidos);
         return;
     }
-    
+
     pos.tiene_jugador = (i == 0) ? 1 : 0;
     for (i = 0; i < config->cantidad_posiciones; i++) {
         pos.numero_posicion = i + 1;
@@ -129,6 +129,202 @@ void generarEscenario(tConfig* config, tListaDoble* ruta_desierto)
     fclose(archivo);
     free(mapa);
     free(mapa_bandidos);
+}*/
+
+/*busco en la lista, si lo encuentra me retorna el puntero*/
+void *buscarPtrElementoListaDC(const tListaDoble *lista, const void *aBuscar, tCmp cmp)
+{
+    tNodoDoble *actual = *lista;
+
+    if(!actual)
+        return LISTA_VACIA;
+
+    do
+    {
+        if(cmp(actual->info, aBuscar) == 0)
+            return actual->info;
+
+        actual = actual->siguiente;
+
+    }while(actual != *lista);
+
+    return NULL;
+}
+
+int cmpPosicionPorNumero(const void *a, const void *b) /*Me compara la posicion con el numero aleatorio que buscamos*/
+{
+    const tPosicion *pos = (const tPosicion *)a;
+    const int *nro = (const int *)b;
+
+    return pos->numero_posicion - *nro;
+}
+
+/*FUNCION PARA INICIALIZAR LA RUTA DEL DESIRETO*/
+int inicializarRutaDesierto(tListaDoble *ruta_desierto, int cantidad_posiciones)
+{
+    int i;
+    tPosicion pos;
+
+    crearLista(ruta_desierto); /*creo la lista DC, que va a ser nuestro mapa*/
+
+    for(i = 1; i <= cantidad_posiciones; i++)
+    {
+        pos.numero_posicion = i;
+        pos.elemento = '.';
+        pos.tiene_bandido = 0;
+        pos.tiene_jugador = 0;
+
+        if(i == 1)
+        {
+            pos.elemento = 'I';
+            pos.tiene_jugador = 1;
+        }
+
+        if(i == cantidad_posiciones)
+            pos.elemento = 'S';
+
+        if(insertarAlFinal(ruta_desierto, &pos, sizeof(tPosicion)) != TODO_OK)
+            return SIN_MEM;
+    }
+
+    return TODO_OK;
+}
+
+
+int colocarElementoEnRuta(tListaDoble *ruta_desierto, int numero_posicion, char simbolo)
+{
+    tPosicion *pos;
+
+    pos = (tPosicion *)buscarPtrElementoListaDC(
+        ruta_desierto,
+        &numero_posicion,
+        cmpPosicionPorNumero
+    );
+
+    if(pos == NULL)
+        return NOT_FOUND_ELEM;
+
+    if(pos->elemento != '.' || pos->tiene_bandido)
+        return POS_OCUPADA;
+
+    if(simbolo == 'B')
+        pos->tiene_bandido = 1;
+    else
+        pos->elemento = simbolo;
+
+    return TODO_OK;
+}
+
+
+int colocarElementosAleatorios(tListaDoble *ruta_desierto, int cantidad_posiciones, int cantidad, char simbolo)
+{
+    int colocados = 0;
+    int intentos = 0;
+    int maxIntentos = cantidad_posiciones * 10;
+    int pos_aleatoria;
+    int resultado;
+
+    while(colocados < cantidad && intentos < maxIntentos)
+    {
+        pos_aleatoria = rand() % cantidad_posiciones + 1;
+
+        resultado = colocarElementoEnRuta(ruta_desierto, pos_aleatoria, simbolo);
+
+        if(resultado == TODO_OK)
+            colocados++;
+
+        intentos++;
+    }
+
+    return colocados;
+}
+
+FILE * abrirArchivo(const char *nombre, const char *modo)
+{
+    return fopen(nombre, modo);
+}
+
+int escribirRutaDesiertoEnArchivo(const char *nombre_archivo, const tListaDoble *ruta_desierto)
+{
+    FILE *archivo;
+    tNodoDoble *act;
+    tPosicion *pos;
+
+    archivo = abrirArchivo(nombre_archivo, "wt");
+
+    if(!archivo)
+    {
+        fclose(archivo);
+        return ERR_ARCH;
+    }
+
+    act = *ruta_desierto;
+
+    if(!act)
+    {
+        fclose(archivo);
+        return LISTA_VACIA;
+    }
+
+    do
+    {
+        pos = (tPosicion *)act->info;
+
+        if(pos->tiene_jugador)
+            fprintf(archivo, "%02d:[%c J]\n", pos->numero_posicion, pos->elemento);
+        else if(pos->tiene_bandido)
+            fprintf(archivo, "%02d:B\n", pos->numero_posicion);
+        else
+            fprintf(archivo, "%02d:%c\n", pos->numero_posicion, pos->elemento);
+
+        act = act->siguiente;
+
+    }while(act != *ruta_desierto);
+
+    fclose(archivo);
+
+    return TODO_OK;
+}
+
+int generarEscenario(tConfig *config, tListaDoble *ruta_desierto)
+{
+    int tipo;
+    int colocados;
+
+    int cantidades[] = {
+        config->maximo_bandidos,
+        config->maximo_premios,
+        config->maximo_vidas_extra,
+        config->maximo_oasis,
+        config->maximo_tormentas
+    };
+
+    char simbolos[] = {'B', 'P', 'V', 'O', 'T'};
+
+    if(inicializarRutaDesierto(ruta_desierto, config->cantidad_posiciones) != TODO_OK)
+        return SIN_MEM;
+
+    for(tipo = 0; tipo < 5; tipo++) /*el 5 ponerlo en un define*/
+    {
+        colocados = colocarElementosAleatorios(
+            ruta_desierto,
+            config->cantidad_posiciones,
+            cantidades[tipo],
+            simbolos[tipo]
+        );
+
+        if(colocados < cantidades[tipo])
+        {
+            printf(
+                "Advertencia: solo se colocaron %d de %d [%c]. Sin espacio en el mapa.\n",
+                colocados,
+                cantidades[tipo],
+                simbolos[tipo]
+            );
+        }
+    }
+
+    return escribirRutaDesiertoEnArchivo("caravana.txt", ruta_desierto);
 }
 
 int tirarDado()
@@ -149,10 +345,10 @@ void enviarJugadorAlInicio(tListaDoble *ruta)
 {
     recorrerListaDobleCircular(ruta, NULL, accionMandarInicio);
 }
-int accionMandarInicio(void *dato, void *ctx) 
+int accionMandarInicio(void *dato, void *ctx)
 {
     tPosicion *p = (tPosicion *)dato;
-    
+
     if (p->numero_posicion == 1) {
         p->tiene_jugador = 1;
         return 0; /* ¡Corte temprano! Ya lo pusimos en el inicio, que frene el bucle */
@@ -204,7 +400,7 @@ int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial
         printf("Deseas moverte hacia (F) Adelante o (B) Atras?: ");
         scanf("%c",&opcion);
         limpiarBuffer();
-        if( opcion =='B' && !puede_retroceder) 
+        if( opcion =='B' && !puede_retroceder)
         {
             printf("No puedes retroceder porque cruzarias el Campamento Inicial (I). Solo podes avanzar.\n");
             puts("Volve a ingresar...");
@@ -228,16 +424,16 @@ int obtenerPosJugador(tListaDoble *ruta)
 
     return p.numero_posicion;
 }
-void accionBuscarJugador(void *dato, void *ctx) 
+void accionBuscarJugador(void *dato, void *ctx)
 {
-    tPosicion *nodoActual = (tPosicion *)dato; 
-    tPosicion *jugadorEncontrado = (tPosicion *)ctx;           
+    tPosicion *nodoActual = (tPosicion *)dato;
+    tPosicion *jugadorEncontrado = (tPosicion *)ctx;
 
     if (nodoActual->tiene_jugador) {
         *jugadorEncontrado = *nodoActual;
         return 0; /* Se encontro*/
     }
-    
+
     return 1; /* No está acá, le decimos a la primitiva que siga al próximo nodo */
 }
 void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugador *jugador, tConfig *config)
@@ -418,15 +614,15 @@ int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, int *vidas, i
 
 void mostrarMapa(tListaDoble *ruta, tEstadoJugador *jugador)
 {
-    if (listaVacia(ruta)) 
+    if (listaVacia(ruta))
         return;
 
-    // 1. Mostramos los datos del jugador 
+    // 1. Mostramos los datos del jugador
     printf("\n==================== ESTADO DEL CARAVANERO ====================\n");
     printf(" Posicion: %02d |  Vidas: %d |  Puntos: %d | Escudo: %s\n",
-           jugador->posicion_actual, 
-           jugador->vidas, 
-           jugador->puntos, 
+           jugador->posicion_actual,
+           jugador->vidas,
+           jugador->puntos,
            jugador->protegido > 0 ? "ACTIVO (*)" : "Inactivo");
     printf("================================================================\n");
 
@@ -444,12 +640,12 @@ void mostrarMapa(tListaDoble *ruta, tEstadoJugador *jugador)
     }
 }
 
-int accionImprimirCasillero(void *dato, void *ctx) 
+int accionImprimirCasillero(void *dato, void *ctx)
 {
     tPosicion *p = (tPosicion *)dato;
-    
+
     // Desempaquetamos el contexto pasándolo directamente a nuestro tipo de estructura
-    tEstadoJugador *jugador = (tEstadoJugador *)ctx; 
+    tEstadoJugador *jugador = (tEstadoJugador *)ctx;
 
     if (p->tiene_jugador) {
         // Accedemos al escudo de forma limpia a través de la estructura
@@ -465,7 +661,7 @@ int accionImprimirCasillero(void *dato, void *ctx)
     } else {
         printf("%c ", p->elemento);
     }
-    
+
     return 1; /* Retorna 1 siempre para que recorra e imprima TODO el mapa */
 }
 

@@ -3,6 +3,8 @@
 
 #include "config.h"
 
+#define POS_OCUPADA 20
+
 /*/ Estructura para almacenar la configuracion del juego*/
 typedef struct {
     int cantidad_posiciones;
@@ -73,4 +75,14 @@ int accionMandarInicio(void *dato, void *ctx);
 void accionBuscarJugador(void *dato, void *ctx);
 int accionImprimirCasillero(void *dato, void *ctx) ;
 void InicializarJugador(tEstadoJugador *jugador, tConfig *config);
+
+/*NUEVO*/
+void *buscarPtrElementoListaDC(const tListaDoble *lista, const void *aBuscar, tCmp cmp);
+int cmpPosicionPorNumero(const void *a, const void *b);
+int inicializarRutaDesierto(tListaDoble *ruta_desierto, int cantidad_posiciones);
+int colocarElementoEnRuta(tListaDoble *ruta_desierto, int numero_posicion, char simbolo);
+int colocarElementosAleatorios(tListaDoble *ruta_desierto, int cantidad_posiciones, int cantidad, char simbolo);
+int escribirRutaDesiertoEnArchivo(const char *nombre_archivo, const tListaDoble *ruta_desierto);
+FILE * abrirArchivo(const char *nombre, const char *modo);
+int generarEscenario(tConfig *config, tListaDoble *ruta_desierto);
 #endif
