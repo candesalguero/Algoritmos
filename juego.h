@@ -38,17 +38,29 @@ typedef struct {
     int protegido; // 0 = sin escudo, 1 = activo, 2 = recién adquirido en oasis
 } tEstadoJugador;
 
+typedef struct {
+    int posJugador;
+    int totalPosiciones;
+    tCola *colaMovimientos;
+    int hay_bandidos;
+}tContextoBandidos;
+
 /*/ Funciones del Motor del Juego*/
 int cargarConfiguracion(const char* ruta, tConfig* config);
 void generarEscenario(tConfig* config, tListaDoble* ruta_desierto);
 int tirarDado();
 char obtenerDireccionBandido(int posB, int posJ, int totalPos);
 void enviarJugadorAlInicio(tListaDoble *ruta);
-int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial, int vidas, int puntos, int *turnos_perdidos, int protegido);
+
+int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial, tEstadoJugador *jugador);
+
+
 int obtenerPosJugador(tListaDoble *ruta);
 void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, int totalPosiciones);
+
 int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, int *vidas, int *puntos, int *turnos_perdidos, int *protegido);
-void mostrarMapa(tListaDoble *ruta, int protegido);
+
+void mostrarMapa(tListaDoble *ruta, tEstadoJugador *jugador);
 int mostrarHistorial(tCola *historial);
 void Pausar();
 void LimpiarPantalla();
@@ -60,5 +72,5 @@ void mostrarMenu();
 int accionMandarInicio(void *dato, void *ctx);
 void accionBuscarJugador(void *dato, void *ctx);
 int accionImprimirCasillero(void *dato, void *ctx) ;
-
+void InicializarJugador(tEstadoJugador *jugador, tConfig *config);
 #endif

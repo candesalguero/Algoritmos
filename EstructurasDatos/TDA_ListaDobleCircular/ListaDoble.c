@@ -6,7 +6,7 @@ void crearLista(tListaDoble *pl) {
 }
 
 
-int vaciarLista(tListaDoble *pl) {
+int vaciarListaDobleC(tListaDoble *pl) {
     int cant = 0;
     tNodoDoble *actual = *pl;
     tNodoDoble *ultimo;
@@ -89,19 +89,18 @@ int BuscarElementoListaDC(const tListaDoble *lista, const void *aBuscar, void *e
 }
 
 
-int recorrerListaDobleCircular(tListaDoble *pl, void *ctx, void (*func)(void *dato, void *ctx))
+int recorrerListaDC_Condicionada(tListaDoble *pl, void *ctx, tAccionCond cond)
 {
     tNodoDoble *act = *pl;
     int continuar = 1;
 
-    if (act == NULL) {
+    if (act == NULL) 
         return LISTA_VACIA;
 
-    }
 
     do {
         /* La función ahora nos responde si debemos seguir o frenar */
-        continuar = func(act->info, ctx);
+        continuar = cond(act->info, ctx);
 
         if (continuar != 0) {
             act = act->siguiente;
@@ -109,7 +108,7 @@ int recorrerListaDobleCircular(tListaDoble *pl, void *ctx, void (*func)(void *da
 
     } while (act != *pl && continuar != 0); /* El bucle frena naturalmente si 'continuar' se vuelve 0 */
 
-    return 1;
+    return TODO_OK;
 }
 
 

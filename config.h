@@ -30,7 +30,7 @@
 #define SIN_MEM -2
 #define NOT_FOUND_ELEM -3
 #define ELEM_REPETIDO -4
-
+#define FIN_PARTIDA -5
 
 /*/ TIPOS DE CELDAS//////////////////////////*/
 #define TIPO_VACIO    '.'
@@ -47,6 +47,7 @@ typedef int(*tCmp)(const void*, const void*);
 typedef void(*tAccion)(void*, const void*, const void*);
 typedef void(*tMostrar)(const void*);
 typedef void(*tCopiar)(void*, const void*);
+typedef int (*tAccionCond)(void*, void*);
 /** se colocan ac� para que cuando el compilador entre a los headers, conozca las funciones de tCmp, etc.*/
 #include "EstructurasDatos/TDA_Arbol/Arbol_Header.h"
 #include "EstructurasDatos/TDA_Cola/cola_dinamica.h"

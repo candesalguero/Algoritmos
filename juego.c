@@ -138,8 +138,10 @@ int tirarDado()
 
 char obtenerDireccionBandido(int posB, int posJ, int totalPos)
 {
-    int distAdelante = (posJ >= posB) ? (posJ - posB) : (totalPos - posB + posJ);
-    int distAtras = (posB >= posJ) ? (posB - posJ) : (totalPos - posJ + posB);
+    int distAdelante;
+    int distAtras;
+    distAdelante = (posJ >= posB) ? (posJ - posB) : (totalPos - posB + posJ);
+    distAtras = (posB >= posJ) ? (posB - posJ) : (totalPos - posJ + posB);
     return (distAdelante <= distAtras) ? 'F' : 'B';
 }
 
@@ -168,7 +170,7 @@ int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial
     mostrarMapa(ruta, jugador);
 
     /* 2. Usamos nuestra función encapsulada para encontrar al jugador sin usar tNodo! */
-    posJugador = obtenerPosJugador(ruta);
+    jugador->posicion_actual = obtenerPosJugador(ruta);
     
     printf("\n--- TU TURNO ---\n");
     if (jugador->turnos_perdidos > 0) {
@@ -192,11 +194,11 @@ int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial
     }
 
     movActual.entidad = 'J';
-    movActual.pos_origen = posJugador;
+    movActual.pos_origen = jugador->posicion_actual;
     movActual.casillas = tirarDado();
     printf("Has sacado un %d en el dado.\n", movActual.casillas);
     /*/ --- RESTRICCION DEL JUGADOR SOBRE EL CAMPAMENTO INICIAL ---*/
-    puede_retroceder = (posJugador - movActual.casillas >= 1);
+    puede_retroceder = (jugador->posicion_actual - movActual.casillas >= 1);
 
     do {
         printf("Deseas moverte hacia (F) Adelante o (B) Atras?: ");
@@ -220,15 +222,6 @@ int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial
 
 int obtenerPosJugador(tListaDoble *ruta)
 {
-    /*
-    tNodo *act = *ruta;
-    tPosicion *p;
-    do {
-        p = (tPosicion *)act->info;
-        if (p->tiene_jugador) return p->numero_posicion;
-        act = act->siguiente;
-    } while (act != *ruta);
-    return 1;*/
     tPosicion p;
     p.numero_posicion = 1;
     recorrerListaDobleCircular(ruta, &p, accionBuscarJugador);
@@ -247,72 +240,51 @@ void accionBuscarJugador(void *dato, void *ctx)
     
     return 1; /* No está acá, le decimos a la primitiva que siga al próximo nodo */
 }
-void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, int totalPosiciones)
+void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugador *jugador, tConfig *config)
 {
-    /*
-    tMovimiento movActual;
-    tNodo *act = *ruta;
-    int hay_bandidos = 0;
-    tPosicion *p;
-    int b;
-    int posJugador = obtenerPosJugador(ruta);
+    tContextoBandidos contexto;
+    contexto.colaMovimientos = colaMovimientos;
+    contexto.posJugador = jugador->posicion_actual;
+    contexto.hay_bandidos = 0;
+    contexto.totalPosiciones = config->cantidad_posiciones;
 
     printf("\n--- TURNO DE LA COMPUTADORA (BANDIDOS) ---\n");
-    do {
-        p = (tPosicion *)act->info;
-        for (b = 0; b < p->tiene_bandido; b++) {
-            hay_bandidos = 1;
-            movActual.entidad   = 'B';
-            movActual.pos_origen = p->numero_posicion;
-            movActual.casillas  = tirarDado();
-            movActual.direccion = obtenerDireccionBandido(p->numero_posicion, posJugador, config->cantidad_posiciones);
+    recorrerListaDC_Condicionada(ruta, &contexto, accionEncolarBandidos);
 
-            printf("Bandido en casillero %02d saca un %d. Decide ir hacia %s.\n",
-                   p->numero_posicion, movActual.casillas,
-                   (movActual.direccion == 'F') ? "Adelante (F)" : "Atras (B)");
-
-            poner_en_cola(colaMovimientos, &movActual, sizeof(tMovimiento));
-        }
-        act = act->siguiente;
-    } while (act != *ruta);
-
-    if (!hay_bandidos)
+    if (!contexto.hay_bandidos) {
         printf("No hay bandidos en el mapa en este momento.\n");
-    printf("\n");
-    */
-    tMovimiento movActual;
-    tPosicion p;
-    int hay_bandidos = 0;
-    int b, i;
-    // Ahora le pasamos la cantidad de posiciones a obtenerPosJugador
-    int posJugador = obtenerPosJugador(ruta);
-
-    printf("\n--- TURNO DE LA COMPUTADORA (BANDIDOS) ---\n");
-
-    for (i = 0; i < config->cantidad_posiciones; i++) {
-        sacarDelInicio(ruta, &p, sizeof(tPosicion));
-
-        for (b = 0; b < p.tiene_bandido; b++) {
-            hay_bandidos = 1;
-            movActual.entidad   = 'B';
-            movActual.pos_origen = p.numero_posicion;
-            movActual.casillas  = tirarDado();
-            movActual.direccion = obtenerDireccionBandido(p.numero_posicion, posJugador, config->cantidad_posiciones);
-
-            printf("Bandido en casillero %02d saca un %d. Decide ir hacia %s.\n",
-                   p.numero_posicion, movActual.casillas,
-                   (movActual.direccion == 'F') ? "Adelante (F)" : "Atras (B)");
-
-            poner_en_cola(colaMovimientos, &movActual, sizeof(tMovimiento));
-        }
-        
-        insertarAlFinal(ruta, &p, sizeof(tPosicion));
     }
-
-    if (!hay_bandidos)
-        printf("No hay bandidos en el mapa en este momento.\n");
     printf("\n");
 }
+
+int accionEncolarBandidos(void *ruta, void *ctx) 
+{
+    tPosicion *p = (tPosicion *)ruta;/*trae el dato de la ruta*/
+    tContextoBandidos *contexto = (tContextoBandidos *)ctx; // Desempaquetamos el contexto
+    tMovimiento movActual;
+    int b;
+
+    /*/ Si hay bandidos en esta casilla, procesamos cada uno**/
+    for (b = 0; b < p->tiene_bandido; b++) {
+        contexto->hay_bandidos = 1; /*/ Avisamos que encontramos al menos uno*/
+        movActual.entidad   = 'B';
+        movActual.pos_origen = p->numero_posicion;
+        movActual.casillas  = tirarDado();
+        
+        /*/ Calculamos la dirección usando los datos que vinieron en la estructura de contexto*/
+        movActual.direccion = obtenerDireccionBandido(p->numero_posicion, contexto->posJugador, contexto->totalPosiciones);
+
+        printf("Bandido en casillero %02d saca un %d. Decide ir hacia %s.\n",
+               p->numero_posicion, movActual.casillas,
+               (movActual.direccion == 'F') ? "Adelante (F)" : "Atras (B)");
+
+        /*/ Encolamos el movimiento*/
+        poner_en_cola(contexto->colaMovimientos, &movActual, sizeof(tMovimiento));
+    }
+    
+    return TODO_OK; /* Le decimos a la lista que siga recorriendo hasta dar toda la vuelta*/
+}
+
 
 int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, int *vidas, int *puntos, int *turnos_perdidos, int *protegido, int totalPosiciones)
 {
@@ -530,70 +502,62 @@ void LimpiarPantalla()
 }
 int iniciarPartida(tConfig *config, tListaDoble *ruta, tPartida *partidaActual)
 {
-    int vidas = config->vidas_inicio;
-    int puntos = 0;
     int jugando = 1;
-    int turnos_perdidos = 0;
-    int protegido = 0;
+    int jugadorMovio;
+    int puntos_finales = -1;
 
     tCola colaMovimientos;
     tCola colaHistorial;
-    int jugadorMovio;
-    int puntos_finales = -1;
+    tEstadoJugador jugador;
+
+    InicializarJugador(&jugador, config);
 
     crear_cola(&colaMovimientos);
     crear_cola(&colaHistorial);
 
     printf("\n>>> INICIANDO TRAVESIA HACIA LA CIUDAD REFUGIO <<<\n");
 
-    while (jugando == 1 && vidas > 0) {
-
+    while (jugando == 1 && jugador.vidas > 0) 
+    {
         // === FASE 1: TURNO DEL JUGADOR ===
-        jugadorMovio = turnoJugador(ruta, &colaMovimientos, &colaHistorial, vidas, puntos, &turnos_perdidos, protegido);
+        jugadorMovio = turnoJugador(ruta, &colaMovimientos, &colaHistorial, &jugador);
 
-        /// --- NUEVO: Capturar si el jugador decidio abandonar ---
-        if (jugadorMovio == -1) {
+        /* --- NUEVO: Capturar si el jugador decidio abandonar ---*/
+        if (jugadorMovio == FIN_PARTIDA) {
             printf("\nHas decidido abandonar la caravana...\n");
-            jugando = -1; // Marcamos un estado especial de abandono
-
+            /* Si el jugador decide abandonar, se termina la partida y no se registra */
+            vaciar_cola(&colaMovimientos);
+            vaciar_cola(&colaHistorial);
+            vaciarListaDobleC(ruta);
+            return FIN_PARTIDA;
         }
-        if (jugando == 1 && jugadorMovio == 1) {
-            printf("\n--- Resolviendo movimiento del jugador ---\n");
-            jugando = ejecutarMovimientos(ruta, &colaMovimientos, &vidas, &puntos, &turnos_perdidos, &protegido, config->cantidad_posiciones);
+        /* === LOGICA DE DESACTIVACION DEL OASIS */
+        if (jugador.protegido > 0) 
+            jugador.protegido--;
+
+        // === FASE 2: TURNO DE LOS BANDIDOS ===
+        turnoBandidos(config, ruta, &colaMovimientos, &jugador, config);
+
+        if (!cola_vacia(&colaMovimientos))
+        {
+            printf("--- Resolviendo movimiento del turno ---\n");
+            jugando = ejecutarMovimientos(ruta, &colaMovimientos, &jugador, config->cantidad_posiciones);
+            /*mostrarMapa(ruta, protegido, config->cantidad_posiciones);*/
+        }
             Pausar();
             LimpiarPantalla();
-        }
-        // === LOGICA DE DESACTIVACION DEL OASIS Y FASE 2 ===
-        // Solo se ejecuta si el jugador no abandono, no gano ni perdio todas sus vidas en la fase 1
-        if (jugando == 1 && vidas > 0)
-        {
-            if (protegido == 1) {
-                protegido = 0;
-            } else if (protegido == 2) {
-                protegido = 1;
-            }
-
-            // === FASE 2: TURNO DE LOS BANDIDOS ===
-            turnoBandidos(config, ruta, &colaMovimientos, config->cantidad_posiciones);
-
-            if (!cola_vacia(&colaMovimientos))
-            {
-                printf("--- Resolviendo movimiento de los bandidos ---\n");
-                jugando = ejecutarMovimientos(ruta, &colaMovimientos, &vidas, &puntos, &turnos_perdidos, &protegido, config->cantidad_posiciones);
-                mostrarMapa(ruta, protegido, config->cantidad_posiciones);
-            }
-                Pausar();
-                LimpiarPantalla();
-        }
+    
     }
 
     if (jugando == 0) {
-        printf("\nVICTORIA! Has llegado a la Ciudad Refugio con %d punto(s).\n", puntos);
-        puntos_finales = puntos;//Si jugo hasta el final se queda con los puntos que obtuvo
-    } else if (jugando == 1) {
+        printf("\nVICTORIA! Has llegado a la Ciudad Refugio con %d punto(s).\n", jugador.puntos);
+        puntos_finales = jugador.puntos;//Si jugo hasta el final se queda con los puntos que obtuvo
+    } 
+    else if (jugando == 1) {
         printf("\nHas perdido todas tus vidas. El desierto te ha consumido.\n");
-        puntos_finales = puntos; //Si jugo hasta el final se queda con los puntos que obtuvo
-    } else if (jugando == -1) {
+        puntos_finales = jugador.puntos; //Si jugo hasta el final se queda con los puntos que obtuvo
+    } 
+    else if (jugando == -1) {
         printf("\nRegresando al menu principal. Partida abandonada.\n");
         puntos_finales = -1;
     }
@@ -602,17 +566,26 @@ int iniciarPartida(tConfig *config, tListaDoble *ruta, tPartida *partidaActual)
     LimpiarPantalla();
 
     /* --- CARGAMOS LA ESTRUCTURA --- */
-    partidaActual->puntos = puntos; /* Asignamos los puntos conseguidos */
+    partidaActual->puntos = jugador.puntos; /* Asignamos los puntos conseguidos */
     partidaActual->cant_movimientos = mostrarHistorial(&colaHistorial); /* Extraemos movimientos */
 
     Pausar();
     LimpiarPantalla();
-    // --- LIBERACION DE MEMORIA ---
-    //vaciar_cola(&colaHistorial); //ESTO LO PUEDO SACAR Y PONER EN MOSTRARHISTORIAL SACAR DE COLA Y YA ME QUEDA VACIA
     vaciar_cola(&colaMovimientos);
     vaciarLista(ruta);
+    vaciarListaDobleC(ruta);
     return puntos_finales;
 }
+
+void InicializarJugador(tEstadoJugador *jugador, tConfig *config)
+{
+    jugador->vidas = config->vidas_inicio;
+    jugador->puntos = 0;
+    jugador->turnos_perdidos=0;
+    jugador->protegido = 0;
+    jugador->posicion_actual = 0;
+}
+
 void limpiarBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
