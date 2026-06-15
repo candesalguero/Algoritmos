@@ -49,7 +49,7 @@ typedef struct {
 
 /*/ Funciones del Motor del Juego*/
 int cargarConfiguracion(const char* ruta, tConfig* config);
-void generarEscenario(tConfig* config, tListaDoble* ruta_desierto);
+/*void generarEscenario(tConfig* config, tListaDoble* ruta_desierto);*/
 int tirarDado();
 char obtenerDireccionBandido(int posB, int posJ, int totalPos);
 void enviarJugadorAlInicio(tListaDoble *ruta);
@@ -58,9 +58,9 @@ int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial
 
 
 int obtenerPosJugador(tListaDoble *ruta);
-void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, int totalPosiciones);
+void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugador *jugador);
 
-int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, int *vidas, int *puntos, int *turnos_perdidos, int *protegido);
+int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos,tEstadoJugador *jugador, tConfig config);
 
 void mostrarMapa(tListaDoble *ruta, tEstadoJugador *jugador);
 int mostrarHistorial(tCola *historial);
@@ -85,4 +85,6 @@ int colocarElementosAleatorios(tListaDoble *ruta_desierto, int cantidad_posicion
 int escribirRutaDesiertoEnArchivo(const char *nombre_archivo, const tListaDoble *ruta_desierto);
 FILE * abrirArchivo(const char *nombre, const char *modo);
 int generarEscenario(tConfig *config, tListaDoble *ruta_desierto);
+
+
 #endif

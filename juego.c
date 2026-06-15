@@ -20,7 +20,7 @@ int leerConfig(tConfiguracion* config, const char *arch)
     config->maximo_oasis = 0;
     config->maximo_tormentas = 0;
 
-    while (fgets(linea, sizeof(linea), archivo)) {
+    while (fgets(linea, sizeof(linea), arch)) {
         if (sscanf(linea, " %[^:]:%d", clave, &valor) == 2) {
             if (strcmp(clave, "cantidad_posiciones") == 0) config->cantidad_posiciones = valor;
             else if (strcmp(clave, "vidas_inicio") == 0) config->vidas_inicio = valor;
@@ -375,7 +375,7 @@ int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial
         jugador->turnos_perdidos--;
         return 0;
     }
-    // --- NUEVO: Dar la opcion de tirar dados o salir ---
+
 
     do {
         printf("Tirar los dados (T) o Salir del juego (S): ");
@@ -436,7 +436,7 @@ void accionBuscarJugador(void *dato, void *ctx)
 
     return 1; /* No está acá, le decimos a la primitiva que siga al próximo nodo */
 }
-void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugador *jugador, tConfig *config)
+void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugador *jugador)
 {
     tContextoBandidos contexto;
     contexto.colaMovimientos = colaMovimientos;
@@ -482,7 +482,7 @@ int accionEncolarBandidos(void *ruta, void *ctx)
 }
 
 
-int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, int *vidas, int *puntos, int *turnos_perdidos, int *protegido, int totalPosiciones)
+int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugador *jugador, tConfig config)
 {
     tMovimiento mov;
     int encontrado = 0;
@@ -732,7 +732,7 @@ int iniciarPartida(tConfig *config, tListaDoble *ruta, tPartida *partidaActual)
             jugador.protegido--;
 
         // === FASE 2: TURNO DE LOS BANDIDOS ===
-        turnoBandidos(config, ruta, &colaMovimientos, &jugador, config);
+        turnoBandidos(config, ruta, &colaMovimientos, &jugador);
 
         if (!cola_vacia(&colaMovimientos))
         {
