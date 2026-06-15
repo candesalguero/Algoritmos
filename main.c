@@ -8,11 +8,12 @@ void CopiarIndice(void *dest, const void *orig, const void *reg);
 
 
 int ActualizarJugadorGuardado(tJugador *jugador, tJugadorIdx *nuevoJugador, const char *archJugadores);
+int GuardarNuevaPartida(tPartida *nuevaPartida, const char *archPartidas);
 
 int main()
 {
     /** Variables de tu juego */
-    tConfig config;
+    tConfiguracion config;
     tListaDoble ruta_desierto;
     int opcion, errores, resultado;
     /** --- VARIABLES  --- */
@@ -49,17 +50,12 @@ int main()
     do
     {
         mostrarMenu();
-        // Verificamos si scanf logró leer exactamente 1 elemento
+        /* Verificamos si scanf logro leer exactamente 1 elemento */
         if (scanf("%d", &opcion) != 1) {
-            opcion = -1; // Le asignamos un valor inválido para que caiga en el 'default'
+            opcion = -1; /* valor invalido para que caiga en el 'default' */
         }
+        limpiarBuffer(); /* limpiamos el Enter sobrante */
 
-        limpiarBuffer(); // Limpiamos la basura o el 'Enter' sobrante
-
-        Menu();
-        printf("Opcion: ");
-        scanf("%d", &opcion);
-        fflush(stdin);
         switch (opcion)
         {
             case 1:
@@ -68,10 +64,6 @@ int main()
                     puts("Ingrese su nickname para comenzar a jugar!");
                     scanf("%s",nuevoJugador.nickname);
                     limpiarBuffer();
-                    system("cls");
-                    puts("Ingrese su nickname para comenzar a jugar!");
-                    fflush(stdin);
-                    scanf("%s",nuevoJugador.nickname);
                     resultado = Arbol_BusquedaBinaria(&idxJugador, &nuevoJugador, &nuevoJugador, sizeof(tJugadorIdx),cmpJugadoresIdx);
                     if(resultado == NOT_FOUND_ELEM)
                     {
@@ -94,17 +86,13 @@ int main()
                     puntos_obtenidos = iniciarPartida(&config, &ruta_desierto, &nuevaPartida);
 
                     /** --- GUARDADO DE DATOS (Si no abandonó) --- */
-                    if(puntos_obtenidos != -1)
+                    if(puntos_obtenidos != FIN_PARTIDA)
                     {
                         strcpy(nuevaPartida.nickname, jugador.nickname);
 
                         ActualizarJugadorGuardado(&jugador, &nuevoJugador, ARCHIVO_JUGADORES);
                         GuardarNuevaPartida(&nuevaPartida, ARCHIVO_PARTIDAS);
                     }
-
-                    /* TODO PARA EL PASO 2: Necesitamos que iniciarPartida nos devuelva
-                       los puntos para guardarlos en el archivo del jugador. */
-                    jugarPartida();
                 }
                 break;
             case 2:
