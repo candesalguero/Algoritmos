@@ -62,8 +62,7 @@ int main()
                 {
                     LimpiarPantalla();
                     puts("Ingrese su nickname para comenzar a jugar!");
-                    fgets(jugador.nickname, sizeof(jugador.nickname), stdin);
-                    *(jugador.nickname + strcspn(jugador.nickname, "\n")) = '\0';   /*/ elimina el \n si existe*/
+                    LeerCadena(jugador.nickname, strlen(jugador.nickname));
 
                     resultado = Arbol_BusquedaBinaria(&idxJugador, &nuevoJugador, &nuevoJugador, sizeof(tJugadorIdx),cmpJugadoresIdx);
                     if(resultado == NOT_FOUND_ELEM)
@@ -90,7 +89,7 @@ int main()
                     if(puntos_obtenidos != FIN_PARTIDA)
                     {
                         strcpy(nuevaPartida.nickname, jugador.nickname);
-
+                        /*esto se hace con indices*/
                         ActualizarJugadorGuardado(&jugador, &nuevoJugador, ARCHIVO_JUGADORES);
                         GuardarNuevaPartida(&nuevaPartida, ARCHIVO_PARTIDAS);
                     }

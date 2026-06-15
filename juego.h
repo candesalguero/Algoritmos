@@ -68,6 +68,5 @@ int accionEscribirCasillero(void *dato, void *ctx);
 int mostrarHistorial(tCola *historial);
 int iniciarPartida(tConfiguracion *config, tListaDoble *ruta, tPartida *partidaActual);
 void InicializarJugador(tEstadoJugador *jugador, tConfiguracion *config);
-void mostrarMenu();
 
 #endif /* JUEGO_H_INCLUDED */

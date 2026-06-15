@@ -23,4 +23,5 @@ void imprimirRanking(tLista *ranking);
 void limpiarBuffer();
 void Pausar();
 void LimpiarPantalla();
+void LeerCadena(char *dest, size_t longCad);
 #endif /*/ FUNCIONES_H_INCLUDED*/

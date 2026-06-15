@@ -134,7 +134,7 @@
 1781321675 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_header.h
 	"../../config.h"
 
-1781539613 c:\users\user\downloads\tpalgoritmos\algoritmos\config.h
+1781555721 c:\users\user\downloads\tpalgoritmos\algoritmos\config.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -160,7 +160,7 @@
 1781554988 source:c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.c
 	"funciones.h"
 
-1781554988 c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.h
+1781556084 c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.h
 	"config.h"
 
 1781372904 source:c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.c
@@ -176,23 +176,23 @@
 	"juego.h"
 	"lotes_de_prueba.h"
 
-1781551167 source:c:\users\user\downloads\tpalgoritmos\algoritmos\main.c
+1781556122 source:c:\users\user\downloads\tpalgoritmos\algoritmos\main.c
 	"main.h"
 
 1781454236 source:c:\users\user\downloads\tpalgoritmos\algoritmos\ranking.c
 	"config.h"
 	"funciones.h"
 
-1781548125 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_listadoblecircular\listadoble.h
+1781555721 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_listadoblecircular\listadoble.h
 	"../../config.h"
 
-1781540067 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_listadoblecircular\listadoble.c
+1781555721 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_listadoblecircular\listadoble.c
 	"ListaDoble.h"
 
-1781555567 source:c:\users\user\downloads\tpalgoritmos\algoritmos\juego.c
+1781555721 source:c:\users\user\downloads\tpalgoritmos\algoritmos\juego.c
 	"juego.h"
 
-1781555578 c:\users\user\downloads\tpalgoritmos\algoritmos\juego.h
+1781556143 c:\users\user\downloads\tpalgoritmos\algoritmos\juego.h
 	"config.h"
 	"funciones.h"
 
