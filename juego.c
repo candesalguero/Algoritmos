@@ -90,26 +90,6 @@
     free(mapa_bandidos);
 }*/
 
-/*busco en la lista, si lo encuentra me retorna el puntero*/
-void *buscarPtrElementoListaDC(const tListaDoble *lista, const void *aBuscar, tCmp cmp)
-{
-    tNodoDoble *actual = *lista;
-
-    if(!actual)
-        return NULL;
-
-    do
-    {
-        if(cmp(actual->info, aBuscar) == 0)
-            return actual->info;
-
-        actual = actual->siguiente;
-
-    }while(actual != *lista);
-
-    return NULL;
-}
-
 int cmpPosicionPorNumero(const void *a, const void *b) /*Me compara la posicion con el numero aleatorio que buscamos*/
 {
     const tPosicion *pos = (const tPosicion *)a;
@@ -203,42 +183,35 @@ FILE * abrirArchivo(const char *nombre, const char *modo)
     return fopen(nombre, modo);
 }
 
+/* Escribe un casillero en el archivo. ctx es el FILE* abierto. Se usa con
+   recorrerListaDC_Condicionada (devuelve 1 para recorrer toda la lista). */
+int accionEscribirCasillero(void *dato, void *ctx)
+{
+    tPosicion *pos = (tPosicion *)dato;
+    FILE *archivo = (FILE *)ctx;
+
+    if(pos->tiene_jugador)
+        fprintf(archivo, "%02d:[%c J]\n", pos->numero_posicion, pos->elemento);
+    else if(pos->tiene_bandido)
+        fprintf(archivo, "%02d:B\n", pos->numero_posicion);
+    else
+        fprintf(archivo, "%02d:%c\n", pos->numero_posicion, pos->elemento);
+
+    return 1;
+}
+
 int escribirRutaDesiertoEnArchivo(const char *nombre_archivo, const tListaDoble *ruta_desierto)
 {
     FILE *archivo;
-    tNodoDoble *act;
-    tPosicion *pos;
+
+    if(*ruta_desierto == NULL)
+        return LISTA_VACIA;
 
     archivo = abrirArchivo(nombre_archivo, "wt");
-
     if(!archivo)
-    {
-        fclose(archivo);
         return ERR_ARCH;
-    }
 
-    act = *ruta_desierto;
-
-    if(!act)
-    {
-        fclose(archivo);
-        return LISTA_VACIA;
-    }
-
-    do
-    {
-        pos = (tPosicion *)act->info;
-
-        if(pos->tiene_jugador)
-            fprintf(archivo, "%02d:[%c J]\n", pos->numero_posicion, pos->elemento);
-        else if(pos->tiene_bandido)
-            fprintf(archivo, "%02d:B\n", pos->numero_posicion);
-        else
-            fprintf(archivo, "%02d:%c\n", pos->numero_posicion, pos->elemento);
-
-        act = act->siguiente;
-
-    }while(act != *ruta_desierto);
+    recorrerListaDC_Condicionada((tListaDoble *)ruta_desierto, archivo, accionEscribirCasillero);
 
     fclose(archivo);
 
@@ -439,59 +412,83 @@ int accionEncolarBandidos(void *ruta, void *ctx)
 }
 
 
+/* Saca la entidad (jugador o bandido) del casillero. Se usa con desplazarYAplicar. */
+void accionSacarEntidad(void *dato, void *param)
+{
+    tPosicion *p = (tPosicion *)dato;
+    tMovimiento *m = (tMovimiento *)param;
+
+    if (m->entidad == 'J')
+        p->tiene_jugador = 0;
+    else
+        p->tiene_bandido--;
+}
+
+/* Pone la entidad (jugador o bandido) en el casillero. Se usa con desplazarYAplicar. */
+void accionPonerEntidad(void *dato, void *param)
+{
+    tPosicion *p = (tPosicion *)dato;
+    tMovimiento *m = (tMovimiento *)param;
+
+    if (m->entidad == 'J')
+        p->tiene_jugador = 1;
+    else
+        p->tiene_bandido++;
+}
+
 int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugador *jugador, int totalPosiciones)
 {
     tMovimiento mov;
-    int encontrado = 0;
-    tNodoDoble *origen;
-    tNodoDoble *destino;
     tPosicion *posOrigen;
-    tPosicion *p;
-    tPosicion *pDest;
     tPosicion *posDestino;
-    char dirActual;
+    int origenNum;
+    int destNum;
+    int N;
     int i;
+    char dir;
+    int valido;
 
-    (void)totalPosiciones;
+    N = totalPosiciones;
 
     while (sacar_de_cola(colaMovimientos, &mov, sizeof(tMovimiento)) == TODO_OK) {
-        origen = *ruta;
-        posOrigen = NULL;
-        encontrado = 0;
-        do {
-            p = (tPosicion *)origen->info;
-            if ((mov.entidad == 'J' && p->tiene_jugador) ||
-                (mov.entidad == 'B' && p->numero_posicion == mov.pos_origen && p->tiene_bandido > 0)) {
-                posOrigen = p;
-                encontrado = 1;
-            }
-            if (!encontrado) {
-                origen = origen->siguiente;
-            }
-        } while (origen != *ruta && !encontrado);
+        origenNum = mov.pos_origen;
+        posOrigen = buscarPtrElementoListaDC(ruta, &origenNum, cmpPosicionPorNumero);
 
-        if (posOrigen != NULL) {
-            destino = origen;
-            dirActual = mov.direccion;
+        valido = (posOrigen != NULL);
+        if (valido && mov.entidad == 'J' && !posOrigen->tiene_jugador) valido = 0;
+        if (valido && mov.entidad == 'B' && posOrigen->tiene_bandido <= 0) valido = 0;
 
-            for (i = 0; i < mov.casillas; i++) {
-                if (dirActual == 'F') destino = destino->siguiente;
-                else destino = destino->anterior;
-
-                pDest = (tPosicion *)destino->info;
-
-                if (mov.entidad == 'J' && pDest->elemento == 'S' && i < mov.casillas - 1) {
-                    printf("Pasaste la Ciudad Refugio (Casillero %d). Rebotando!\n", pDest->numero_posicion);
-                    dirActual = (dirActual == 'F') ? 'B' : 'F';
+        if (valido) {
+            /* --- Resolvemos la posicion destino ANTES de tocar la lista --- */
+            if (mov.entidad == 'B') {
+                /* bandido: circular, sin rebote */
+                if (mov.direccion == 'F')
+                    destNum = ((origenNum - 1 + mov.casillas) % N) + 1;
+                else
+                    destNum = (((origenNum - 1 - mov.casillas) % N + N) % N) + 1;
+            } else {
+                /* jugador: rebota en la Salida (ultima posicion, N) */
+                destNum = origenNum;
+                dir = mov.direccion;
+                for (i = 0; i < mov.casillas; i++) {
+                    if (dir == 'F') destNum++;
+                    else destNum--;
+                    if (destNum == N && i < mov.casillas - 1) {
+                        printf("Pasaste la Ciudad Refugio (Casillero %d). Rebotando!\n", N);
+                        dir = (dir == 'F') ? 'B' : 'F';
+                    }
                 }
             }
 
-            posDestino = (tPosicion *)destino->info;
+            /* --- Movemos la entidad usando primitivas (sin tocar nodos) --- */
+            desplazarYAplicar(ruta, origenNum - 1, &mov, accionSacarEntidad);
+            desplazarYAplicar(ruta, destNum - 1, &mov, accionPonerEntidad);
+
+            /* --- Aplicamos los efectos en el juego (leemos el destino) --- */
+            posDestino = buscarPtrElementoListaDC(ruta, &destNum, cmpPosicionPorNumero);
 
             if (mov.entidad == 'J')
             {
-                posOrigen->tiene_jugador = 0;
-                posDestino->tiene_jugador = 1;
 
                 if (posDestino->tiene_bandido > 0) {
                     if (jugador->protegido) {
@@ -548,9 +545,6 @@ int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugado
                 }
             }
             else if (mov.entidad == 'B') {
-                posOrigen->tiene_bandido--;
-                posDestino->tiene_bandido++;
-
                 if (posDestino->tiene_jugador) {
                     if (jugador->protegido) {
                         printf("El bandido intento atraparte, pero la proteccion del oasis te salvo!\n");
