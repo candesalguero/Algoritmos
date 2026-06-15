@@ -51,6 +51,7 @@ typedef void(*tAccion)(void*, const void*, const void*);
 typedef void(*tMostrar)(const void*);
 typedef void(*tCopiar)(void*, const void*);
 typedef int (*tAccionCond)(void*, void*);
+typedef void (*tAccionDesplaz)(void *dato, void *param);
 /** se colocan ac� para que cuando el compilador entre a los headers, conozca las funciones de tCmp, etc.*/
 #include "EstructurasDatos/TDA_Arbol/Arbol_Header.h"
 #include "EstructurasDatos/TDA_Cola/cola_dinamica.h"

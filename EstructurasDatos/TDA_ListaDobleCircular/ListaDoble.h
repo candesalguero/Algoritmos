@@ -28,7 +28,9 @@ int sacarDelFinal(tListaDoble *p, void *d, unsigned cantBytes);
 int buscarYVer(const tListaDoble *p, void *d, unsigned cantBytes, int (*comparar)(const void *, const void *));
 int buscarYSacar(tListaDoble *p, void *d, unsigned cantBytes, int (*comparar)(const void *, const void *));
 int BuscarElementoListaDC(const tListaDoble *lista, const void *aBuscar, void *elem, size_t tamElem, tCmp cmp);
+void *buscarPtrElementoListaDC(const tListaDoble *lista, const void *aBuscar, tCmp cmp);
 
 int recorrerListaDC_Condicionada(tListaDoble *pl, void *ctx, tAccionCond cond);
+void desplazarYAplicar(tListaDoble *pl, int cantidad, void *param, tAccionDesplaz accion);
 
 #endif

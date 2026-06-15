@@ -111,4 +111,50 @@ int recorrerListaDC_Condicionada(tListaDoble *pl, void *ctx, tAccionCond cond)
     return TODO_OK;
 }
 
+/* Se desplaza 'cantidad' nodos desde el inicio de la lista (positivo = hacia
+   adelante con 'siguiente', negativo = hacia atras con 'anterior') y al llegar
+   al nodo destino ejecuta 'accion' sobre su dato. NO mueve el puntero de la lista. */
+void desplazarYAplicar(tListaDoble *pl, int cantidad, void *param, tAccionDesplaz accion)
+{
+    tNodoDoble *actual = *pl;
+    int i;
+
+    if(actual == NULL)
+        return;
+
+    if(cantidad >= 0)
+    {
+        for(i = 0; i < cantidad; i++)
+            actual = actual->siguiente;
+    }
+    else
+    {
+        for(i = 0; i < -cantidad; i++)
+            actual = actual->anterior;
+    }
+
+    accion(actual->info, param);
+}
+
+/* Busca un elemento por clave y devuelve el puntero al dato real (no una copia).
+   Devuelve NULL si la lista esta vacia o si no lo encuentra. */
+void *buscarPtrElementoListaDC(const tListaDoble *lista, const void *aBuscar, tCmp cmp)
+{
+    tNodoDoble *actual = *lista;
+
+    if(!actual)
+        return NULL;
+
+    do
+    {
+        if(cmp(actual->info, aBuscar) == 0)
+            return actual->info;
+
+        actual = actual->siguiente;
+
+    }while(actual != *lista);
+
+    return NULL;
+}
+
 

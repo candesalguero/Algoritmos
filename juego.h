@@ -40,7 +40,6 @@ typedef struct {
 } tContextoBandidos;
 
 /* --- Generacion del escenario --- */
-void *buscarPtrElementoListaDC(const tListaDoble *lista, const void *aBuscar, tCmp cmp);
 int cmpPosicionPorNumero(const void *a, const void *b);
 int inicializarRutaDesierto(tListaDoble *ruta_desierto, int cantidad_posiciones);
 int colocarElementoEnRuta(tListaDoble *ruta_desierto, int numero_posicion, char simbolo);
@@ -60,9 +59,12 @@ int obtenerPosJugador(tListaDoble *ruta);
 int accionBuscarJugador(void *dato, void *ctx);
 void turnoBandidos(tConfiguracion *config, tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugador *jugador);
 int accionEncolarBandidos(void *ruta, void *ctx);
+void accionSacarEntidad(void *dato, void *param);
+void accionPonerEntidad(void *dato, void *param);
 int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugador *jugador, int totalPosiciones);
 void mostrarMapa(tListaDoble *ruta, tEstadoJugador *jugador);
 int accionImprimirCasillero(void *dato, void *ctx);
+int accionEscribirCasillero(void *dato, void *ctx);
 int mostrarHistorial(tCola *historial);
 int iniciarPartida(tConfiguracion *config, tListaDoble *ruta, tPartida *partidaActual);
 void InicializarJugador(tEstadoJugador *jugador, tConfiguracion *config);
