@@ -32,21 +32,13 @@ int listaVacia(const tListaDoble *pl) {
 }
 
 
-int listallena(const tListaDoble pl, unsigned cantBytes) {
-    tNodo *nuevo = (tNodo *)malloc(sizeof(tNodo));
-    void *aux = malloc(cantBytes);
-    free(nuevo);
-    free(aux);
-    return aux == NULL || nuevo == NULL;
-}
-
 
 int insertarAlFinal(tListaDoble *pl, const void *d, unsigned cantBytes) {
     tNodoDoble *nuevo;
     tNodoDoble *primero;
     tNodoDoble *ultimo;
 
-    if ((nuevo = (tNodo *)malloc(sizeof(tNodo))) == NULL ||
+    if ((nuevo = (tNodoDoble *)malloc(sizeof(tNodoDoble))) == NULL ||
         (nuevo->info = malloc(cantBytes)) == NULL) {
         free(nuevo);
         return SIN_MEM;
@@ -78,7 +70,7 @@ int insertarAlComienzo(tListaDoble *pl, const void *d, unsigned cantBytes) {
 
 int BuscarElementoListaDC(const tListaDoble *lista, const void *aBuscar, void *elem, size_t tamElem, tCmp cmp)
 {
-    tNodo *act;
+    tNodoDoble *act;
     act = *lista;
 
     if(!act)
@@ -87,14 +79,37 @@ int BuscarElementoListaDC(const tListaDoble *lista, const void *aBuscar, void *e
     {
         if(cmp(act->info, aBuscar)==0)
         {
-            memcpy(elem,act->info,MIN(tamElem, act->tamElem));
+            memcpy(elem,act->info,MIN(tamElem, act->tamInfo));
             return TODO_OK;
         }
-        act = act->sig;
+        act = act->siguiente;
     }while(act != *lista);
 
     return NOT_FOUND_ELEM;
 }
 
+
+int recorrerListaDobleCircular(tListaDoble *pl, void *ctx, void (*func)(void *dato, void *ctx))
+{
+    tNodoDoble *act = *pl;
+    int continuar = 1;
+
+    if (act == NULL) {
+        return LISTA_VACIA;
+
+    }
+
+    do {
+        /* La función ahora nos responde si debemos seguir o frenar */
+        continuar = func(act->info, ctx);
+
+        if (continuar != 0) {
+            act = act->siguiente;
+        }
+
+    } while (act != *pl && continuar != 0); /* El bucle frena naturalmente si 'continuar' se vuelve 0 */
+
+    return 1;
+}
 
 

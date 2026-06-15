@@ -14,12 +14,12 @@ typedef struct {
     int maximo_tormentas;
 } tConfig;
 
-/*/ Estructura de cada posición en la ruta*/
+/*/ Estructura de cada posiciï¿½n en la ruta*/
 typedef struct {
     int numero_posicion;
     char elemento;       /*/ Elementos fijos: 'P', 'V', 'O', 'T', 'S', 'I', '.'*/
-    int tiene_jugador;   /*/ 1 si está el jugador, 0 si no*/
-    int tiene_bandido;   /*/ Contador: 0, 1, o más bandidos en esta casilla*/
+    int tiene_jugador;   /*/ 1 si estï¿½ el jugador, 0 si no*/
+    int tiene_bandido;   /*/ Contador: 0, 1, o mï¿½s bandidos en esta casilla*/
 } tPosicion;
 
 /*/ Estructura de un Movimiento*/
@@ -30,6 +30,13 @@ typedef struct {
     int casillas;    /*/ Cantidad a mover (1 a 6)*/
 } tMovimiento;
 
+typedef struct {
+    int posicion_actual;
+    int vidas;
+    int puntos;
+    int turnos_perdidos;
+    int protegido; // 0 = sin escudo, 1 = activo, 2 = reciÃ©n adquirido en oasis
+} tEstadoJugador;
 
 /*/ Funciones del Motor del Juego*/
 int cargarConfiguracion(const char* ruta, tConfig* config);
@@ -39,7 +46,7 @@ char obtenerDireccionBandido(int posB, int posJ, int totalPos);
 void enviarJugadorAlInicio(tListaDoble *ruta);
 int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial, int vidas, int puntos, int *turnos_perdidos, int protegido);
 int obtenerPosJugador(tListaDoble *ruta);
-void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos);
+void turnoBandidos(tConfig *config, tListaDoble *ruta, tCola *colaMovimientos, int totalPosiciones);
 int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, int *vidas, int *puntos, int *turnos_perdidos, int *protegido);
 void mostrarMapa(tListaDoble *ruta, int protegido);
 int mostrarHistorial(tCola *historial);
@@ -50,5 +57,8 @@ int iniciarPartida(tConfig *config, tListaDoble *ruta, tPartida *partidaActual);
 void limpiarBuffer();
 void mostrarMenu();
 
+int accionMandarInicio(void *dato, void *ctx);
+void accionBuscarJugador(void *dato, void *ctx);
+int accionImprimirCasillero(void *dato, void *ctx) ;
 
 #endif

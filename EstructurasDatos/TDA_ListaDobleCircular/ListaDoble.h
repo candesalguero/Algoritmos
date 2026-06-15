@@ -15,7 +15,7 @@ typedef tNodoDoble *tListaDoble;
 void crearLista(tListaDoble *pl);
 int vaciarLista(tListaDoble *pl);
 int listaVacia(const tListaDoble *pl);
-int listallena(const tListaDoble pl, unsigned cantBytes);
+int listallena(const tListaDoble * pl, unsigned cantBytes);
 int insertarAlFinal(tListaDoble *pl, const void *d, unsigned cantBytes);
 int insertarAlComienzo(tListaDoble *pl, const void *d, unsigned cantBytes);
 int mostrarDeIzqADer(const tListaDoble *pl, void (*mostrar)(const void *));
@@ -27,5 +27,8 @@ int sacarDelInicio(tListaDoble *p, void *d, unsigned cantBytes);
 int sacarDelFinal(tListaDoble *p, void *d, unsigned cantBytes);
 int buscarYVer(const tListaDoble *p, void *d, unsigned cantBytes, int (*comparar)(const void *, const void *));
 int buscarYSacar(tListaDoble *p, void *d, unsigned cantBytes, int (*comparar)(const void *, const void *));
+int BuscarElementoListaDC(const tListaDoble *lista, const void *aBuscar, void *elem, size_t tamElem, tCmp cmp);
+
+int recorrerListaDobleCircular(tListaDoble *pl, void *ctx, void (*func)(void *dato, void *ctx));
 
 #endif

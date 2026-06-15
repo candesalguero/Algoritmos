@@ -6,6 +6,9 @@ void mostrarIdx(const void *jug);
 int cmpJugadoresIdx(const void *jugador1, const void *jugador2);
 void CopiarIndice(void *dest, const void *orig, const void *reg);
 
+
+int ActualizarJugadorGuardado(tJugador *jugador, tJugadorIdx *nuevoJugador, const char *archJugadores);
+
 int main()
 {
     /** Variables de tu juego */
@@ -13,14 +16,9 @@ int main()
     tListaDoble ruta_desierto;
     int opcion, errores, resultado;
     /** --- VARIABLES  --- */
-    int opcion, errores, resultado;
     int puntos_obtenidos;
     tPartida nuevaPartida;
-    /** Variables de tu juego */
-    tConfig config;
-    tListaDoble ruta_desierto;
     /** DECLARACION DE VARIABLES DE ESTRUCTURAS*/
-    tConfiguracion config;
     tArbol idxJugador;
     tJugadorIdx nuevoJugador;
     tJugador jugador;
@@ -183,4 +181,65 @@ void mostrarIdx(const void *jug)
 {
     tJugadorIdx *idx = (tJugadorIdx*)jug;
     printf("[%u]%s\n",idx->registro,idx->nickname);
+}
+////////////////////////////////////////////////////////////////////
+int ActualizarJugadorGuardado(tJugador *jugador, tJugadorIdx *nuevoJugador, const char *archJugadores)
+{
+    FILE *pf;
+
+    jugador->partidas_jugadas++; /* Le sumamos 1 al historial histórico del jugador */
+
+    pf = fopen(archJugadores, "r+b");
+    if(!pf) {
+        return ERR_ARCH;
+    }
+
+    /* Nos posicionamos en su registro exacto y lo sobreescribimos */
+    fseek(pf, nuevoJugador->registro * sizeof(tJugador), SEEK_SET);
+    fwrite(jugador, sizeof(tJugador), 1, pf);
+    fclose(pf);
+
+    return TODO_OK;
+}
+int GuardarNuevaPartida(tPartida *nuevaPartida, const char *archPartidas)
+{
+    FILE *pf;
+    tPartida ultimaPartida;
+
+    /* Si el archivo no existe, será la primera partida */
+    nuevaPartida->nro_partida = 1;
+
+    pf = fopen(archPartidas, "r+b");
+
+    if (pf != NULL)
+    {
+        /* Nos posicionamos sobre el último registro */
+        fseek(pf, -(long)sizeof(tPartida), SEEK_END);
+
+        if (fread(&ultimaPartida, sizeof(tPartida), 1, pf) == 1)
+        {
+            nuevaPartida->nro_partida = ultimaPartida.nro_partida + 1;
+        }
+
+        /* Nos posicionamos al final para agregar la nueva partida */
+        fseek(pf, 0L, SEEK_END);
+    }
+    else
+    {
+        /* El archivo no existe: lo creamos */
+        pf = fopen(archPartidas, "wb");
+
+        if (!pf)
+            return ERR_ARCH;
+    }
+
+    if (fwrite(nuevaPartida, sizeof(tPartida), 1, pf) != 1)
+    {
+        fclose(pf);
+        return ERR_ARCH;
+    }
+
+    fclose(pf);
+
+    return TODO_OK;
 }

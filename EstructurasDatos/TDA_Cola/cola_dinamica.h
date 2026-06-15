@@ -6,25 +6,22 @@
 
 #include "../../config.h"
 
-typedef struct sNodoC
-{
+typedef struct sNodoCola {
     void *info;
-    size_t tamElem;
-    struct sNodoC *sig, *ant;
-}tNodoC;
+    unsigned tamInfo;
+    struct sNodoCola *sig;
+} tNodoCola;
 
-typedef struct
-{
-    tNodoC *pri;
-    tNodoC *ult;
+typedef struct {
+    tNodoCola *pri;
+    tNodoCola *ult;
 }tCola;
 
-void crearCola(tCola *p);
-int colaLlena(const tCola *p, unsigned cantBytes);
-int ponerEnCola(tCola *p, const void *elem, unsigned cantBytes);
-int verPrimeroCola(const tCola *p, void *elem, unsigned cantBytes);
-int colaVacia(const tCola *p);
-int sacarDeCola(tCola *p, void *elem, unsigned cantBytes);
-void vaciarCola(tCola *p);
-
+void crear_cola(tCola *pc);
+int  poner_en_cola(tCola *pc, const void *pd, unsigned tam);
+int  sacar_de_cola(tCola *pc, void *pd, unsigned tam);
+int  frente_de_cola(const tCola *pc, void *dato, unsigned tam);
+int  cola_llena(const tCola *pc, unsigned tam);
+int  cola_vacia(const tCola *pc);
+void vaciar_cola(tCola *pc);
 #endif /*/ COLA_DINAMICA_H_INCLUDED*/

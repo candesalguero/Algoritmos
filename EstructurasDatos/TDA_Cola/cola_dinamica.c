@@ -1,81 +1,85 @@
 #include "cola_dinamica.h"
 
-void crearCola(tCola *p)
+void crear_cola(tCola * pc)
 {
-    p->pri = NULL;
-    p->ult = NULL;
+    pc->pri = pc->ult = NULL;
 }
-/*
-int colaLlena(const tCola *p, unsigned cantBytes)
-{
 
-    return DISPONIBLE;
-}
-*/
-int ponerEnCola(tCola *p, const void *elem, unsigned cantBytes)
+int poner_en_cola(tCola * pc, const void * pd, unsigned tam)
 {
-    tNodoC *nue = (tNodoC *) malloc(sizeof(tNodoC));
-
-    if(nue == NULL || (nue->info = malloc(cantBytes)) == NULL)
+    tNodoCola * nue = (tNodoCola *) malloc(sizeof(tNodoCola));
+    if(!nue)
+    {
+        return SIN_MEM;
+    }
+    nue->info = malloc(tam);
+    if(!nue->info)
     {
         free(nue);
         return SIN_MEM;
     }
-
-    memcpy(nue->info, elem, cantBytes);
-    nue->tamElem = cantBytes;
+    nue->tamInfo = tam;
+    memcpy(nue->info, pd, tam);
     nue->sig = NULL;
-
-    if(p->ult)
-        p->ult->sig = nue;
-    else
-        p->pri = nue;
-    p->ult = nue;
-
-    return TODO_OK;
-}
-
-int verPrimeroCola(const tCola *p, void *elem, unsigned cantBytes)
-{
-    if(p->pri == NULL)
-        return COLA_VACIA;
-
-    memcpy(elem, p->pri->info, MIN(cantBytes, p->pri->tamElem));
-    return TODO_OK;
-}
-
-int colaVacia(const tCola *p)
-{
-    return p->pri == NULL;
-}
-
-int sacarDeCola(tCola *p, void *elem, unsigned cantBytes)
-{
-    tNodoC *aux = p->pri;
-    if(aux == NULL)
-        return COLA_VACIA;
-
-    p->pri = aux->sig;
-    memcpy(elem, aux->info, MIN(aux->tamElem, cantBytes));
-    free(aux->info);
-    free(aux);
-
-    if(p->pri == NULL)
-        p->ult = NULL;
-
-    return TODO_OK;
-}
-
-void vaciarCola(tCola *p)
-{
-    tNodoC *aux ;
-    while(p->pri)
+    if(pc->ult)
     {
-        aux = p->pri;
-        p->pri = aux->sig;
+        pc->ult->sig = nue;
+    }
+    else
+    {
+        pc->pri = nue;
+    }
+    pc->ult = nue;
+    return TODO_OK;
+}
+
+int sacar_de_cola(tCola * pc, void * pd, unsigned tam)
+{
+    tNodoCola * elim = pc->pri;
+    if(!elim)
+    {
+        return COLA_VACIA;
+    }
+    memcpy(pd, elim->info, MIN(tam, elim->tamInfo));
+    pc->pri = elim->sig;
+    if(pc->pri == NULL)
+    {
+        pc->ult = NULL;
+    }
+    free(elim->info);
+    free(elim);
+    return TODO_OK;
+}
+
+int frente_de_cola(const tCola * pc, void * dato, unsigned tam)
+{
+    if(pc->pri == NULL)
+        return COLA_VACIA;
+    memcpy(dato, pc->pri->info, MIN((pc->pri->tamInfo), tam));
+    return TODO_OK;
+}
+
+int cola_llena(const tCola * pc, unsigned tam)
+{
+    (void)pc; /* para solucionar el warning de la firma */
+    (void)tam; /* para solucionar el warning de la firma */
+    return TODO_OK;
+}
+
+int cola_vacia(const tCola * pc)
+{
+    return pc->pri== NULL;
+}
+
+void vaciar_cola(tCola * pc)
+{
+    tNodoCola *aux;
+    while(pc->pri)
+    {
+        aux=pc->pri;
+        pc->pri=aux->sig;
         free(aux->info);
         free(aux);
     }
-
-    p->ult = NULL;
+    pc->ult=NULL;
 }
