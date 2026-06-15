@@ -2,93 +2,6 @@
 
 /* leerConfig vive en funciones.c (se quito la version duplicada que estaba aca) */
 
-/*void generarEscenario(tConfig* config, tListaDoble* ruta_desierto)
-{
-    int i, pos_aleatoria, tipo, colocados, intentos, maxIntentos;
-    FILE *archivo;
-    char* mapa;
-    int* mapa_bandidos;
-    int cantidades[] = {config->maximo_bandidos, config->maximo_premios,
-        config->maximo_vidas_extra, config->maximo_oasis,
-        config->maximo_tormentas};
-
-    char simbolos[5] = {'B', 'P', 'V', 'O', 'T'};
-    tPosicion pos;
-
-
-    crearLista(ruta_desierto);
-
-    mapa = (char*)malloc(config->cantidad_posiciones * sizeof(char));
-    if(!mapa)
-        return SIN_MEM;
-    mapa_bandidos = (int*)calloc(config->cantidad_posiciones, sizeof(int));
-    if(!mapa_bandidos)
-    {
-        free(mapa);
-        return SIN_MEM;
-    }
-
-    for(i = 0; i < config->cantidad_posiciones; i++) {
-        *(mapa+i) = '.';
-    }
-
-    *mapa = 'I';
-    mapa[config->cantidad_posiciones - 1] = 'S';
-
-
-    for (tipo = 0; tipo < 5; tipo++)
-    {
-        colocados = 0;
-        intentos = 0;
-        maxIntentos = config->cantidad_posiciones * 10;
-        while(colocados < cantidades[tipo] && intentos < maxIntentos) {
-            pos_aleatoria = rand() % config->cantidad_posiciones;
-            if(mapa[pos_aleatoria] == '.' && mapa_bandidos[pos_aleatoria] == 0) {
-                if (simbolos[tipo] == 'B')
-                 {
-                    mapa_bandidos[pos_aleatoria] = 1;
-                } else
-                 {
-                    mapa[pos_aleatoria] = simbolos[tipo];
-                }
-                colocados++;
-            }
-            intentos++;
-        }
-        if (colocados < cantidades[tipo]) {
-            printf("Advertencia: solo se colocaron %d de %d [%c]. Sin espacio en el mapa.\n",
-                   colocados, cantidades[tipo], simbolos[tipo]);
-        }
-    }
-
-    archivo = fopen("caravana.txt", "w");
-    if (!archivo) {
-        free(mapa); free(mapa_bandidos);
-        return;
-    }
-
-    pos.tiene_jugador = (i == 0) ? 1 : 0;
-    for (i = 0; i < config->cantidad_posiciones; i++) {
-        pos.numero_posicion = i + 1;
-        pos.elemento = mapa[i];
-        pos.tiene_bandido = mapa_bandidos[i];
-
-        insertarAlFinal(ruta_desierto, &pos, sizeof(tPosicion));
-
-        if (pos.tiene_jugador) {
-            fprintf(archivo, "%02d:[%c J]\n", pos.numero_posicion, pos.elemento);
-        } else if (pos.tiene_bandido > 0) {
-            fprintf(archivo, "%02d:B\n", pos.numero_posicion);
-        } else {
-            if (pos.elemento == '.') fprintf(archivo, "%02d:.\n", pos.numero_posicion);
-            else fprintf(archivo, "%02d:%c\n", pos.numero_posicion, pos.elemento);
-        }
-    }
-
-    fclose(archivo);
-    free(mapa);
-    free(mapa_bandidos);
-}*/
 
 /*busco en la lista, si lo encuentra me retorna el puntero*/
 void *buscarPtrElementoListaDC(const tListaDoble *lista, const void *aBuscar, tCmp cmp)
@@ -250,18 +163,15 @@ int generarEscenario(tConfiguracion *config, tListaDoble *ruta_desierto)
     int tipo;
     int colocados;
 
-    int cantidades[] = {
-        config->maximo_bandidos,
-        config->maximo_premios,
-        config->maximo_vidas_extra,
-        config->maximo_oasis,
-        config->maximo_tormentas
-    };
-
+    int cantidades[6];
     char simbolos[] = {'B', 'P', 'V', 'O', 'T'};
+    CargarCantidades(cantidades, config);
 
     if(inicializarRutaDesierto(ruta_desierto, config->cantidad_posiciones) != TODO_OK)
+    {
+        vaciarListaDobleC(ruta_desierto);
         return SIN_MEM;
+    }
 
     for(tipo = 0; tipo < 5; tipo++) /*el 5 ponerlo en un define*/
     {
@@ -286,6 +196,20 @@ int generarEscenario(tConfiguracion *config, tListaDoble *ruta_desierto)
     return escribirRutaDesiertoEnArchivo("caravana.txt", ruta_desierto);
 }
 
+void CargarCantidades(int *vec, const tConfiguracion *config)
+{
+    int *v = vec;
+    *v = config->maximo_bandidos;
+    v++;
+    *v = config->maximo_premios;
+    v++;
+    *v = config->maximo_vidas_extra;
+    v++;
+    *v = config->maximo_oasis;
+    v++;
+    *v = config->maximo_tormentas;
+}
+
 int tirarDado()
 {
     return (rand() % 6) + 1;
@@ -307,7 +231,7 @@ void enviarJugadorAlInicio(tListaDoble *ruta)
 int accionMandarInicio(void *dato, void *ctx)
 {
     tPosicion *p = (tPosicion *)dato;
-
+    (void)ctx;
     if (p->numero_posicion == 1) {
         p->tiene_jugador = 1;
         return 0; /* ¡Corte temprano! Ya lo pusimos en el inicio, que frene el bucle */
@@ -325,7 +249,7 @@ int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial
 
     /* 2. Usamos nuestra función encapsulada para encontrar al jugador sin usar tNodo! */
     jugador->posicion_actual = obtenerPosJugador(ruta);
-    
+
     printf("\n--- TU TURNO ---\n");
     if (jugador->turnos_perdidos > 0) {
         printf("Estas atrapado en la Tormenta de Arena. Pierdes este turno.\n");
@@ -339,6 +263,8 @@ int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial
         printf("Tirar los dados (T) o Salir del juego (S): ");
         scanf("%c",&opcion);
         limpiarBuffer();
+        if(ES_MINUS(opcion))
+            TO_UPPER(opcion);
     } while (opcion != 'T' && opcion != 'S');
 
     if (opcion == 'S') {
@@ -357,6 +283,8 @@ int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial
         printf("Deseas moverte hacia (F) Adelante o (B) Atras?: ");
         scanf("%c",&opcion);
         limpiarBuffer();
+        if(ES_MINUS(opcion))
+            TO_UPPER(opcion);
         if( opcion =='B' && !puede_retroceder)
         {
             printf("No puedes retroceder porque cruzarias el Campamento Inicial (I). Solo podes avanzar.\n");
@@ -410,10 +338,10 @@ void turnoBandidos(tConfiguracion *config, tListaDoble *ruta, tCola *colaMovimie
     printf("\n");
 }
 
-int accionEncolarBandidos(void *ruta, void *ctx) 
+int accionEncolarBandidos(void *ruta, void *ctx)
 {
     tPosicion *p = (tPosicion *)ruta;/*trae el dato de la ruta*/
-    tContextoBandidos *contexto = (tContextoBandidos *)ctx; // Desempaquetamos el contexto
+    tContextoBandidos *contexto = (tContextoBandidos *)ctx; /*/ Desempaquetamos el contexto*/
     tMovimiento movActual;
     int b;
 
@@ -423,7 +351,7 @@ int accionEncolarBandidos(void *ruta, void *ctx)
         movActual.entidad   = 'B';
         movActual.pos_origen = p->numero_posicion;
         movActual.casillas  = tirarDado();
-        
+
         /*/ Calculamos la dirección usando los datos que vinieron en la estructura de contexto*/
         movActual.direccion = obtenerDireccionBandido(p->numero_posicion, contexto->posJugador, contexto->totalPosiciones);
 
@@ -434,7 +362,7 @@ int accionEncolarBandidos(void *ruta, void *ctx)
         /*/ Encolamos el movimiento*/
         poner_en_cola(contexto->colaMovimientos, &movActual, sizeof(tMovimiento));
     }
-    
+
     return TODO_OK; /* Le decimos a la lista que siga recorriendo hasta dar toda la vuelta*/
 }
 
@@ -496,8 +424,8 @@ int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugado
                 if (posDestino->tiene_bandido > 0) {
                     if (jugador->protegido) {
                         printf("El bandido intento atraparte, pero la proteccion del oasis te salvo!\n");
-                        jugador->protegido = 0; // <-- CORRECCI�N: El escudo se consume tras el primer golpe
-                        // <-- NUEVO: Verificamos si hay un SEGUNDO bandido esperando en esa misma casilla
+                        jugador->protegido = 0; /*/ <-- CORRECCI�N: El escudo se consume tras el primer golpe
+                        // <-- NUEVO: Verificamos si hay un SEGUNDO bandido esperando en esa misma casilla*/
                         if (posDestino->tiene_bandido > 1)
                         {
                             (jugador->vidas)--;
@@ -554,7 +482,7 @@ int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugado
                 if (posDestino->tiene_jugador) {
                     if (jugador->protegido) {
                         printf("El bandido intento atraparte, pero la proteccion del oasis te salvo!\n");
-                        jugador->protegido = 0; // <-- CORRECCION: El escudo se consume
+                        jugador->protegido = 0; /*/ <-- CORRECCION: El escudo se consume*/
                     } else {
                         (jugador->vidas)--;
                         printf("UN BANDIDO TE ALCANZO! Pierdes una vida.\n");
@@ -576,7 +504,7 @@ void mostrarMapa(tListaDoble *ruta, tEstadoJugador *jugador)
     if (listaVacia(ruta))
         return;
 
-    // 1. Mostramos los datos del jugador
+    /*/ 1. Mostramos los datos del jugador*/
     printf("\n==================== ESTADO DEL CARAVANERO ====================\n");
     printf(" Posicion: %02d |  Vidas: %d |  Puntos: %d | Escudo: %s\n",
            jugador->posicion_actual,
@@ -585,7 +513,7 @@ void mostrarMapa(tListaDoble *ruta, tEstadoJugador *jugador)
            jugador->protegido > 0 ? "ACTIVO (*)" : "Inactivo");
     printf("================================================================\n");
 
-    // 2. Dibujamos el mapa pasando el puntero de la estructura como contexto genérico
+    /*/ 2. Dibujamos el mapa pasando el puntero de la estructura como contexto genérico*/
     printf("\n============================= MAPA DEL DESIERTO =============================\n");
     recorrerListaDC_Condicionada(ruta, jugador, accionImprimirCasillero);
     printf("\n=============================================================================\n");
@@ -595,11 +523,11 @@ int accionImprimirCasillero(void *dato, void *ctx)
 {
     tPosicion *p = (tPosicion *)dato;
 
-    // Desempaquetamos el contexto pasándolo directamente a nuestro tipo de estructura
+    /*/ Desempaquetamos el contexto pasándolo directamente a nuestro tipo de estructura*/
     tEstadoJugador *jugador = (tEstadoJugador *)ctx;
 
     if (p->tiene_jugador) {
-        // Accedemos al escudo de forma limpia a través de la estructura
+        /*/ Accedemos al escudo de forma limpia a través de la estructura*/
         if (jugador->protegido > 0) {
             printf("[%c J*] ", p->elemento);
         } else {
@@ -618,7 +546,7 @@ int accionImprimirCasillero(void *dato, void *ctx)
 
 int mostrarHistorial(tCola *historial)
 {
-    int turno = 1;
+    int turno = 1, cantMov = 0;
     tMovimiento dato;
     printf("\n========== HISTORIAL DE MOVIMIENTOS ==========\n");
     if (cola_vacia(historial)) {
@@ -631,22 +559,15 @@ int mostrarHistorial(tCola *historial)
         sacar_de_cola(historial, &dato, sizeof(dato));
         printf("  Turno %2d: %c%d\n", turno, dato.direccion, dato.casillas);
         turno++;
+        cantMov+=dato.casillas;
     }
     printf("==============================================\n");
     printf("  Total de turnos jugados: %d\n", turno - 1);
     printf("==============================================\n");
     /** USAR UN PUNTERO ACUMULADOR O QUE RETORNE LA CANTIDAD DE MOVIMIENTOS*/
-    return turno - 1; /* <-- Retorna la cantidad de movimientos */
-}
-void Pausar()
-{
-    system("pause");
+    return cantMov; /* <-- Retorna la cantidad de movimientos */
 }
 
-void LimpiarPantalla()
-{
-    system("cls");
-}
 int iniciarPartida(tConfiguracion *config, tListaDoble *ruta, tPartida *partidaActual)
 {
     int jugando = 1;
@@ -664,14 +585,15 @@ int iniciarPartida(tConfiguracion *config, tListaDoble *ruta, tPartida *partidaA
 
     printf("\n>>> INICIANDO TRAVESIA HACIA LA CIUDAD REFUGIO <<<\n");
 
-    while (jugando == 1 && jugador.vidas > 0) 
+    while (jugando == 1 && jugador.vidas > 0)
     {
-        // === FASE 1: TURNO DEL JUGADOR ===
+        /*/ === FASE 1: TURNO DEL JUGADOR ===*/
         jugadorMovio = turnoJugador(ruta, &colaMovimientos, &colaHistorial, &jugador);
 
         /* --- NUEVO: Capturar si el jugador decidio abandonar ---*/
         if (jugadorMovio == FIN_PARTIDA) {
             printf("\nHas decidido abandonar la caravana...\n");
+            puts("Regresando al menu principal...");
             /* Si el jugador decide abandonar, se termina la partida y no se registra */
             vaciar_cola(&colaMovimientos);
             vaciar_cola(&colaHistorial);
@@ -679,34 +601,31 @@ int iniciarPartida(tConfiguracion *config, tListaDoble *ruta, tPartida *partidaA
             return FIN_PARTIDA;
         }
         /* === LOGICA DE DESACTIVACION DEL OASIS */
-        if (jugador.protegido > 0) 
+        if (jugador.protegido > 0)
             jugador.protegido--;
 
-        // === FASE 2: TURNO DE LOS BANDIDOS ===
+        /*/ === FASE 2: TURNO DE LOS BANDIDOS ===*/
         turnoBandidos(config, ruta, &colaMovimientos, &jugador);
 
         if (!cola_vacia(&colaMovimientos))
         {
             printf("--- Resolviendo movimiento del turno ---\n");
             jugando = ejecutarMovimientos(ruta, &colaMovimientos, &jugador, config->cantidad_posiciones);
-            /*mostrarMapa(ruta, protegido, config->cantidad_posiciones);*/
+            LimpiarPantalla();
+            mostrarMapa(ruta, &jugador);
         }
             Pausar();
             LimpiarPantalla();
-    
+
     }
 
     if (jugando == 0) {
         printf("\nVICTORIA! Has llegado a la Ciudad Refugio con %d punto(s).\n", jugador.puntos);
-        puntos_finales = jugador.puntos;//Si jugo hasta el final se queda con los puntos que obtuvo
-    } 
+        puntos_finales = jugador.puntos;/*/Si jugo hasta el final se queda con los puntos que obtuvo*/
+    }
     else if (jugando == 1) {
         printf("\nHas perdido todas tus vidas. El desierto te ha consumido.\n");
-        puntos_finales = jugador.puntos; //Si jugo hasta el final se queda con los puntos que obtuvo
-    } 
-    else if (jugando == -1) {
-        printf("\nRegresando al menu principal. Partida abandonada.\n");
-        puntos_finales = -1;
+        puntos_finales = jugador.puntos; /*/Si jugo hasta el final se queda con los puntos que obtuvo*/
     }
 
     Pausar();
@@ -732,18 +651,4 @@ void InicializarJugador(tEstadoJugador *jugador, tConfiguracion *config)
     jugador->posicion_actual = 0;
 }
 
-void limpiarBuffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
-void mostrarMenu()
-{
-    printf("\n==============================\n");
-    printf("   CARAVANA DEL DESIERTO\n");
-    printf("==============================\n");
-    printf("1. Nueva Partida\n");
-    printf("2. Ver Ranking de Jugadores\n");
-    printf("3. Salir\n");
-    printf("------------------------------\n");
-    printf("Seleccione una opcion: ");
-}
+

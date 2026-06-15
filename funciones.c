@@ -83,7 +83,7 @@ int InicializarIndice(tArbol *arbolIdx,const char *archJugadores, const char *ar
     jug = fopen(archJugadores, "rb");
     if(!jug)/*si no existe ninguno es la PRIMERA VEZ que se inicia el juego*/
         return TODO_OK;
-    /* si el de jugadores existe, significa que se corrompió el de idx, lo volvemos a generar */
+    /* si el de jugadores existe, significa que se corrompiï¿½ el de idx, lo volvemos a generar */
     fclose(jug);
     fclose(idx);
     GenerarIndiceJugadores(arbolIdx, archJugadores, archIdx, cmp, Copiar);
@@ -103,7 +103,7 @@ int AltaJugadores(tJugador *jugador, tJugadorIdx *nuevoJugador, const char *arch
     jugador->partidas_jugadas = 0;
     ObtenerFechaActual(jugador->fechaIngreso);
     fwrite(jugador, sizeof(tJugador),1,pf);
-    reg = ftell(pf)/sizeof(tJugador) - 1;/*Despues de escribir está en EOF  */
+    reg = ftell(pf)/sizeof(tJugador) - 1;/*Despues de escribir estï¿½ en EOF  */
     nuevoJugador->registro = reg;
 
     fclose(pf);
@@ -130,6 +130,37 @@ int BuscarDatosJugadores(tJugador *jugador, tJugadorIdx *nuevoJugador, const cha
     return TODO_OK;
 }
 
+void LeerCadena(char *dest, size_t longCad)
+{
+    char *p;
+    if(fgets(dest, longCad, stdin) == NULL)
+    {
+        *dest = '\0';
+        return;
+    }
+    p = strchr(dest, '\n');
+    if(p)
+        *p = '\0';
+    else
+        limpiarBuffer();
+
+}
+
+void limpiarBuffer()
+{
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void Pausar()
+{
+    system("pause");
+}
+
+void LimpiarPantalla()
+{
+    system("cls");
+}
 
 void ManejoErrores(int codError, const char *arch)
 {
@@ -154,11 +185,21 @@ void ManejoErrores(int codError, const char *arch)
         }break;
     default:
         {
-
+            puts("Error Desconocido");
         }break;
     }
     printf("\ncodError:%d",codError);
 }
 
-
+void mostrarMenu()
+{
+    printf("\n==============================\n");
+    printf("   CARAVANA DEL DESIERTO\n");
+    printf("==============================\n");
+    printf("1. Nueva Partida\n");
+    printf("2. Ver Ranking de Jugadores\n");
+    printf("3. Salir\n");
+    printf("------------------------------\n");
+    printf("Seleccione una opcion: ");
+}
 

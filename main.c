@@ -62,8 +62,9 @@ int main()
                 {
                     LimpiarPantalla();
                     puts("Ingrese su nickname para comenzar a jugar!");
-                    scanf("%s",nuevoJugador.nickname);
-                    limpiarBuffer();
+                    fgets(jugador.nickname, sizeof(jugador.nickname), stdin);
+                    *(jugador.nickname + strcspn(jugador.nickname, "\n")) = '\0';   /*/ elimina el \n si existe*/
+
                     resultado = Arbol_BusquedaBinaria(&idxJugador, &nuevoJugador, &nuevoJugador, sizeof(tJugadorIdx),cmpJugadoresIdx);
                     if(resultado == NOT_FOUND_ELEM)
                     {
@@ -170,7 +171,7 @@ void mostrarIdx(const void *jug)
     tJugadorIdx *idx = (tJugadorIdx*)jug;
     printf("[%u]%s\n",idx->registro,idx->nickname);
 }
-////////////////////////////////////////////////////////////////////
+/*///////////////////////////////////////////////////////////////////*/
 int ActualizarJugadorGuardado(tJugador *jugador, tJugadorIdx *nuevoJugador, const char *archJugadores)
 {
     FILE *pf;

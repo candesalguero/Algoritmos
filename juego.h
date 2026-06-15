@@ -2,6 +2,7 @@
 #define JUEGO_H_INCLUDED
 
 #include "config.h"
+#include "funciones.h"
 
 #define POS_OCUPADA 20
 
@@ -47,6 +48,7 @@ int colocarElementosAleatorios(tListaDoble *ruta_desierto, int cantidad_posicion
 FILE *abrirArchivo(const char *nombre, const char *modo);
 int escribirRutaDesiertoEnArchivo(const char *nombre_archivo, const tListaDoble *ruta_desierto);
 int generarEscenario(tConfiguracion *config, tListaDoble *ruta_desierto);
+void CargarCantidades(int *vec, const tConfiguracion *config);
 
 /* --- Motor del juego --- */
 int tirarDado();
@@ -62,11 +64,8 @@ int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugado
 void mostrarMapa(tListaDoble *ruta, tEstadoJugador *jugador);
 int accionImprimirCasillero(void *dato, void *ctx);
 int mostrarHistorial(tCola *historial);
-void Pausar();
-void LimpiarPantalla();
 int iniciarPartida(tConfiguracion *config, tListaDoble *ruta, tPartida *partidaActual);
 void InicializarJugador(tEstadoJugador *jugador, tConfiguracion *config);
-void limpiarBuffer();
 void mostrarMenu();
 
 #endif /* JUEGO_H_INCLUDED */

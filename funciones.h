@@ -3,7 +3,7 @@
 
 #include "config.h"
 
-void Menu();
+void mostrarMenu();
 int leerConfig(tConfiguracion* config, const char* arch);
 int tirarDado();
 void jugarPartida();
@@ -20,4 +20,7 @@ void acumularPuntosMovimientos(void *viejo, const void *nuevo, const void *extra
 int compararPorPuntosDesc(const void *a, const void *b);
 int cargarRanking(tLista *ranking);
 void imprimirRanking(tLista *ranking);
+void limpiarBuffer();
+void Pausar();
+void LimpiarPantalla();
 #endif /*/ FUNCIONES_H_INCLUDED*/

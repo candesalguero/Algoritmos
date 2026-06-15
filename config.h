@@ -11,8 +11,11 @@
 /*/ CONSTANTES GENERALES /////////////////////*/
 #define MIN(x,y) x > y ? y : x
 #define MAX(x,y) x < y ? y : x
+#define ES_MINUS(X)(X>='a'&& X<='z')
 #define MAX_NOMBRE 50
 #define MAX_MOVIMIENTO 10
+#define OFFSET_ASCII 32
+#define TO_UPPER(X)(X-=OFFSET_ASCII)
 
 /*/ ARCHIVOS ///////////////////////////////*/
 #define ARCHIVO_CONFIG "config.txt"
