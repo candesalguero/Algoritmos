@@ -106,7 +106,7 @@ int accionEscribirCasillero(void *dato, void *ctx)
     if(pos->tiene_jugador)
         fprintf(archivo, "%02d:[%c J]\n", pos->numero_posicion, pos->elemento);
     else if(pos->tiene_bandido)
-        fprintf(archivo, "%02d:B\n", pos->numero_posicion);
+        fprintf(archivo, "%02d:[%c B]\n", pos->numero_posicion, pos->elemento);
     else
         fprintf(archivo, "%02d:%c\n", pos->numero_posicion, pos->elemento);
 
@@ -131,7 +131,7 @@ int escribirRutaDesiertoEnArchivo(const char *nombre_archivo, const tListaDoble 
     return TODO_OK;
 }
 
-int generarEscenario(tConfiguracion *config, tListaDoble *ruta_desierto)
+int generarEscenario(const char *archCara, tConfiguracion *config, tListaDoble *ruta_desierto)
 {
     int tipo;
     int colocados;
@@ -166,7 +166,7 @@ int generarEscenario(tConfiguracion *config, tListaDoble *ruta_desierto)
         }
     }
 
-    return escribirRutaDesiertoEnArchivo("caravana.txt", ruta_desierto);
+    return escribirRutaDesiertoEnArchivo(archCara, ruta_desierto);
 }
 
 void CargarCantidades(int *vec, const tConfiguracion *config)
@@ -224,14 +224,13 @@ int turnoJugador(tListaDoble *ruta, tCola *colaMovimientos, tCola *colaHistorial
     jugador->posicion_actual = obtenerPosJugador(ruta);
 
     printf("\n--- TU TURNO ---\n");
-    if (jugador->turnos_perdidos > 0) {
+    if (jugador->turnos_perdidos > 0)
+        {
         printf("Estas atrapado en la Tormenta de Arena. Pierdes este turno.\n");
         printf("A la computadora (Bandidos) le corresponde jugar mientras tu no puedes!\n");
         jugador->turnos_perdidos--;
         return 0;
     }
-
-
     do {
         printf("Tirar los dados (T) o Salir del juego (S): ");
         scanf("%c",&opcion);
@@ -383,8 +382,10 @@ int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugado
         posOrigen = buscarPtrElementoListaDC(ruta, &origenNum, cmpPosicionPorNumero);
 
         valido = (posOrigen != NULL);
-        if (valido && mov.entidad == 'J' && !posOrigen->tiene_jugador) valido = 0;
-        if (valido && mov.entidad == 'B' && posOrigen->tiene_bandido <= 0) valido = 0;
+        if (valido && mov.entidad == 'J' && !posOrigen->tiene_jugador)
+            valido = 0;
+        if (valido && mov.entidad == 'B' && posOrigen->tiene_bandido <= 0)
+            valido = 0;
 
         if (valido) {
             /* --- Resolvemos la posicion destino ANTES de tocar la lista --- */
@@ -459,17 +460,20 @@ int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugado
                     printf("LLEGASTE A LA CIUDAD REFUGIO!\n");
                     return 0;
                 }
-                else if (posDestino->elemento == 'T') {
+                else if (posDestino->elemento == 'T')
+                {
                     if (jugador->protegido) {
                         printf("Caiste en una tormenta, pero la proteccion del oasis te protegio!\n");
                     } else {
                         printf("Caiste en una Tormenta! Pierdes el proximo turno.\n");
                         jugador->turnos_perdidos = 1;
                     }
+                    posDestino->elemento = '.';
                 }
                 else if (posDestino->elemento == 'O') {
                     printf("Oasis! Eres inmune a Tormentas y Bandidos por un turno completo.\n");
                     jugador->protegido = 2;
+                    posDestino->elemento = '.';
                 }
             }
             else if (mov.entidad == 'B') {
@@ -527,8 +531,17 @@ int accionImprimirCasillero(void *dato, void *ctx)
         } else {
             printf("[%c J] ", p->elemento);
         }
-    } else if (p->tiene_bandido > 0) {
-        printf("B ");
+    }
+    else if (p->tiene_bandido > 0)
+    {
+        if (p->elemento != '.')
+        {
+            printf("[%c B] ", p->elemento);
+        }
+        else
+        {
+            printf("B "); /* Si solo es camino vacío, mostramos solo la B para no ensuciar tanto el mapa */
+        }
     } else if (p->elemento == '.') {
         printf(". ");
     } else {
@@ -558,7 +571,6 @@ int mostrarHistorial(tCola *historial)
     printf("==============================================\n");
     printf("  Total de turnos jugados: %d\n", turno - 1);
     printf("==============================================\n");
-    /** USAR UN PUNTERO ACUMULADOR O QUE RETORNE LA CANTIDAD DE MOVIMIENTOS*/
     return cantMov; /* <-- Retorna la cantidad de movimientos */
 }
 
@@ -585,13 +597,16 @@ int iniciarPartida(tConfiguracion *config, tListaDoble *ruta, tPartida *partidaA
         jugadorMovio = turnoJugador(ruta, &colaMovimientos, &colaHistorial, &jugador);
 
         /* --- NUEVO: Capturar si el jugador decidio abandonar ---*/
-        if (jugadorMovio == FIN_PARTIDA) {
+        if (jugadorMovio == FIN_PARTIDA)
+        {
             printf("\nHas decidido abandonar la caravana...\n");
             puts("Regresando al menu principal...");
             /* Si el jugador decide abandonar, se termina la partida y no se registra */
             vaciar_cola(&colaMovimientos);
             vaciar_cola(&colaHistorial);
             vaciarListaDobleC(ruta);
+            Pausar();
+            LimpiarPantalla();
             return FIN_PARTIDA;
         }
         /* === LOGICA DE DESACTIVACION DEL OASIS */
@@ -605,6 +620,7 @@ int iniciarPartida(tConfiguracion *config, tListaDoble *ruta, tPartida *partidaA
         {
             printf("--- Resolviendo movimiento del turno ---\n");
             jugando = ejecutarMovimientos(ruta, &colaMovimientos, &jugador, config->cantidad_posiciones);
+            system("pause");
             LimpiarPantalla();
             mostrarMapa(ruta, &jugador);
         }

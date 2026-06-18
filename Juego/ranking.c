@@ -1,5 +1,6 @@
 #include "config.h"
 #include "funciones.h"
+#include "../main.h"
 
 
 int compararPorNombre(const void *a, const void *b)

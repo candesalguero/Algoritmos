@@ -321,7 +321,11 @@ tNodoArbol **_Arbol_BuscarMenorClave(tArbol *arbol)
 
 int Arbol_DetectarBalanceado(tArbol *arbol)
 {
+    int alturaIzq, alturaDer;
     if(!*arbol)
         return 0;
-    return TODO_OK;
+    alturaIzq = Arbol_ObtenerAltura(&(*arbol)->izq);
+    alturaDer = Arbol_ObtenerAltura(&(*arbol)->der);
+
+    return MODULO(alturaIzq - alturaDer) <= 1;
 }

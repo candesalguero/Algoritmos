@@ -1,7 +1,7 @@
 #ifndef LISTA_HEADER_H_INCLUDED
 #define LISTA_HEADER_H_INCLUDED
 
-#include "../../config.h"
+#include "../../Juego/config.h"
 #define LISTA_VACIA -13
 
 typedef struct sNodo

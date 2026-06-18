@@ -35,7 +35,7 @@ int MostrarArchivo(const char *arch, size_t tamElem, tMostrar mostrar)
     return TODO_OK;
 }
 
-int GenerarLotePrueba(tMostrar mostrarJugador, tMostrar mostrarPartida)
+int GenerarLotePrueba()
 {
     tJugador jugadores[] =
     {
@@ -77,9 +77,6 @@ int GenerarLotePrueba(tMostrar mostrarJugador, tMostrar mostrarPartida)
 
     GuardarArchivo(ARCHIVO_JUGADORES,jugadores,sizeof(tJugador),cantJug);
     GuardarArchivo(ARCHIVO_PARTIDAS,partidas,sizeof(tPartida),cantPart);
-
-    MostrarArchivo(ARCHIVO_JUGADORES, sizeof(tJugador),mostrarJugador);
-    MostrarArchivo(ARCHIVO_PARTIDAS, sizeof(tPartida), mostrarPartida);
 
     return TODO_OK;
 }

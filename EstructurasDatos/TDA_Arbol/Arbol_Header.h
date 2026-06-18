@@ -2,12 +2,13 @@
 #define ARBOL_HEADER_H_INCLUDED
 
 
-#include "../../config.h"
+#include "../../Juego/config.h"
 
 
 #define ARBOL_VACIO -2
 #define PRE_ORDEN 0
 #define IN_ORDEN 1
+#define MODULO(X)(X>=0? X : (X)*-1)
 
 typedef struct sNodoArbol
 {
@@ -43,7 +44,7 @@ int Arbol_CargarIndiceDesdeArchivo(tArbol *arbolIdx, const char *arch, size_t ta
 int Arbol_GenerarIndiceBalanceado(tArbol *arbol,const char *archIdx, size_t tamElemIdx);
 int _Arbol_InsertarBalanceado(tArbol *arbol, void *elemArch, size_t tamElemIdx ,int base, int tope, FILE *pf);
 
-
+int Arbol_DetectarBalanceado(tArbol *arbol);
 
 
 

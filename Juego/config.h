@@ -17,13 +17,6 @@
 #define OFFSET_ASCII 32
 #define TO_UPPER(X)(X-=OFFSET_ASCII)
 
-/*/ ARCHIVOS ///////////////////////////////*/
-#define ARCHIVO_CONFIG "config.txt"
-#define ARCHIVO_TABLERO "caravana.txt"
-#define ARCHIVO_JUGADORES "jugadores.dat"
-#define ARCHIVO_PARTIDAS "partidas.dat"
-#define ARCHIVO_INDICE "indiceJugadores.idx"
-
 
 
 /*/ ETIQUETAS DE RETURN /////////////////*/
@@ -53,10 +46,10 @@ typedef void(*tCopiar)(void*, const void*);
 typedef int (*tAccionCond)(void*, void*);
 typedef void (*tAccionDesplaz)(void *dato, void *param);
 /** se colocan ac� para que cuando el compilador entre a los headers, conozca las funciones de tCmp, etc.*/
-#include "EstructurasDatos/TDA_Arbol/Arbol_Header.h"
-#include "EstructurasDatos/TDA_Cola/cola_dinamica.h"
-#include "EstructurasDatos/TDA_Lista/Lista_Header.h"
-#include "EstructurasDatos/TDA_ListaDobleCircular/ListaDoble.h"
+#include "../EstructurasDatos/TDA_Arbol/Arbol_Header.h"
+#include "../EstructurasDatos/TDA_Cola/cola_dinamica.h"
+#include "../EstructurasDatos/TDA_Lista/Lista_Header.h"
+#include "../EstructurasDatos/TDA_ListaDobleCircular/ListaDoble.h"
 
 /*/ ESTRUCTURAS ////////////////////////*/
 typedef struct {

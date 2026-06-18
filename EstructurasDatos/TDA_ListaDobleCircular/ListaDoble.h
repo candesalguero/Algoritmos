@@ -1,7 +1,7 @@
 #ifndef LISTADOBLE_H
 #define LISTADOBLE_H
 
-#include "../../config.h"
+#include "../../Juego/config.h"
 #define CLA_DUP -1
 
 typedef struct sNodoDoble {

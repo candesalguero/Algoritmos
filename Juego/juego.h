@@ -46,7 +46,7 @@ int colocarElementoEnRuta(tListaDoble *ruta_desierto, int numero_posicion, char 
 int colocarElementosAleatorios(tListaDoble *ruta_desierto, int cantidad_posiciones, int cantidad, char simbolo);
 FILE *abrirArchivo(const char *nombre, const char *modo);
 int escribirRutaDesiertoEnArchivo(const char *nombre_archivo, const tListaDoble *ruta_desierto);
-int generarEscenario(tConfiguracion *config, tListaDoble *ruta_desierto);
+int generarEscenario(const char *archCara, tConfiguracion *config, tListaDoble *ruta_desierto);
 void CargarCantidades(int *vec, const tConfiguracion *config);
 
 /* --- Motor del juego --- */

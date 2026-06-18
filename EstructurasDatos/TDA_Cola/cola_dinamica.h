@@ -4,7 +4,7 @@
 #define COLA_LLENA -5
 #define COLA_VACIA -6
 
-#include "../../config.h"
+#include "../../Juego/config.h"
 
 typedef struct sNodoCola {
     void *info;

@@ -128,13 +128,13 @@
 	"lotes_de_prueba.h"
 	<stdio.h>
 
-1781478785 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_funciones.c
+1781729079 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_funciones.c
 	"Arbol_Header.h"
 
-1781321675 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_header.h
-	"../../config.h"
+1781742004 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_arbol\arbol_header.h
+	"../../Juego/config.h"
 
-1781555721 c:\users\user\downloads\tpalgoritmos\algoritmos\config.h
+1781740514 c:\users\user\downloads\tpalgoritmos\algoritmos\config.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -145,11 +145,11 @@
 	"EstructurasDatos/TDA_Lista/Lista_Header.h"
 	"EstructurasDatos/TDA_ListaDobleCircular/ListaDoble.h"
 
-1781480951 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_cola\cola_dinamica.h
-	"../../config.h"
+1781742019 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_cola\cola_dinamica.h
+	"../../Juego/config.h"
 
-1781306377 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_lista\lista_header.h
-	"../../config.h"
+1781742024 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_lista\lista_header.h
+	"../../Juego/config.h"
 
 1781526480 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_cola\cola_dinamica.c
 	"cola_dinamica.h"
@@ -157,42 +157,78 @@
 1781305590 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_lista\lista_funciones.c
 	"Lista_Header.h"
 
-1781554988 source:c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.c
+1781739411 source:c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.c
 	"funciones.h"
 
 1781556084 c:\users\user\downloads\tpalgoritmos\algoritmos\funciones.h
 	"config.h"
 
-1781372904 source:c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.c
+1781729482 source:c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.c
 	"lotes_de_prueba.h"
 
-1781372904 c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.h
+1781729482 c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_de_prueba.h
 	"config.h"
 	"main.h"
 
-1781477979 c:\users\user\downloads\tpalgoritmos\algoritmos\main.h
-	"config.h"
-	"funciones.h"
-	"juego.h"
-	"lotes_de_prueba.h"
+1781742505 c:\users\user\downloads\tpalgoritmos\algoritmos\main.h
+	"Juego/config.h"
+	"Juego/funciones.h"
+	"Juego/juego.h"
+	"Lotes_Prueba/lotes_de_prueba.h"
 
-1781556122 source:c:\users\user\downloads\tpalgoritmos\algoritmos\main.c
+1781743212 source:c:\users\user\downloads\tpalgoritmos\algoritmos\main.c
 	"main.h"
 
 1781454236 source:c:\users\user\downloads\tpalgoritmos\algoritmos\ranking.c
 	"config.h"
 	"funciones.h"
 
-1781555721 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_listadoblecircular\listadoble.h
-	"../../config.h"
+1781742030 c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_listadoblecircular\listadoble.h
+	"../../Juego/config.h"
 
 1781555721 source:c:\users\user\downloads\tpalgoritmos\algoritmos\estructurasdatos\tda_listadoblecircular\listadoble.c
 	"ListaDoble.h"
 
-1781555721 source:c:\users\user\downloads\tpalgoritmos\algoritmos\juego.c
+1781738517 source:c:\users\user\downloads\tpalgoritmos\algoritmos\juego.c
 	"juego.h"
 
 1781556143 c:\users\user\downloads\tpalgoritmos\algoritmos\juego.h
 	"config.h"
 	"funciones.h"
+
+1781742505 c:\users\user\downloads\tpalgoritmos\algoritmos\juego\config.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<ctype.h>
+	"../EstructurasDatos/TDA_Arbol/Arbol_Header.h"
+	"../EstructurasDatos/TDA_Cola/cola_dinamica.h"
+	"../EstructurasDatos/TDA_Lista/Lista_Header.h"
+	"../EstructurasDatos/TDA_ListaDobleCircular/ListaDoble.h"
+
+1781739411 source:c:\users\user\downloads\tpalgoritmos\algoritmos\juego\funciones.c
+	"funciones.h"
+
+1781556084 c:\users\user\downloads\tpalgoritmos\algoritmos\juego\funciones.h
+	"config.h"
+
+1781740773 source:c:\users\user\downloads\tpalgoritmos\algoritmos\juego\juego.c
+	"juego.h"
+
+1781740799 c:\users\user\downloads\tpalgoritmos\algoritmos\juego\juego.h
+	"config.h"
+	"funciones.h"
+
+1781742823 source:c:\users\user\downloads\tpalgoritmos\algoritmos\juego\ranking.c
+	"config.h"
+	"funciones.h"
+	"../main.h"
+
+1781729482 source:c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_prueba\lotes_de_prueba.c
+	"lotes_de_prueba.h"
+
+1781742055 c:\users\user\downloads\tpalgoritmos\algoritmos\lotes_prueba\lotes_de_prueba.h
+	"../Juego/config.h"
+	"../main.h"
 

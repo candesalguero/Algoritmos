@@ -47,26 +47,26 @@
 		<Unit filename="EstructurasDatos/TDA_Lista/Lista_funciones.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="config.h" />
-		<Unit filename="funciones.c">
+		<Unit filename="Juego/config.h" />
+		<Unit filename="Juego/funciones.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="funciones.h" />
-		<Unit filename="juego.c">
+		<Unit filename="Juego/funciones.h" />
+		<Unit filename="Juego/juego.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="juego.h" />
-		<Unit filename="lotes_de_prueba.c">
+		<Unit filename="Juego/juego.h" />
+		<Unit filename="Juego/ranking.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="lotes_de_prueba.h" />
+		<Unit filename="Lotes_Prueba/lotes_de_prueba.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Lotes_Prueba/lotes_de_prueba.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="main.h" />
-		<Unit filename="ranking.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

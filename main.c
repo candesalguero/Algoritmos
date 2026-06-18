@@ -1,15 +1,5 @@
 #include "main.h"
 
-void mostrarJugador(const void *jugadores);
-void mostrarPartida(const void *partida);
-void mostrarIdx(const void *jug);
-int cmpJugadoresIdx(const void *jugador1, const void *jugador2);
-void CopiarIndice(void *dest, const void *orig, const void *reg);
-
-
-int ActualizarJugadorGuardado(tJugador *jugador, tJugadorIdx *nuevoJugador, const char *archJugadores);
-int GuardarNuevaPartida(tPartida *nuevaPartida, const char *archPartidas);
-
 int main()
 {
     /** Variables de tu juego */
@@ -27,25 +17,18 @@ int main()
     srand(time(NULL)); /*/srand le pasa la hora actual como punto de arranque para que el resultado del dado (rand) no siga siempre la misma secuencia*/
 
     /** --- 1. INICIALIZACIÓN DEL EQUIPO (ÁRBOL) --- */
-    GenerarLotePrueba(mostrarJugador,mostrarPartida);
+    /*GenerarLotePrueba();*/
+
+
     Arbol_Crear(&idxJugador);
     InicializarIndice(&idxJugador, ARCHIVO_JUGADORES, ARCHIVO_INDICE, cmpJugadoresIdx, CopiarIndice);
-    GenerarIndiceJugadores(&idxJugador, ARCHIVO_JUGADORES, ARCHIVO_INDICE, cmpJugadoresIdx, CopiarIndice);
-
-    /*
-    Arbol_RecorrerInOrden(&idxJugador, mostrarIdx);
-    MostrarArchivo(ARCHIVO_INDICE, sizeof(tJugadorIdx),mostrarIdx);
-    */
-    /* --- 2. INICIALIZACIÓN DE TU JUEGO --- */
-
+    /*GenerarIndiceJugadores(&idxJugador, ARCHIVO_JUGADORES, ARCHIVO_INDICE, cmpJugadoresIdx, CopiarIndice);*/
     errores = leerConfig(&config,ARCHIVO_CONFIG);
     if (errores != TODO_OK)
     {
         ManejoErrores(errores,ARCHIVO_CONFIG);
         return errores; /*/ Terminamos si no hay archivo de configuración*/
     }
-
-
 
     do
     {
@@ -62,51 +45,49 @@ int main()
                 {
                     LimpiarPantalla();
                     puts("Ingrese su nickname para comenzar a jugar!");
-                    LeerCadena(jugador.nickname, strlen(jugador.nickname));
-
+                    printf("Tu nombre: ");
+                    LeerCadena(nuevoJugador.nickname, 20);
                     resultado = Arbol_BusquedaBinaria(&idxJugador, &nuevoJugador, &nuevoJugador, sizeof(tJugadorIdx),cmpJugadoresIdx);
                     if(resultado == NOT_FOUND_ELEM)
                     {
                         /**Dar de alta al jugador*/
+                        puts("Bienvenido Nuevo Jugador!");
                         AltaJugadores(&jugador, &nuevoJugador, ARCHIVO_JUGADORES);
                         Arbol_Insertar(&idxJugador, &nuevoJugador, sizeof(tJugadorIdx), cmpJugadoresIdx);
-                        /*Arbol_RecorrerInOrden(&idxJugador, mostrarIdx);*/
                     }
                     else /*si el jugador está, me traigo del archivo sus datos */
                     {
                         BuscarDatosJugadores(&jugador, &nuevoJugador, ARCHIVO_JUGADORES);
                     }
-
-
+                    printf("Nombre Jugador: %s \t Partidas Jugadas: %d \t Fecha de Ingreso: %s\n",
+                           jugador.nickname, jugador.partidas_jugadas, jugador.fechaIngreso);
                     Pausar();
                     LimpiarPantalla();
 
-                    /* --- ACÁ ARRANCA TU JUEGO REAL --- */
-                    generarEscenario(&config, &ruta_desierto);
+                    /* --- ACÁ ARRANCA EL JUEGO REAL --- */
+                    generarEscenario(ARCHIVO_TABLERO, &config, &ruta_desierto);
                     puntos_obtenidos = iniciarPartida(&config, &ruta_desierto, &nuevaPartida);
 
                     /** --- GUARDADO DE DATOS (Si no abandonó) --- */
                     if(puntos_obtenidos != FIN_PARTIDA)
                     {
                         strcpy(nuevaPartida.nickname, jugador.nickname);
-                        /*esto se hace con indices*/
                         ActualizarJugadorGuardado(&jugador, &nuevoJugador, ARCHIVO_JUGADORES);
                         GuardarNuevaPartida(&nuevaPartida, ARCHIVO_PARTIDAS);
                     }
-                }
-                break;
+                }break;
             case 2:
                 {
                     mostrarRanking();
                     Pausar();
                     LimpiarPantalla();
-                }
-                break;
+                }break;
             case 3:
                 {
+                    Pausar();
+                    LimpiarPantalla();
                     printf("\nSaliendo...\n\n");
-                }
-                break;
+                }break;
             default:
                 {
                     printf("\nOpcion invalida. Intente nuevamente.\n");
@@ -114,14 +95,12 @@ int main()
                     LimpiarPantalla();
                     system("pause");
                     system("cls");
-                }
-                break;
+                }break;
         }
     }while(opcion != 3);
 
     Arbol_GuardarEnArchivo(&idxJugador, ARCHIVO_INDICE, PRE_ORDEN);
-    MostrarArchivo(ARCHIVO_JUGADORES, sizeof(tJugador), mostrarJugador);
-    MostrarArchivo(ARCHIVO_INDICE, sizeof(tJugadorIdx), mostrarIdx);
+
     Arbol_Destruir(&idxJugador);
 
     return 0;
@@ -202,13 +181,13 @@ int GuardarNuevaPartida(tPartida *nuevaPartida, const char *archPartidas)
     if (pf != NULL)
     {
         /* Nos posicionamos sobre el último registro */
-        fseek(pf, -(long)sizeof(tPartida), SEEK_END);
-
-        if (fread(&ultimaPartida, sizeof(tPartida), 1, pf) == 1)
+        fseek(pf, 0L, SEEK_END);
+        if( (size_t)ftell(pf)>= sizeof(tPartida) )
         {
-            nuevaPartida->nro_partida = ultimaPartida.nro_partida + 1;
+            fseek(pf, -(long)sizeof(tPartida), SEEK_END);
+            if (fread(&ultimaPartida, sizeof(tPartida), 1, pf) == 1)
+                nuevaPartida->nro_partida = ultimaPartida.nro_partida + 1;
         }
-
         /* Nos posicionamos al final para agregar la nueva partida */
         fseek(pf, 0L, SEEK_END);
     }

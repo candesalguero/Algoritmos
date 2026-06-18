@@ -33,7 +33,8 @@ int leerConfig(tConfiguracion* config, const char *arch)
 int GenerarIndiceJugadores(tArbol *arbolIdx,const char *archJugadores, const char *archIdx, tCmp cmp, tAccion Copiar)
 {
     int resu;
-
+    if(*arbolIdx)/*nos debemos asegurar que el arbol esté vacio antes de cargarlo*/
+        Arbol_Destruir(arbolIdx);
     resu = Arbol_CargarIndiceDesdeArchivo(arbolIdx, archJugadores,sizeof(tJugador),sizeof(tJugadorIdx),cmp,Copiar);
     if(resu != TODO_OK)
     {
@@ -77,6 +78,12 @@ int InicializarIndice(tArbol *arbolIdx,const char *archJugadores, const char *ar
         while(fread(&jugIdx, sizeof(tJugadorIdx),1,idx))
             Arbol_Insertar(arbolIdx, &jugIdx, sizeof(tJugadorIdx), cmp);
         fclose(idx);
+        if(!Arbol_DetectarBalanceado(arbolIdx))
+            {
+                Arbol_Destruir(arbolIdx);
+                GenerarIndiceJugadores(arbolIdx, archJugadores, archIdx, cmp, Copiar);
+                /*si el arbol no está balanceado, lo volvemos a generar de 0*/
+            }
         return TODO_OK;
     }
     /* Si el indice no existe hay que revisar si existe el de jugadores*/
@@ -85,7 +92,6 @@ int InicializarIndice(tArbol *arbolIdx,const char *archJugadores, const char *ar
         return TODO_OK;
     /* si el de jugadores existe, significa que se corrompi� el de idx, lo volvemos a generar */
     fclose(jug);
-    fclose(idx);
     GenerarIndiceJugadores(arbolIdx, archJugadores, archIdx, cmp, Copiar);
     return TODO_OK;
 
@@ -100,6 +106,7 @@ int AltaJugadores(tJugador *jugador, tJugadorIdx *nuevoJugador, const char *arch
         return ERR_ARCH;
 
     strcpy(jugador->nickname, nuevoJugador->nickname);
+    /*strcpy(nuevoJugador->nickname,jugador->nickname );*/
     jugador->partidas_jugadas = 0;
     ObtenerFechaActual(jugador->fechaIngreso);
     fwrite(jugador, sizeof(tJugador),1,pf);
@@ -124,6 +131,7 @@ int BuscarDatosJugadores(tJugador *jugador, tJugadorIdx *nuevoJugador, const cha
     pf = fopen(archJugadores,"r+b");
     if(!pf)
         return ERR_ARCH;
+
     fseek(pf,sizeof(tJugador) * nuevoJugador->registro,SEEK_SET);
     fread(jugador, sizeof(tJugador), 1 , pf);
     fclose(pf);
