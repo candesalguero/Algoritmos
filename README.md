@@ -95,7 +95,7 @@ gcc -Wall -o caravana main.c funciones.c juego.c lotes_de_prueba.c ranking.c \
 | Ranking de jugadores | ✅ Hecho |
 | Menú principal + alta de jugador | ✅ Hecho |
 | Encapsulamiento del TDA lista (el juego no accede a los nodos) | ✅ Hecho |
-| Capa de datos: jugadores/partidas + índice ABB persistido | ⚠️ Revisar (ver Pendientes) |
+| Capa de datos: jugadores/partidas + índice ABB persistido | ✅ Hecho |
 
 > **Pendiente para la entrega:** al iniciar, el programa todavía corre un lote de
 > prueba que **sobrescribe** `jugadores.dat` / `partidas.dat`, y **regenera** el
