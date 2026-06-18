@@ -1,8 +1,5 @@
 #include "juego.h"
 
-/* leerConfig vive en funciones.c (se quito la version duplicada que estaba aca) */
-
-
 int cmpPosicionPorNumero(const void *a, const void *b) /*Me compara la posicion con el numero aleatorio que buscamos*/
 {
     const tPosicion *pos = (const tPosicion *)a;
@@ -468,12 +465,12 @@ int ejecutarMovimientos(tListaDoble *ruta, tCola *colaMovimientos, tEstadoJugado
                         printf("Caiste en una Tormenta! Pierdes el proximo turno.\n");
                         jugador->turnos_perdidos = 1;
                     }
-                    posDestino->elemento = '.';
+
                 }
                 else if (posDestino->elemento == 'O') {
                     printf("Oasis! Eres inmune a Tormentas y Bandidos por un turno completo.\n");
                     jugador->protegido = 2;
-                    posDestino->elemento = '.';
+
                 }
             }
             else if (mov.entidad == 'B') {
@@ -571,7 +568,7 @@ int mostrarHistorial(tCola *historial)
     printf("==============================================\n");
     printf("  Total de turnos jugados: %d\n", turno - 1);
     printf("==============================================\n");
-    return cantMov; /* <-- Retorna la cantidad de movimientos */
+    return cantMov;
 }
 
 int iniciarPartida(tConfiguracion *config, tListaDoble *ruta, tPartida *partidaActual)
